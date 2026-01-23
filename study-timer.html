@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Study Timer with Alarm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            color: #333;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .timer {
+            text-align: center;
+            font-size: 64px;
+            font-weight: bold;
+            margin: 25px 0;
+            color: #2c3e50;
+            font-family: 'Courier New', monospace;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 100px;
+        }
+        #startBtn { background: #2ecc71; color: white; }
+        #pauseBtn { background: #f39c12; color: white; }
+        #resetBtn { background: #e74c3c; color: white; }
+        #skipBtn { background: #3498db; color: white; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        
+        .status {
+            text-align: center;
+            font-size: 18px;
+            padding: 15px;
+            margin: 20px 0;
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+        
+        .task {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .current { 
+            background: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+            border-left: 6px solid #e74c3c;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        .completed { 
+            background: #d5f4e6; 
+            opacity: 0.8;
+            text-decoration: line-through;
+            color: #27ae60;
+        }
+        .next { background: #fff3cd; }
+        .cycle-header {
+            background: #34495e;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 20px 0 10px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #43e97b 0%, #38f9d7 100%);
+            width: 0%;
+            transition: width 1s linear;
+        }
+        
+        /* Bell animation */
+        @keyframes ring {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(15deg); }
+            75% { transform: rotate(-15deg); }
+        }
+        .ringing {
+            animation: ring 0.5s ease-in-out 5;
+            color: #e74c3c;
+        }
+        
+        /* Test bell button */
+        .test-bell {
+            background: #9b59b6;
+            color: white;
+            margin-top: 10px;
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align:center; color:#2c3e50;">🔔 Study Timer & Timetable</h1>
+        
+        <!-- Pomodoro Timer -->
+        <div class="timer" id="timer">35:00</div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+        
+        <div class="controls">
+            <button id="startBtn" onclick="startTimer()">▶ Start</button>
+            <button id="pauseBtn" onclick="pauseTimer()">⏸ Pause</button>
+            <button id="resetBtn" onclick="resetTimer()">🔄 Reset</button>
+            <button id="skipBtn" onclick="skipBreak()">⏭ Skip</button>
+        </div>
+        
+        <button class="test-bell" onclick="playBell()">🔔 Test Bell Sound</button>
+        
+        <div class="status" id="status">Ready - Cycle 1, Study Session</div>
+        
+        <!-- Today's Schedule -->
+        <h2 style="color:#2c3e50; margin-top:30px;">📅 Today's Timetable</h2>
+        <div id="schedule"></div>
+        
+        <div style="text-align:center; margin-top:30px;">
+            <button onclick="resetDay()" style="background:#95a5a6; color:white; padding:12px 30px;">
+                🔄 Reset Entire Day
+            </button>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">Session Complete! 🔔</div>
+    
+    <!-- Audio for bell -->
+    <audio id="bellSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        // ========== YOUR TIMETABLE DATA ==========
+        // Add ALL your 8 cycles here (this is just Cycle 1 as example)
+        const timetable = [
+    // ========== CYCLE 1 ==========
+    { id: 1, time: "5:30-6:05", task: "Study", type: "study", cycle: 1, done: false },
+    { id: 2, time: "6:05-6:10", task: "Short Break", type: "break", cycle: 1, done: false },
+    { id: 3, time: "6:10-6:45", task: "Study", type: "study", cycle: 1, done: false },
+    { id: 4, time: "6:45-6:50", task: "Short Break", type: "break", cycle: 1, done: false },
+    { id: 5, time: "6:50-7:25", task: "Study", type: "study", cycle: 1, done: false },
+    { id: 6, time: "7:25-7:45", task: "Long Break (20min)", type: "long_break", cycle: 1, done: false },
+    
+    // ========== CYCLE 2 ==========
+    { id: 7, time: "7:45-8:20", task: "Study", type: "study", cycle: 2, done: false },
+    { id: 8, time: "8:20-8:25", task: "Short Break", type: "break", cycle: 2, done: false },
+    { id: 9, time: "8:25-9:00", task: "Study", type: "study", cycle: 2, done: false },
+    { id: 10, time: "9:00-9:05", task: "Short Break", type: "break", cycle: 2, done: false },
+    { id: 11, time: "9:05-9:40", task: "Study", type: "study", cycle: 2, done: false },
+    { id: 12, time: "9:40-10:00", task: "Long Break (20min)", type: "long_break", cycle: 2, done: false },
+    
+    // ========== CYCLE 3 ==========
+    { id: 13, time: "10:00-10:35", task: "Study", type: "study", cycle: 3, done: false },
+    { id: 14, time: "10:35-10:40", task: "Short Break", type: "break", cycle: 3, done: false },
+    { id: 15, time: "10:40-11:15", task: "Study", type: "study", cycle: 3, done: false },
+    { id: 16, time: "11:15-11:20", task: "Short Break", type: "break", cycle: 3, done: false },
+    { id: 17, time: "11:20-11:55", task: "Study", type: "study", cycle: 3, done: false },
+    { id: 18, time: "11:55-12:35", task: "Free Session (40min)", type: "long_break", cycle: 3, done: false },
+    
+    // ========== CYCLE 4 ==========
+    { id: 19, time: "12:35-1:10", task: "Study", type: "study", cycle: 4, done: false },
+    { id: 20, time: "1:10-1:15", task: "Short Break", type: "break", cycle: 4, done: false },
+    { id: 21, time: "1:15-1:50", task: "Study", type: "study", cycle: 4, done: false },
+    { id: 22, time: "1:50-1:55", task: "Short Break", type: "break", cycle: 4, done: false },
+    { id: 23, time: "1:55-2:30", task: "Study", type: "study", cycle: 4, done: false },
+    { id: 24, time: "2:30-2:50", task: "Lunch Break (20min)", type: "long_break", cycle: 4, done: false },
+    
+    // ========== CYCLE 5 ==========
+    { id: 25, time: "2:50-3:25", task: "Study", type: "study", cycle: 5, done: false },
+    { id: 26, time: "3:25-3:30", task: "Short Break", type: "break", cycle: 5, done: false },
+    { id: 27, time: "3:30-4:05", task: "Study", type: "study", cycle: 5, done: false },
+    { id: 28, time: "4:05-4:10", task: "Short Break", type: "break", cycle: 5, done: false },
+    { id: 29, time: "4:10-4:45", task: "Study", type: "study", cycle: 5, done: false },
+    { id: 30, time: "4:45-5:05", task: "Short Break (20min)", type: "long_break", cycle: 5, done: false },
+    
+    // ========== CYCLE 6 ==========
+    { id: 31, time: "5:05-5:40", task: "Study", type: "study", cycle: 6, done: false },
+    { id: 32, time: "5:40-5:45", task: "Short Break", type: "break", cycle: 6, done: false },
+    { id: 33, time: "5:45-6:20", task: "Study", type: "study", cycle: 6, done: false },
+    { id: 34, time: "6:20-6:25", task: "Short Break", type: "break", cycle: 6, done: false },
+    { id: 35, time: "6:25-7:00", task: "Study", type: "study", cycle: 6, done: false },
+    { id: 36, time: "7:00-7:25", task: "Free Session (25min)", type: "long_break", cycle: 6, done: false },
+    
+    // ========== CYCLE 7 ==========
+    { id: 37, time: "7:25-8:00", task: "Study", type: "study", cycle: 7, done: false },
+    { id: 38, time: "8:00-8:05", task: "Short Break", type: "break", cycle: 7, done: false },
+    { id: 39, time: "8:05-8:40", task: "Study", type: "study", cycle: 7, done: false },
+    { id: 40, time: "8:40-8:45", task: "Short Break", type: "break", cycle: 7, done: false },
+    { id: 41, time: "8:45-9:20", task: "Study", type: "study", cycle: 7, done: false },
+    { id: 42, time: "9:20-9:40", task: "Dinner Break (20min)", type: "long_break", cycle: 7, done: false },
+    
+    // ========== CYCLE 8 ==========
+    { id: 43, time: "9:40-10:15", task: "Study", type: "study", cycle: 8, done: false },
+    { id: 44, time: "10:15-10:20", task: "Short Break", type: "break", cycle: 8, done: false },
+    { id: 45, time: "10:20-10:55", task: "Study", type: "study", cycle: 8, done: false },
+    { id: 46, time: "10:55-11:00", task: "Short Break", type: "break", cycle: 8, done: false },
+    { id: 47, time: "11:00-11:25", task: "Study", type: "study", cycle: 8, done: false },
+    { id: 48, time: "11:25-11:30", task: "Wind Down", type: "long_break", cycle: 8, done: false }
+];
+
+        // ========== TIMER VARIABLES ==========
+        let timeLeft = 35 * 60; // Start with 35 minutes
+        let timerId = null;
+        let isRunning = false;
+        let isBreak = false;
+        let currentTaskIndex = 0;
+        let totalStudyTime = 0;
+        
+        // ========== BELL SOUND ==========
+        const bellSound = document.getElementById('bellSound');
+        
+        function playBell() {
+            bellSound.currentTime = 0;
+            bellSound.play().catch(e => console.log("Play sound error:", e));
+            
+            // Visual bell animation
+            const timerEl = document.getElementById('timer');
+            timerEl.classList.add('ringing');
+            setTimeout(() => timerEl.classList.remove('ringing'), 2500);
+            
+            // Show notification
+            showNotification("🔔 Bell Ringing!");
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => notification.style.display = 'none', 3000);
+        }
+        
+        // ========== LOAD/SAVE PROGRESS ==========
+        function loadProgress() {
+            const saved = localStorage.getItem('studyProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                timetable.forEach((task, i) => {
+                    if (progress[i]) task.done = progress[i];
+                });
+            }
+            const savedIndex = localStorage.getItem('currentTaskIndex');
+            if (savedIndex) currentTaskIndex = parseInt(savedIndex);
+        }
+        
+        function saveProgress() {
+            const progress = timetable.map(task => task.done);
+            localStorage.setItem('studyProgress', JSON.stringify(progress));
+            localStorage.setItem('currentTaskIndex', currentTaskIndex.toString());
+        }
+        
+        // ========== TIMER FUNCTIONS ==========
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                timerId = setInterval(updateTimer, 1000);
+                updateStatus();
+            }
+        }
+        
+        function pauseTimer() {
+            isRunning = false;
+            clearInterval(timerId);
+            document.getElementById('status').textContent = "⏸ Paused";
+        }
+        
+        function resetTimer() {
+            clearInterval(timerId);
+            isRunning = false;
+            timeLeft = isBreak ? 5 * 60 : 35 * 60;
+            updateDisplay();
+            updateStatus();
+        }
+        
+        function skipBreak() {
+            if (isBreak && currentTaskIndex < timetable.length) {
+                isBreak = false;
+                timeLeft = 35 * 60;
+                currentTaskIndex++;
+                updateDisplay();
+                renderSchedule();
+                saveProgress();
+                updateStatus();
+            }
+        }
+        
+        function updateTimer() {
+            timeLeft--;
+            updateDisplay();
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerId);
+                isRunning = false;
+                
+                // Mark current task as done
+                if (currentTaskIndex < timetable.length) {
+                    timetable[currentTaskIndex].done = true;
+                    
+                    // Play bell when session ends
+                    playBell();
+                    
+                    // Move to next task
+                    currentTaskIndex++;
+                    
+                    // Determine next session type
+                    if (currentTaskIndex < timetable.length) {
+                        const nextTask = timetable[currentTaskIndex];
+                        isBreak = (nextTask.type === 'break' || nextTask.type === 'long_break');
+                        timeLeft = (nextTask.type === 'long_break') ? 20 * 60 : 
+                                   (isBreak ? 5 * 60 : 35 * 60);
+                        
+                        // Auto-start next timer after 2 seconds
+                        setTimeout(() => {
+                            updateStatus();
+                            if (timeLeft > 0) startTimer();
+                        }, 2000);
+                    }
+                    
+                    renderSchedule();
+                    saveProgress();
+                }
+            }
+        }
+        
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update progress bar
+            const totalTime = isBreak ? 5 * 60 : 35 * 60;
+            const progressPercent = 100 - ((timeLeft / totalTime) * 100);
+            document.getElementById('progress').style.width = progressPercent + '%';
+        }
+        
+        function updateStatus() {
+            let statusText = "";
+            if (currentTaskIndex < timetable.length) {
+                const currentTask = timetable[currentTaskIndex];
+                statusText = `Cycle ${currentTask.cycle} - `;
+                
+                if (isBreak) {
+                    if (currentTask.type === 'long_break') {
+                        statusText += `Long Break (20min)`;
+                    } else {
+                        statusText += `Short Break (5min)`;
+                    }
+                } else {
+                    statusText += `Study Session (35min)`;
+                }
+                
+                if (isRunning) statusText += " ▶ Running";
+                else statusText += " ⏸ Ready";
+            }
+            document.getElementById('status').textContent = statusText;
+        }
+        
+        // ========== RENDER SCHEDULE ==========
+        function renderSchedule() {
+            let html = '';
+            let currentCycle = 0;
+            
+            for (let i = 0; i < timetable.length; i++) {
+                const task = timetable[i];
+                
+                // Add cycle header
+                if (task.cycle !== currentCycle) {
+                    currentCycle = task.cycle;
+                    html += `<div class="cycle-header">Cycle ${currentCycle}</div>`;
+                }
+                
+                let className = 'task';
+                
+                if (i === currentTaskIndex) className += ' current';
+                else if (task.done) className += ' completed';
+                else if (i === currentTaskIndex + 1) className += ' next';
+                
+                // Icon based on type
+                let icon = '📚';
+                if (task.type === 'break') icon = '☕';
+                if (task.type === 'long_break') icon = '🍽️';
+                
+                html += `<div class="${className}" onclick="markDone(${i})">
+                    <div>
+                        <strong>${task.time}</strong><br>
+                        ${icon} ${task.task}
+                    </div>
+                    <div style="font-size:24px;">
+                        ${task.done ? '✅' : (i === currentTaskIndex ? '▶️' : '⏳')}
+                    </div>
+                </div>`;
+            }
+            
+            document.getElementById('schedule').innerHTML = html;
+            updateStatus();
+        }
+        
+        function markDone(index) {
+            if (index === currentTaskIndex && isRunning) {
+                if (confirm("Stop current timer and mark as done?")) {
+                    pauseTimer();
+                    timetable[index].done = true;
+                    currentTaskIndex++;
+                    timeLeft = 35 * 60;
+                    updateDisplay();
+                    renderSchedule();
+                    saveProgress();
+                }
+            } else {
+                timetable[index].done = !timetable[index].done;
+                renderSchedule();
+                saveProgress();
+            }
+        }
+        
+        function resetDay() {
+            if (confirm("Reset entire day's progress?")) {
+                timetable.forEach(task => task.done = false);
+                currentTaskIndex = 0;
+                isBreak = false;
+                timeLeft = 35 * 60;
+                isRunning = false;
+                clearInterval(timerId);
+                updateDisplay();
+                renderSchedule();
+                localStorage.removeItem('studyProgress');
+                localStorage.removeItem('currentTaskIndex');
+                showNotification("Day reset successfully! 🔄");
+            }
+        }
+        
+        // ========== INITIALIZE ==========
+        loadProgress();
+        updateDisplay();
+        renderSchedule();
+        
+        // Make sure bell sound can play (required for iOS)
+        document.addEventListener('click', function() {
+            bellSound.play().then(() => {
+                bellSound.pause();
+                bellSound.currentTime = 0;
+            }).catch(e => {});
+        }, { once: true });
+    </script>
+</body>
+</html>
