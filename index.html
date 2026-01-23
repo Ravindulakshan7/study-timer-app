@@ -1,834 +1,843 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Study Timer</title>
-    <!-- App Icons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/color/180/000000/clock--v1.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="https://img.icons8.com/color/192/000000/clock--v1.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/color/32/000000/clock--v1.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Study Timer">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyFocus Timer</title>
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏰</text></svg>">
     <style>
-        /* Reset and Base */
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
+        /* ===== CSS RESET ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-        
+
+        /* ===== VARIABLES ===== */
+        :root {
+            /* Light Theme */
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #f94144;
+            
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-card: #ffffff;
+            --bg-input: #f1f3f5;
+            
+            --text-primary: #212529;
+            --text-secondary: #495057;
+            --text-muted: #6c757d;
+            
+            --border: #dee2e6;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+            
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --primary: #5a6ff0;
+            --primary-light: #6b7ff1;
+            --secondary: #4a1bb4;
+            --accent: #ff2d95;
+            --success: #5acff2;
+            --warning: #f9a826;
+            --danger: #fa5254;
+            
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-card: #252525;
+            --bg-input: #2d2d2d;
+            
+            --text-primary: #f8f9fa;
+            --text-secondary: #e9ecef;
+            --text-muted: #adb5bd;
+            
+            --border: #343a40;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== BASE STYLES ===== */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #ffffff;
-            color: #1a1a1a;
-            max-width: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 0;
-            overflow-x: hidden;
-            -webkit-text-size-adjust: 100%;
+            transition: var(--transition);
+            line-height: 1.6;
         }
-        
-        /* Header - Clean and Simple */
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ===== HEADER ===== */
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px 15px 15px;
-            border-radius: 0 0 20px 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-            position: relative;
-        }
-        
-        .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            padding: 20px 0;
+            margin-bottom: 10px;
         }
-        
-        .app-title {
-            font-size: 22px;
-            font-weight: 700;
+
+        .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
-        
-        .header-btns {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .icon-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 24px;
             color: white;
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .logo-text p {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-button {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: all 0.2s;
+            font-size: 20px;
+            color: var(--text-primary);
+            transition: var(--transition);
         }
-        
-        .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
+
+        .icon-button:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
         }
-        
-        /* Timer Section */
+
+        /* ===== TIMER DISPLAY ===== */
         .timer-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 40px 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
             text-align: center;
-            padding: 10px 15px;
+            border: 1px solid var(--border);
         }
-        
-        .timer {
-            font-size: 70px;
+
+        .timer-display {
+            font-size: 92px;
             font-weight: 800;
-            font-family: 'Courier New', monospace;
-            color: #2c3e50;
-            margin: 5px 0;
+            font-family: 'SF Mono', 'Monaco', monospace;
+            color: var(--text-primary);
+            margin: 20px 0;
+            line-height: 1;
             letter-spacing: 2px;
         }
-        
+
         .progress-container {
-            width: 100%;
-            height: 6px;
-            background: #e0e0e0;
-            border-radius: 3px;
-            margin: 15px 0 20px;
+            height: 8px;
+            background: var(--bg-input);
+            border-radius: 4px;
+            margin: 30px 0;
             overflow: hidden;
         }
-        
+
         .progress-bar {
             height: 100%;
-            background: linear-gradient(to right, #43e97b, #38f9d7);
+            background: linear-gradient(90deg, var(--primary), var(--success));
             width: 0%;
+            border-radius: 4px;
             transition: width 1s linear;
         }
-        
-        /* Control Buttons */
-        .controls {
+
+        /* ===== CONTROL BUTTONS ===== */
+        .controls-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 0 15px;
-            margin-bottom: 20px;
+            gap: 15px;
+            margin-bottom: 25px;
         }
-        
-        .control-btn {
-            padding: 16px;
+
+        .btn {
+            padding: 18px 24px;
             border: none;
-            border-radius: 15px;
+            border-radius: 14px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            color: white;
-        }
-        
-        .control-btn:active {
-            transform: translateY(2px);
-        }
-        
-        .start-btn { background: #2ecc71; }
-        .pause-btn { background: #f39c12; }
-        .reset-btn { background: #e74c3c; }
-        .skip-btn { background: #3498db; }
-        
-        /* Bell Test Button */
-        .bell-test {
-            padding: 0 15px;
-            margin-bottom: 20px;
-        }
-        
-        .bell-btn {
-            width: 100%;
-            padding: 14px;
-            background: #9b59b6;
-            color: white;
-            border: none;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
+            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-        }
-        
-        /* Status */
-        .status {
-            background: linear-gradient(to right, #4facfe, #00f2fe);
             color: white;
-            padding: 15px;
-            margin: 0 15px 20px;
-            border-radius: 15px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 16px;
         }
-        
-        /* Schedule */
-        .schedule-section {
-            padding: 0 15px;
+
+        .btn:active {
+            transform: scale(0.98);
         }
-        
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            grid-column: span 2;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-success { background: linear-gradient(135deg, var(--success), #38bdf8); }
+        .btn-warning { background: linear-gradient(135deg, var(--warning), #f59e0b); }
+        .btn-danger { background: linear-gradient(135deg, var(--danger), #ef4444); }
+        .btn-accent { background: linear-gradient(135deg, var(--accent), #ec4899); }
+
+        /* ===== SOUND SECTION ===== */
+        .sound-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+
         .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #2c3e50;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
         }
-        
-        .cycle-header {
-            background: #34495e;
+
+        .sound-controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .sound-btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .sound-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* ===== STATUS CARD ===== */
+        .status-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            padding: 12px;
-            border-radius: 10px;
-            margin: 15px 0 10px;
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .status-text {
+            font-size: 16px;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+
+        /* ===== SCHEDULE ===== */
+        .schedule-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .cycle-header {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 16px;
+            border-radius: 12px;
+            margin: 20px 0 15px;
             font-weight: 600;
             text-align: center;
+            font-size: 16px;
+            border-left: 4px solid var(--primary);
         }
-        
-        .task {
-            background: white;
-            border: 1px solid #e9ecef;
+
+        .task-item {
+            background: var(--bg-input);
             border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 10px;
+            padding: 18px;
+            margin-bottom: 12px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            transition: all 0.2s;
+            justify-content: space-between;
+            transition: var(--transition);
+            border: 1px solid transparent;
         }
-        
-        .task.current {
-            background: linear-gradient(to right, #ffecd2, #fcb69f);
-            border-left: 5px solid #e74c3c;
-            transform: scale(1.01);
-            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.2);
+
+        .task-item:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
         }
-        
-        .task.completed {
-            background: #d5f4e6;
+
+        .task-item.current {
+            background: linear-gradient(135deg, rgba(248, 150, 30, 0.1), rgba(248, 150, 30, 0.05));
+            border-left: 4px solid var(--warning);
+        }
+
+        .task-item.completed {
+            background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(76, 201, 240, 0.05));
             opacity: 0.8;
-            text-decoration: line-through;
-            color: #27ae60;
         }
-        
-        .task.next {
-            background: #fff3cd;
+
+        .task-item.next {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(67, 97, 238, 0.05));
         }
-        
+
+        .task-info {
+            flex: 1;
+        }
+
         .task-time {
             font-weight: 600;
+            color: var(--text-primary);
             font-size: 16px;
-            color: #2c3e50;
-            display: block;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
-        
+
         .task-activity {
+            color: var(--text-secondary);
             font-size: 14px;
-            color: #666;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        
+
         .task-status {
-            font-size: 24px;
-        }
-        
-        /* Reset Button */
-        .reset-day {
-            padding: 20px 15px;
+            font-size: 28px;
+            min-width: 40px;
             text-align: center;
         }
-        
-        .reset-btn-day {
-            background: #95a5a6;
-            color: white;
-            border: none;
-            border-radius: 15px;
-            padding: 14px 30px;
-            font-size: 16px;
+
+        /* ===== RESET BUTTON ===== */
+        .reset-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn-reset {
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+            padding: 16px 32px;
+            border-radius: 14px;
             font-weight: 600;
             cursor: pointer;
+            transition: var(--transition);
             display: inline-flex;
             align-items: center;
             gap: 10px;
         }
-        
-        /* ========== INFO PAGE ========== */
+
+        .btn-reset:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+            transform: translateY(-2px);
+        }
+
+        /* ===== INFO PAGE ===== */
         .info-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-primary);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
             display: none;
-            background: white;
-            min-height: 100vh;
-            padding-bottom: 30px;
         }
-        
+
         .info-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px 15px 15px;
-            border-radius: 0 0 20px 20px;
-            margin-bottom: 20px;
-        }
-        
-        .info-header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
         }
-        
-        .info-title {
-            font-size: 22px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+
+        .info-content {
+            max-width: 500px;
+            margin: 0 auto;
         }
-        
-        .info-container {
-            padding: 0 15px;
-        }
-        
+
         .info-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 25px;
             margin-bottom: 20px;
-            border-left: 4px solid #667eea;
+            border: 1px solid var(--border);
         }
-        
-        .info-section-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: #2c3e50;
+
+        .info-section h3 {
             display: flex;
             align-items: center;
             gap: 10px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
         }
-        
+
         .info-item {
             margin-bottom: 15px;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            border-left: 4px solid #3498db;
         }
-        
+
         .info-item:last-child {
             margin-bottom: 0;
         }
-        
+
         .info-item strong {
-            color: #2c3e50;
             display: block;
-            margin-bottom: 5px;
-            font-size: 15px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
         }
-        
+
         .info-item p {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
-        
-        .back-btn-container {
-            padding: 20px 15px;
-            text-align: center;
-        }
-        
-        .back-btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 15px;
-            padding: 14px 30px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        /* LAUNCH ANNOUNCEMENT */
-        .launch-section {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            border-left: 4px solid #ff4757;
-        }
-        
-        .launch-section .info-section-title {
-            color: white;
-        }
-        
-        .launch-section .info-item {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-left: 4px solid white;
-        }
-        
-        .launch-section .info-item strong {
-            color: white;
-        }
-        
-        .launch-section .info-item p {
-            color: rgba(255, 255, 255, 0.9);
-        }
-        
-        .community-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: white;
-            color: #667eea;
-            padding: 8px 15px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 10px;
-        }
-        
-        /* Dark Mode */
-        [data-theme="dark"] {
-            background: #121212;
-            color: #ffffff;
-        }
-        
-        [data-theme="dark"] .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-        }
-        
-        [data-theme="dark"] .timer {
-            color: #ffffff;
-        }
-        
-        [data-theme="dark"] .section-title {
-            color: #ffffff;
-        }
-        
-        [data-theme="dark"] .task {
-            background: #2c3e50;
-            border-color: #34495e;
-            color: #ffffff;
-        }
-        
-        [data-theme="dark"] .task-time {
-            color: #ffffff;
-        }
-        
-        [data-theme="dark"] .task-activity {
-            color: #cccccc;
-        }
-        
-        [data-theme="dark"] .info-section {
-            background: #2c3e50;
-        }
-        
-        [data-theme="dark"] .info-section-title {
-            color: #ffffff;
-        }
-        
-        [data-theme="dark"] .info-item {
-            background: #34495e;
-        }
-        
-        [data-theme="dark"] .info-item strong {
-            color: #ffffff;
-        }
-        
-        [data-theme="dark"] .info-item p {
-            color: #cccccc;
-        }
-        
-        /* Responsive Fixes */
-        @media (max-width: 414px) {
-            .timer {
-                font-size: 65px;
-            }
-            
-            .control-btn {
-                padding: 14px;
-                font-size: 15px;
-            }
-            
-            .app-title {
-                font-size: 20px;
-            }
-            
-            .info-title {
-                font-size: 20px;
-            }
-        }
-        
-        @media (max-width: 375px) {
-            .timer {
-                font-size: 60px;
-            }
-            
-            .controls {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* Animation */
-        @keyframes ring {
-            0%, 100% { transform: rotate(0); }
-            25% { transform: rotate(10deg); }
-            75% { transform: rotate(-10deg); }
-        }
-        
-        .ringing {
-            animation: ring 0.3s ease-in-out 3;
-            color: #e74c3c;
-        }
-        
-        /* Notification */
+
+        /* ===== NOTIFICATION ===== */
         .notification {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #2ecc71;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--success), var(--primary));
             color: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            padding: 18px 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
             display: none;
-            z-index: 1000;
+            z-index: 1001;
+            font-weight: 600;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .timer-display {
+                font-size: 72px;
+            }
+            
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-primary {
+                grid-column: span 1;
+            }
+            
+            .sound-controls {
+                flex-direction: column;
+            }
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes ring {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(15deg); }
+            75% { transform: rotate(-15deg); }
+        }
+
+        .ringing {
+            animation: ring 0.3s ease-in-out 3;
+            color: var(--accent) !important;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body data-theme="light">
-    <!-- Main Timer Page -->
-    <div id="mainPage">
+    <!-- Main App -->
+    <div class="container">
         <!-- Header -->
-        <div class="header">
-            <div class="header-top">
-                <div class="app-title">
-                    <span>🔔</span>
-                    <span>Study Timer</span>
-                </div>
-                <div class="header-btns">
-                    <button class="icon-btn" onclick="showInfoPage()">ℹ️</button>
-                    <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">⏰</div>
+                <div class="logo-text">
+                    <h1>StudyFocus</h1>
+                    <p>A/L Maths Stream</p>
                 </div>
             </div>
-        </div>
-        
+            <div class="header-actions">
+                <button class="icon-button" onclick="showInfoPage()" title="Info">
+                    ℹ️
+                </button>
+                <button class="icon-button" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">
+                    🌙
+                </button>
+            </div>
+        </header>
+
         <!-- Timer Section -->
-        <div class="timer-section">
-            <div class="timer" id="timer">35:00</div>
+        <section class="timer-section fade-in">
+            <div class="timer-display" id="timer">35:00</div>
             <div class="progress-container">
                 <div class="progress-bar" id="progress"></div>
             </div>
-        </div>
-        
-        <!-- Control Buttons -->
-        <div class="controls">
-            <button class="control-btn start-btn" onclick="startTimer()">
-                <span>▶</span> Start
+        </section>
+
+        <!-- Sound Controls -->
+        <section class="sound-section fade-in">
+            <h2 class="section-title">
+                <span>🔊</span> Sound Setup
+            </h2>
+            <div class="sound-controls">
+                <button class="sound-btn" onclick="enableSound()" id="soundBtn">
+                    <span>🔓</span> Enable Sound
+                </button>
+                <button class="sound-btn" onclick="testBell()">
+                    <span>🔔</span> Test Bell
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Controls -->
+        <div class="controls-grid fade-in">
+            <button class="btn btn-success" onclick="startTimer()">
+                <span>▶</span> Start Study
             </button>
-            <button class="control-btn pause-btn" onclick="pauseTimer()">
+            <button class="btn btn-warning" onclick="pauseTimer()">
                 <span>⏸</span> Pause
             </button>
-            <button class="control-btn reset-btn" onclick="resetTimer()">
+            <button class="btn btn-danger" onclick="resetTimer()">
                 <span>🔄</span> Reset
             </button>
-            <button class="control-btn skip-btn" onclick="skipBreak()">
-                <span>⏭</span> Skip
+            <button class="btn btn-accent" onclick="skipBreak()">
+                <span>⏭</span> Skip Break
             </button>
         </div>
-        
-        <!-- IMPORTANT: SOUND FIX BUTTON -->
-        <div class="bell-test">
-            <button class="bell-btn" onclick="enableSound()" id="soundFixBtn">
-                <span>🔊</span> ENABLE SOUND (Tap First!)
-            </button>
-        </div>
-        
-        <!-- Bell Test -->
-        <div class="bell-test">
-            <button class="bell-btn" onclick="playBell()">
-                <span>🔔</span> Test Bell Sound
-            </button>
-        </div>
-        
+
         <!-- Status -->
-        <div class="status" id="status">
-            Cycle 1 - Study Session (35min) ⏸ Ready
+        <div class="status-card fade-in">
+            <div class="status-header">
+                <span>📊</span> Current Status
+            </div>
+            <div class="status-text" id="status">
+                Cycle 1 - Study Session (35min) ⏸ Ready
+            </div>
         </div>
-        
+
         <!-- Schedule -->
-        <div class="schedule-section">
+        <section class="schedule-section fade-in">
             <h2 class="section-title">
-                <span>📅</span> Today's Timetable
+                <span>📅</span> Today's Schedule
             </h2>
             <div id="schedule"></div>
-        </div>
-        
-        <!-- Reset Day -->
-        <div class="reset-day">
-            <button class="reset-btn-day" onclick="resetDay()">
+        </section>
+
+        <!-- Reset -->
+        <div class="reset-section">
+            <button class="btn-reset" onclick="resetDay()">
                 <span>🔄</span> Reset Entire Day
             </button>
         </div>
     </div>
-    
-    <!-- ========== INFO PAGE ========== -->
+
+    <!-- Info Page -->
     <div id="infoPage" class="info-page">
-        <div class="info-header">
-            <div class="info-header-top">
-                <div class="info-title">
-                    <span>📚</span>
-                    <span>Study Timer Guide</span>
-                </div>
-                <button class="icon-btn" onclick="showMainPage()">←</button>
+        <div class="info-content">
+            <div class="info-header">
+                <h2>📚 StudyFocus Guide</h2>
+                <button class="btn btn-secondary" onclick="hideInfoPage()">
+                    <span>←</span> Back
+                </button>
             </div>
-        </div>
-        
-        <div class="info-container">
-            <!-- LAUNCH ANNOUNCEMENT -->
-            <div class="info-section launch-section">
-                <h3 class="info-section-title"><span>🚀</span> App Launch!</h3>
+
+            <!-- Launch Announcement -->
+            <div class="info-section">
+                <h3><span>🚀</span> App Launch</h3>
                 <div class="info-item">
                     <strong>Join Our Community</strong>
-                    <p>Connect with other A/L students for support, tips, and motivation!</p>
-                    <p>📍 <strong>WhatsApp:</strong> Message for group link</p>
-                    <p>📍 <strong>Telegram:</strong> @al_study_support</p>
-                    <p>📍 <strong>For A/L Maths Stream Students</strong></p>
+                    <p>Connect with fellow A/L students for support and motivation!</p>
+                    <p>📱 <strong>WhatsApp:</strong> Contact for group link</p>
+                    <p>📱 <strong>Telegram:</strong> @AL_Maths_Community</p>
                 </div>
                 <div class="info-item">
                     <strong>About This App</strong>
-                    <p>Specially designed for mobile devices. Works best when added to Home Screen (like a real app!).</p>
-                    <p>✅ Perfect for iPhone/Android<br>
-                       ✅ Works offline<br>
-                       ✅ Saves your progress<br>
-                       ✅ Bell alerts for sessions</p>
+                    <p>Specially designed for mobile study sessions. Works best when added to Home Screen.</p>
                 </div>
             </div>
-            
+
             <!-- How to Use -->
             <div class="info-section">
-                <h3 class="info-section-title"><span>🚀</span> How to Use</h3>
+                <h3><span>🎯</span> How to Use</h3>
                 <div class="info-item">
-                    <strong>Step 1: Enable Sound (IMPORTANT)</strong>
-                    <p>1. Tap "ENABLE SOUND" button first<br>
-                       2. Tap "Test Bell Sound" to check<br>
-                       3. iPhone will ask: "Allow audio?" → Tap ALLOW</p>
+                    <strong>Step 1: Enable Sound</strong>
+                    <p>Tap "Enable Sound" then "Test Bell" to allow audio playback.</p>
                 </div>
                 <div class="info-item">
                     <strong>Step 2: Start Studying</strong>
-                    <p>Click "Start" to begin 35-minute timer. Focus until bell rings.</p>
+                    <p>Click "Start Study" to begin 35-minute focused session.</p>
                 </div>
                 <div class="info-item">
-                    <strong>Step 3: Follow Schedule</strong>
-                    <p>35 min study → 5 min break × 3 → 20 min long break</p>
+                    <strong>Step 3: Follow Breaks</strong>
+                    <p>Take 5-minute breaks between sessions. Long break every 3 cycles.</p>
                 </div>
             </div>
-            
-            <!-- Troubleshooting -->
+
+            <!-- Sound Fix -->
             <div class="info-section">
-                <h3 class="info-section-title"><span>🔧</span> Sound Fix Guide</h3>
+                <h3><span>🔊</span> Sound Setup</h3>
                 <div class="info-item">
-                    <strong>iPhone Sound Not Working?</strong>
-                    <p>1. <strong>TAP "ENABLE SOUND" FIRST</strong> (Most Important!)<br>
-                       2. Check silent switch (side of iPhone)<br>
-                       3. Turn up volume with volume buttons<br>
-                       4. Re-open app if still no sound</p>
-                </div>
-                <div class="info-item">
-                    <strong>Install as App</strong>
-                    <p>For best experience:<br>
-                       Safari → Share → "Add to Home Screen"<br>
-                       Then open from home screen (not Safari)</p>
+                    <strong>iPhone Users</strong>
+                    <p>1. Tap "Enable Sound" first<br>
+                       2. Tap "Test Bell"<br>
+                       3. Allow audio when prompted<br>
+                       4. Check silent mode is off</p>
                 </div>
             </div>
-            
-            <!-- About -->
+
+            <!-- Schedule Info -->
             <div class="info-section">
-                <h3 class="info-section-title"><span>🎯</span> For A/L Students</h3>
+                <h3><span>⏰</span> Study Schedule</h3>
                 <div class="info-item">
-                    <strong>Maths Stream Schedule</strong>
-                    <p>14 hours daily study · 8 cycles · 35/5 Pomodoro</p>
-                </div>
-                <div class="info-item">
-                    <strong>Exam Preparation</strong>
-                    <p>Morning: Difficult topics<br>
-                       Evening: Revision & past papers<br>
-                       Consistency is key for success!</p>
+                    <strong>8 Study Cycles</strong>
+                    <p>• 14 hours focused study daily<br>
+                       • 35min study + 5min break × 3<br>
+                       • 20min long break after 3 cycles<br>
+                       • Sleep: 11:30 PM - 5:15 AM</p>
                 </div>
             </div>
-        </div>
-        
-        <div class="back-btn-container">
-            <button class="back-btn" onclick="showMainPage()">
-                <span>←</span> Back to Timer
-            </button>
         </div>
     </div>
-    
-    <!-- Notification -->
-    <div class="notification" id="notification">Session Complete! 🔔</div>
-    
-    <!-- Audio -->
-    <audio id="bellSound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3" type="audio/mpeg">
-    </audio>
-    
-    <script>
-        // ========== SOUND FIX FOR iOS ==========
-        let soundEnabled = false;
-        
-        function enableSound() {
-            if (!soundEnabled) {
-                // Create and play silent audio to unlock iOS audio
-                const audio = new Audio();
-                audio.autoplay = true;
-                
-                // Play a silent sound
-                const playPromise = audio.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        soundEnabled = true;
-                        document.getElementById('soundFixBtn').innerHTML = '<span>🔊</span> Sound Enabled! ✅';
-                        document.getElementById('soundFixBtn').style.background = '#2ecc71';
-                        showNotification("Sound enabled! 🔊");
-                        
-                        // Test bell after enabling
-                        setTimeout(() => {
-                            playBell();
-                        }, 500);
-                    }).catch(error => {
-                        showNotification("Tap screen to enable sound");
-                        // User needs to interact first
-                        document.addEventListener('click', enableSound, { once: true });
-                    });
-                }
-            }
-        }
-        
-        // Enable sound on first click anywhere
-        document.addEventListener('click', function() {
-            if (!soundEnabled) {
-                enableSound();
-            }
-        }, { once: true });
-        
-        // ========== PAGE NAVIGATION ==========
-        function showInfoPage() {
-            document.getElementById('mainPage').style.display = 'none';
-            document.getElementById('infoPage').style.display = 'block';
-        }
-        
-        function showMainPage() {
-            document.getElementById('mainPage').style.display = 'block';
-            document.getElementById('infoPage').style.display = 'none';
-        }
-        
-        // ========== THEME TOGGLE ==========
-        function toggleTheme() {
-            const currentTheme = document.body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', newTheme);
-            
-            const themeBtn = document.getElementById('themeBtn');
-            themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-            localStorage.setItem('theme', newTheme);
-        }
-        
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.body.setAttribute('data-theme', savedTheme);
-        document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-        
-        // ========== TIMETABLE DATA ==========
-        const timetable = [
-            // ========== CYCLE 1 ==========
-            { id: 1, time: "5:30-6:05", task: "Study", type: "study", cycle: 1, done: false },
-            { id: 2, time: "6:05-6:10", task: "Short Break", type: "break", cycle: 1, done: false },
-            { id: 3, time: "6:10-6:45", task: "Study", type: "study", cycle: 1, done: false },
-            { id: 4, time: "6:45-6:50", task: "Short Break", type: "break", cycle: 1, done: false },
-            { id: 5, time: "6:50-7:25", task: "Study", type: "study", cycle: 1, done: false },
-            { id: 6, time: "7:25-7:45", task: "Long Break", type: "long_break", cycle: 1, done: false },
-            
-            // ========== CYCLE 2 ==========
-            { id: 7, time: "7:45-8:20", task: "Study", type: "study", cycle: 2, done: false },
-            { id: 8, time: "8:20-8:25", task: "Break", type: "break", cycle: 2, done: false },
-            { id: 9, time: "8:25-9:00", task: "Study", type: "study", cycle: 2, done: false },
-            { id: 10, time: "9:00-9:05", task: "Break", type: "break", cycle: 2, done: false },
-            { id: 11, time: "9:05-9:40", task: "Study", type: "study", cycle: 2, done: false },
-            { id: 12, time: "9:40-10:00", task: "Long Break", type: "long_break", cycle: 2, done: false },
-            
-            // Continue with all 8 cycles...
-        ];
 
-        // ========== TIMER VARIABLES ==========
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // ========== APP STATE ==========
+        let soundEnabled = false;
+        let audioContext;
         let timeLeft = 35 * 60;
         let timerId = null;
         let isRunning = false;
         let isBreak = false;
         let currentTaskIndex = 0;
-        
-        // ========== BELL SOUND ==========
-        function playBell() {
+
+        // ========== TIMETABLE DATA ==========
+      const timetable = [
+    // ========== CYCLE 1 ==========
+    { id: 1, time: "5:30-6:05", task: "Study", type: "study", cycle: 1, done: false },
+    { id: 2, time: "6:05-6:10", task: "Short Break", type: "break", cycle: 1, done: false },
+    { id: 3, time: "6:10-6:45", task: "Study", type: "study", cycle: 1, done: false },
+    { id: 4, time: "6:45-6:50", task: "Short Break", type: "break", cycle: 1, done: false },
+    { id: 5, time: "6:50-7:25", task: "Study", type: "study", cycle: 1, done: false },
+    { id: 6, time: "7:25-7:45", task: "Long Break (20min)", type: "long_break", cycle: 1, done: false },
+    
+    // ========== CYCLE 2 ==========
+    { id: 7, time: "7:45-8:20", task: "Study", type: "study", cycle: 2, done: false },
+    { id: 8, time: "8:20-8:25", task: "Short Break", type: "break", cycle: 2, done: false },
+    { id: 9, time: "8:25-9:00", task: "Study", type: "study", cycle: 2, done: false },
+    { id: 10, time: "9:00-9:05", task: "Short Break", type: "break", cycle: 2, done: false },
+    { id: 11, time: "9:05-9:40", task: "Study", type: "study", cycle: 2, done: false },
+    { id: 12, time: "9:40-10:00", task: "Long Break (20min)", type: "long_break", cycle: 2, done: false },
+    
+    // ========== CYCLE 3 ==========
+    { id: 13, time: "10:00-10:35", task: "Study", type: "study", cycle: 3, done: false },
+    { id: 14, time: "10:35-10:40", task: "Short Break", type: "break", cycle: 3, done: false },
+    { id: 15, time: "10:40-11:15", task: "Study", type: "study", cycle: 3, done: false },
+    { id: 16, time: "11:15-11:20", task: "Short Break", type: "break", cycle: 3, done: false },
+    { id: 17, time: "11:20-11:55", task: "Study", type: "study", cycle: 3, done: false },
+    { id: 18, time: "11:55-12:35", task: "Free Session (40min)", type: "long_break", cycle: 3, done: false },
+    
+    // ========== CYCLE 4 ==========
+    { id: 19, time: "12:35-1:10", task: "Study", type: "study", cycle: 4, done: false },
+    { id: 20, time: "1:10-1:15", task: "Short Break", type: "break", cycle: 4, done: false },
+    { id: 21, time: "1:15-1:50", task: "Study", type: "study", cycle: 4, done: false },
+    { id: 22, time: "1:50-1:55", task: "Short Break", type: "break", cycle: 4, done: false },
+    { id: 23, time: "1:55-2:30", task: "Study", type: "study", cycle: 4, done: false },
+    { id: 24, time: "2:30-2:50", task: "Lunch Break (20min)", type: "long_break", cycle: 4, done: false },
+    
+    // ========== CYCLE 5 ==========
+    { id: 25, time: "2:50-3:25", task: "Study", type: "study", cycle: 5, done: false },
+    { id: 26, time: "3:25-3:30", task: "Short Break", type: "break", cycle: 5, done: false },
+    { id: 27, time: "3:30-4:05", task: "Study", type: "study", cycle: 5, done: false },
+    { id: 28, time: "4:05-4:10", task: "Short Break", type: "break", cycle: 5, done: false },
+    { id: 29, time: "4:10-4:45", task: "Study", type: "study", cycle: 5, done: false },
+    { id: 30, time: "4:45-5:05", task: "Short Break (20min)", type: "long_break", cycle: 5, done: false },
+    
+    // ========== CYCLE 6 ==========
+    { id: 31, time: "5:05-5:40", task: "Study", type: "study", cycle: 6, done: false },
+    { id: 32, time: "5:40-5:45", task: "Short Break", type: "break", cycle: 6, done: false },
+    { id: 33, time: "5:45-6:20", task: "Study", type: "study", cycle: 6, done: false },
+    { id: 34, time: "6:20-6:25", task: "Short Break", type: "break", cycle: 6, done: false },
+    { id: 35, time: "6:25-7:00", task: "Study", type: "study", cycle: 6, done: false },
+    { id: 36, time: "7:00-7:25", task: "Free Session (25min)", type: "long_break", cycle: 6, done: false },
+    
+    // ========== CYCLE 7 ==========
+    { id: 37, time: "7:25-8:00", task: "Study", type: "study", cycle: 7, done: false },
+    { id: 38, time: "8:00-8:05", task: "Short Break", type: "break", cycle: 7, done: false },
+    { id: 39, time: "8:05-8:40", task: "Study", type: "study", cycle: 7, done: false },
+    { id: 40, time: "8:40-8:45", task: "Short Break", type: "break", cycle: 7, done: false },
+    { id: 41, time: "8:45-9:20", task: "Study", type: "study", cycle: 7, done: false },
+    { id: 42, time: "9:20-9:40", task: "Dinner Break (20min)", type: "long_break", cycle: 7, done: false },
+    
+    // ========== CYCLE 8 ==========
+    { id: 43, time: "9:40-10:15", task: "Study", type: "study", cycle: 8, done: false },
+    { id: 44, time: "10:15-10:20", task: "Short Break", type: "break", cycle: 8, done: false },
+    { id: 45, time: "10:20-10:55", task: "Study", type: "study", cycle: 8, done: false },
+    { id: 46, time: "10:55-11:00", task: "Short Break", type: "break", cycle: 8, done: false },
+    { id: 47, time: "11:00-11:25", task: "Study", type: "study", cycle: 8, done: false },
+    { id: 48, time: "11:25-11:30", task: "Wind Down", type: "long_break", cycle: 8, done: false }
+];
+
+        // ========== SOUND SYSTEM ==========
+        function enableSound() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Create silent sound to unlock audio
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 1;
+                gainNode.gain.value = 0.001;
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+                
+                soundEnabled = true;
+                document.getElementById('soundBtn').innerHTML = '<span>✅</span> Sound Enabled';
+                document.getElementById('soundBtn').style.background = 'var(--bg-card)';
+                showNotification('Sound enabled successfully! 🔊');
+                
+            } catch (error) {
+                showNotification('Tap "Test Bell" to enable sound');
+            }
+        }
+
+        function testBell() {
             if (!soundEnabled) {
-                showNotification("⚠️ Tap 'ENABLE SOUND' first!");
+                enableSound();
+                setTimeout(testBell, 500);
                 return;
             }
             
-            const bellSound = document.getElementById('bellSound');
-            bellSound.currentTime = 0;
-            
-            // Play the sound
-            const playPromise = bellSound.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    // Sound played successfully
-                    document.getElementById('timer').classList.add('ringing');
-                    setTimeout(() => {
-                        document.getElementById('timer').classList.remove('ringing');
-                    }, 1000);
-                    
-                    // Vibrate if available
-                    if (navigator.vibrate) {
-                        navigator.vibrate([200, 100, 200]);
-                    }
-                }).catch(error => {
-                    showNotification("❌ Sound blocked. Tap 'ENABLE SOUND'");
-                });
+            try {
+                const context = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+                const osc1 = context.createOscillator();
+                const osc2 = context.createOscillator();
+                const gainNode = context.createGain();
+                
+                osc1.connect(gainNode);
+                osc2.connect(gainNode);
+                gainNode.connect(context.destination);
+                
+                osc1.frequency.setValueAtTime(800, context.currentTime);
+                osc1.frequency.setValueAtTime(600, context.currentTime + 0.2);
+                osc2.frequency.setValueAtTime(1200, context.currentTime);
+                osc2.frequency.setValueAtTime(1000, context.currentTime + 0.2);
+                
+                gainNode.gain.setValueAtTime(0.3, context.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.8);
+                
+                osc1.start();
+                osc2.start();
+                osc1.stop(context.currentTime + 0.8);
+                osc2.stop(context.currentTime + 0.8);
+                
+                // Visual feedback
+                document.getElementById('timer').classList.add('ringing');
+                setTimeout(() => document.getElementById('timer').classList.remove('ringing'), 1000);
+                
+                showNotification('Bell sound tested! 🔔');
+                
+            } catch (error) {
+                showNotification('Enable sound first');
             }
         }
-        
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.display = 'block';
-            setTimeout(() => notification.style.display = 'none', 3000);
-        }
-        
+
         // ========== TIMER FUNCTIONS ==========
         function startTimer() {
             if (!isRunning) {
@@ -837,13 +846,13 @@
                 updateStatus();
             }
         }
-        
+
         function pauseTimer() {
             isRunning = false;
             clearInterval(timerId);
             updateStatus();
         }
-        
+
         function resetTimer() {
             clearInterval(timerId);
             isRunning = false;
@@ -851,7 +860,7 @@
             updateDisplay();
             updateStatus();
         }
-        
+
         function skipBreak() {
             if (isBreak && currentTaskIndex < timetable.length) {
                 isBreak = false;
@@ -862,7 +871,7 @@
                 updateStatus();
             }
         }
-        
+
         function updateTimer() {
             timeLeft--;
             updateDisplay();
@@ -875,27 +884,27 @@
                     timetable[currentTaskIndex].done = true;
                     
                     // Play bell when timer ends
-                    playBell();
+                    if (soundEnabled) testBell();
                     
                     currentTaskIndex++;
                     
                     if (currentTaskIndex < timetable.length) {
                         const nextTask = timetable[currentTaskIndex];
                         isBreak = (nextTask.type === 'break' || nextTask.type === 'long_break');
-                        timeLeft = (nextTask.type === 'long_break') ? 20 * 60 : 
-                                   (isBreak ? 5 * 60 : 35 * 60);
+                        timeLeft = (nextTask.type === 'long_break') ? 20 * 60 : 5 * 60;
                         
                         setTimeout(() => {
                             updateStatus();
                             startTimer();
-                        }, 1000);
+                        }, 2000);
                     }
                     
                     renderSchedule();
+                    saveProgress();
                 }
             }
         }
-        
+
         function updateDisplay() {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
@@ -906,7 +915,7 @@
             const progressPercent = 100 - ((timeLeft / totalTime) * 100);
             document.getElementById('progress').style.width = progressPercent + '%';
         }
-        
+
         function updateStatus() {
             let status = "";
             if (currentTaskIndex < timetable.length) {
@@ -923,8 +932,8 @@
             }
             document.getElementById('status').textContent = status;
         }
-        
-        // ========== RENDER SCHEDULE ==========
+
+        // ========== SCHEDULE RENDER ==========
         function renderSchedule() {
             let html = '';
             let currentCycle = 0;
@@ -937,7 +946,7 @@
                     html += `<div class="cycle-header">Cycle ${currentCycle}</div>`;
                 }
                 
-                let className = 'task';
+                let className = 'task-item';
                 if (i === currentTaskIndex) className += ' current';
                 else if (task.done) className += ' completed';
                 else if (i === currentTaskIndex + 1) className += ' next';
@@ -945,10 +954,10 @@
                 let icon = task.type === 'study' ? '📚' : task.type === 'long_break' ? '🍽️' : '☕';
                 
                 html += `
-                    <div class="${className}" onclick="markDone(${i})">
-                        <div>
-                            <span class="task-time">${task.time}</span>
-                            <span class="task-activity">${icon} ${task.task}</span>
+                    <div class="${className}" onclick="toggleTask(${i})">
+                        <div class="task-info">
+                            <div class="task-time">${task.time}</div>
+                            <div class="task-activity">${icon} ${task.task}</div>
                         </div>
                         <div class="task-status">
                             ${task.done ? '✅' : (i === currentTaskIndex ? '▶️' : '⏳')}
@@ -959,25 +968,27 @@
             
             document.getElementById('schedule').innerHTML = html;
         }
-        
-        function markDone(index) {
+
+        function toggleTask(index) {
             if (index === currentTaskIndex && isRunning) {
-                if (confirm("Stop timer and mark as done?")) {
+                if (confirm("Stop current timer and mark as done?")) {
                     pauseTimer();
                     timetable[index].done = true;
                     currentTaskIndex++;
                     timeLeft = 35 * 60;
                     updateDisplay();
                     renderSchedule();
+                    saveProgress();
                 }
             } else {
                 timetable[index].done = !timetable[index].done;
                 renderSchedule();
+                saveProgress();
             }
         }
-        
+
         function resetDay() {
-            if (confirm("Reset all progress?")) {
+            if (confirm("Reset all progress for today?")) {
                 timetable.forEach(task => task.done = false);
                 currentTaskIndex = 0;
                 isBreak = false;
@@ -987,13 +998,83 @@
                 updateDisplay();
                 renderSchedule();
                 updateStatus();
+                localStorage.removeItem('studyProgress');
+                localStorage.removeItem('currentTaskIndex');
+                showNotification('Day reset successfully! 🔄');
             }
         }
-        
-        // ========== INITIALIZE ==========
-        updateDisplay();
-        renderSchedule();
-        updateStatus();
+
+        // ========== UTILITIES ==========
+        function saveProgress() {
+            const progress = timetable.map(task => task.done);
+            localStorage.setItem('studyProgress', JSON.stringify(progress));
+            localStorage.setItem('currentTaskIndex', currentTaskIndex.toString());
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('studyProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                timetable.forEach((task, i) => {
+                    if (progress[i]) task.done = progress[i];
+                });
+            }
+            const savedIndex = localStorage.getItem('currentTaskIndex');
+            if (savedIndex) currentTaskIndex = parseInt(savedIndex);
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => notification.style.display = 'none', 3000);
+        }
+
+        function showInfoPage() {
+            document.getElementById('infoPage').style.display = 'block';
+        }
+
+        function hideInfoPage() {
+            document.getElementById('infoPage').style.display = 'none';
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            
+            const themeBtn = document.getElementById('themeBtn');
+            themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            themeBtn.title = newTheme === 'dark' ? 'Switch to Light' : 'Switch to Dark';
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // ========== INITIALIZATION ==========
+        function init() {
+            // Load theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            
+            // Load progress
+            loadProgress();
+            
+            // Initial render
+            updateDisplay();
+            renderSchedule();
+            updateStatus();
+            
+            // Auto-enable sound on first interaction
+            document.addEventListener('click', function initSound() {
+                if (!soundEnabled) {
+                    setTimeout(enableSound, 100);
+                }
+                document.removeEventListener('click', initSound);
+            });
+        }
+
+        // Start the app
+        init();
     </script>
 </body>
 </html>
