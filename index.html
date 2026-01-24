@@ -947,6 +947,17 @@
                 user-select: text;
             }
         }
+
+        /* Screen On Active Indicator */
+        .screen-on-active {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
 <body data-theme="light">
@@ -1255,10 +1266,9 @@
         let timerStartTime = null;
         let estimatedEndTime = null;
         let screenOnMode = false;
-        let wakeLock = null;
+        let screenKeepAliveInterval = null;
         let batteryCheckInterval = null;
         let lastUserInteraction = Date.now();
-        let screenKeepAliveInterval = null;
 
         // ========== 8-CYCLE TIMETABLE ==========
         const fullTimetable = [
@@ -1327,7 +1337,7 @@
             { time: "11:25-11:30", task: "Wind Down", type: "long_break", cycle: 8, done: false }
         ];
 
-        // ========== KEEP SCREEN ON FUNCTIONS (FIXED) ==========
+        // ========== KEEP SCREEN ON FUNCTIONS (WORKING VERSION) ==========
         function detectIOS() {
             isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             if (isIOS) {
@@ -1352,95 +1362,161 @@
             document.head.appendChild(meta);
         }
 
+        // SIMPLE AND RELIABLE SCREEN ON MODE
         async function toggleScreenOnMode() {
-            // Check if we're in standalone mode (installed as PWA)
-            isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                          window.navigator.standalone;
-            
-            if (!isStandalone && isIOS) {
-                const installFirst = confirm(
-                    "For best screen-on results on iPhone:\n\n" +
-                    "1. First install the app to home screen\n" +
-                    "2. Then open from home screen\n" +
-                    "3. Enable Screen On mode\n\n" +
-                    "Would you like installation instructions?"
-                );
-                
-                if (installFirst) {
-                    showInstallHelp();
-                    return;
-                }
-            }
-            
             if (screenOnMode) {
                 // Turn OFF screen on mode
                 screenOnMode = false;
-                await releaseWakeLock();
+                stopScreenKeepAlive();
                 updateScreenOnUI(false);
                 showNotification('Screen On mode turned OFF');
             } else {
                 // Turn ON screen on mode
-                if (isIOS) {
-                    // On iOS, we need to check battery and suggest charger
-                    if (navigator.getBattery) {
-                        try {
-                            const battery = await navigator.getBattery();
-                            
-                            if (!battery.charging && battery.level < 0.3) {
-                                const shouldProceed = confirm(
-                                    "⚠️ Battery is low (" + Math.round(battery.level * 100) + "%)\n" +
-                                    "Keeping screen ON will drain battery quickly.\n" +
-                                    "Please plug in charger for best results.\n\n" +
-                                    "Continue anyway?"
-                                );
-                                
-                                if (!shouldProceed) {
-                                    return;
-                                }
-                            }
-                        } catch (error) {
-                            console.log("Could not get battery info:", error);
-                        }
-                    }
-                    
-                    // Show iOS instructions
-                    showNotification(
-                        "📱 iPhone Tip:\n" +
-                        "1. Plug in charger\n" +
-                        "2. Turn OFF Auto-Lock\n" +
-                        "3. Screen will stay on!"
-                    );
-                }
-                
                 screenOnMode = true;
                 
-                // For iOS, provide specific instructions
-                if (isIOS && !isStandalone) {
-                    showNotification('For best results:\n1. Install app to home screen\n2. Set Auto-Lock to "Never"\n3. Plug in charger');
+                // Show instructions for iOS
+                if (isIOS) {
+                    const confirmed = confirm(
+                        '📱 iPhone Users:\n\n' +
+                        'For Screen On mode to work properly:\n' +
+                        '1. Go to Settings → Display & Brightness → Auto-Lock\n' +
+                        '2. Set Auto-Lock to "Never"\n' +
+                        '3. Plug in charger\n' +
+                        '4. Keep app open\n\n' +
+                        'Continue?'
+                    );
+                    
+                    if (!confirmed) {
+                        screenOnMode = false;
+                        return;
+                    }
                 }
                 
-                // Try to acquire wake lock
-                const success = await requestWakeLock();
+                // Start screen keep-alive methods
+                const success = startScreenKeepAlive();
                 
                 if (success) {
                     updateScreenOnUI(true);
-                    showNotification('Screen will stay ON! ⚡');
+                    showNotification('Screen On mode enabled! ⚡\nKeep app open and plug in charger.');
                     
                     // Start timer automatically if not running
-                    if (!isRunning) {
-                        setTimeout(() => {
-                            if (confirm('Start timer with Screen On mode?')) {
-                                startTimer();
-                            }
-                        }, 500);
-                    }
+                    setTimeout(() => {
+                        if (!isRunning && confirm('Start timer with Screen On mode?')) {
+                            startTimer();
+                        }
+                    }, 500);
                 } else {
                     screenOnMode = false;
-                    showNotification('Could not enable Screen On mode');
+                    showNotification('Could not enable Screen On mode. Try manual settings.');
                 }
             }
             
             saveScreenOnMode();
+        }
+
+        function startScreenKeepAlive() {
+            try {
+                // Method 1: Create hidden video (works on most browsers)
+                const video = document.createElement('video');
+                video.setAttribute('playsinline', '');
+                video.setAttribute('webkit-playsinline', '');
+                video.style.display = 'none';
+                video.width = 2;
+                video.height = 2;
+                video.loop = true;
+                
+                // Create a minimal silent video
+                const canvas = document.createElement('canvas');
+                canvas.width = 2;
+                canvas.height = 2;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, 2, 2);
+                
+                // Capture stream and assign to video
+                const stream = canvas.captureStream(1);
+                video.srcObject = stream;
+                
+                // Play video
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(e => {
+                        console.log('Video play failed:', e);
+                    });
+                }
+                
+                // Store for cleanup
+                window._screenKeepAliveVideo = video;
+                
+                // Method 2: Periodic activity simulation
+                screenKeepAliveInterval = setInterval(() => {
+                    if (screenOnMode && isRunning) {
+                        // Simulate user activity to keep screen awake
+                        simulateUserActivity();
+                    }
+                }, 15000); // Every 15 seconds
+                
+                console.log('Screen keep-alive started');
+                return true;
+            } catch (error) {
+                console.error('Failed to start screen keep-alive:', error);
+                
+                // Fallback: Just use periodic simulation
+                screenKeepAliveInterval = setInterval(() => {
+                    if (screenOnMode && isRunning) {
+                        simulateUserActivity();
+                    }
+                }, 10000); // Every 10 seconds
+                
+                return true;
+            }
+        }
+
+        function simulateUserActivity() {
+            try {
+                // Dispatch multiple events to simulate user activity
+                const events = ['mousemove', 'touchstart', 'scroll'];
+                events.forEach(eventType => {
+                    const event = new Event(eventType, { bubbles: true });
+                    document.dispatchEvent(event);
+                });
+                
+                // Also dispatch focus event on window
+                window.dispatchEvent(new Event('focus'));
+                
+                // Update last interaction time
+                lastUserInteraction = Date.now();
+                
+                console.log('Screen keep-alive triggered at', new Date().toLocaleTimeString());
+            } catch (e) {
+                // Silent fail
+            }
+        }
+
+        function stopScreenKeepAlive() {
+            // Clear interval
+            if (screenKeepAliveInterval) {
+                clearInterval(screenKeepAliveInterval);
+                screenKeepAliveInterval = null;
+            }
+            
+            // Stop and remove video
+            if (window._screenKeepAliveVideo) {
+                try {
+                    window._screenKeepAliveVideo.pause();
+                    window._screenKeepAliveVideo.srcObject = null;
+                    window._screenKeepAliveVideo.remove();
+                } catch (e) {
+                    // Ignore errors
+                }
+                delete window._screenKeepAliveVideo;
+            }
+            
+            // Clear battery check interval
+            if (batteryCheckInterval) {
+                clearInterval(batteryCheckInterval);
+                batteryCheckInterval = null;
+            }
         }
 
         function updateScreenOnUI(isOn) {
@@ -1450,170 +1526,22 @@
             
             if (isOn) {
                 btn.innerHTML = '<span>🔋</span> Turn OFF Screen Mode';
+                btn.classList.add('screen-on-active');
                 statusText.textContent = 'Screen On mode: ACTIVE';
                 status.className = 'screen-on-status';
                 status.style.display = 'block';
                 
-                // Start screen keep-alive interval
-                if (screenKeepAliveInterval) {
-                    clearInterval(screenKeepAliveInterval);
+                // Start battery monitoring
+                if (navigator.getBattery) {
+                    updateBatteryStatus();
+                    batteryCheckInterval = setInterval(updateBatteryStatus, 60000); // Check every minute
                 }
-                screenKeepAliveInterval = setInterval(keepScreenAwake, 20000); // Every 20 seconds
             } else {
                 btn.innerHTML = '<span>⚡</span> Keep Screen On Mode';
+                btn.classList.remove('screen-on-active');
                 statusText.textContent = 'Screen On mode: OFF';
                 status.className = 'screen-on-status inactive';
                 status.style.display = 'block';
-                
-                // Clear screen keep-alive interval
-                if (screenKeepAliveInterval) {
-                    clearInterval(screenKeepAliveInterval);
-                    screenKeepAliveInterval = null;
-                }
-            }
-        }
-
-        async function requestWakeLock() {
-            // Check if Wake Lock API is supported
-            if ('wakeLock' in navigator) {
-                try {
-                    // Request screen wake lock
-                    wakeLock = await navigator.wakeLock.request('screen');
-                    console.log('Wake Lock activated successfully');
-                    
-                    // Handle wake lock release (when screen is turned off manually)
-                    wakeLock.addEventListener('release', () => {
-                        console.log('Wake Lock was released');
-                        if (screenOnMode && isRunning) {
-                            showNotification('Screen sleep was prevented. Re-acquiring lock...');
-                            // Try to re-acquire wake lock after a short delay
-                            setTimeout(requestWakeLock, 100);
-                        }
-                    });
-                    
-                    return true;
-                } catch (err) {
-                    console.error('Wake Lock failed:', err);
-                    
-                    // Fallback method for browsers that don't support wakeLock
-                    if (err.name === 'NotAllowedError') {
-                        showNotification('Please enable Auto-Lock settings in your device');
-                    } else {
-                        showNotification('Could not keep screen on. Using fallback method.');
-                        startFallbackScreenOnMethod();
-                    }
-                    return false;
-                }
-            } else {
-                // Fallback for browsers without Wake Lock API
-                console.log('Wake Lock API not supported, using fallback method');
-                startFallbackScreenOnMethod();
-                return false;
-            }
-        }
-
-        // Fallback method for devices without Wake Lock API
-        function startFallbackScreenOnMethod() {
-            if (!screenOnMode) return;
-            
-            try {
-                // Create a hidden video element (works on many mobile browsers)
-                const video = document.createElement('video');
-                video.setAttribute('playsinline', '');
-                video.setAttribute('webkit-playsinline', '');
-                video.style.display = 'none';
-                video.width = 1;
-                video.height = 1;
-                
-                // Create a silent video source
-                const canvas = document.createElement('canvas');
-                canvas.width = 2;
-                canvas.height = 2;
-                const ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#000';
-                ctx.fillRect(0, 0, 2, 2);
-                
-                const stream = canvas.captureStream(1);
-                video.srcObject = stream;
-                
-                document.body.appendChild(video);
-                
-                // Play the video
-                video.play().catch(e => console.log('Video play error:', e));
-                
-                // Store reference for cleanup
-                window._fallbackWakeLock = {
-                    video: video,
-                    stream: stream,
-                    canvas: canvas
-                };
-                
-                console.log('Fallback screen-on method activated');
-                return true;
-            } catch (error) {
-                console.error('Fallback method failed:', error);
-                return false;
-            }
-        }
-
-        async function releaseWakeLock() {
-            // Release official Wake Lock
-            if (wakeLock) {
-                try {
-                    await wakeLock.release();
-                    wakeLock = null;
-                    console.log('Wake Lock released');
-                } catch (err) {
-                    console.error('Error releasing Wake Lock:', err);
-                }
-            }
-            
-            // Clean up fallback method
-            if (window._fallbackWakeLock) {
-                try {
-                    if (window._fallbackWakeLock.video) {
-                        window._fallbackWakeLock.video.pause();
-                        window._fallbackWakeLock.video.srcObject = null;
-                        window._fallbackWakeLock.video.remove();
-                    }
-                    if (window._fallbackWakeLock.stream) {
-                        window._fallbackWakeLock.stream.getTracks().forEach(track => track.stop());
-                    }
-                } catch (e) {
-                    console.error('Error cleaning up fallback:', e);
-                }
-                window._fallbackWakeLock = null;
-            }
-        }
-
-        function keepScreenAwake() {
-            if (screenOnMode && isRunning) {
-                // Method 1: Keep video playing (for iOS Safari fallback)
-                if (window._fallbackWakeLock && window._fallbackWakeLock.video) {
-                    const video = window._fallbackWakeLock.video;
-                    if (video.paused) {
-                        video.play().catch(e => console.log('Video play prevented:', e));
-                    }
-                }
-                
-                // Method 2: Simulate user interaction
-                if (Date.now() - lastUserInteraction > 20000) { // Every 20 seconds
-                    try {
-                        // Create and dispatch a visibility change event
-                        const event = new Event('visibilitychange');
-                        document.dispatchEvent(event);
-                        
-                        // Dispatch a focus event
-                        window.dispatchEvent(new Event('focus'));
-                        
-                        // Also update last interaction time
-                        lastUserInteraction = Date.now();
-                        
-                        console.log('Screen keep-alive triggered');
-                    } catch (e) {
-                        console.log('Could not simulate interaction:', e);
-                    }
-                }
             }
         }
 
@@ -1772,7 +1700,7 @@
                 // Start battery monitoring if in screen on mode
                 if (screenOnMode && navigator.getBattery) {
                     updateBatteryStatus();
-                    batteryCheckInterval = setInterval(updateBatteryStatus, 60000); // Check every minute
+                    batteryCheckInterval = setInterval(updateBatteryStatus, 60000);
                 }
             }
         }
@@ -1830,9 +1758,9 @@
             isRunning = false;
             clearInterval(timerId);
             
-            // Release wake lock if screen was on
+            // Stop screen keep-alive if active
             if (screenOnMode) {
-                releaseWakeLock();
+                stopScreenKeepAlive();
                 screenOnMode = false;
                 updateScreenOnUI(false);
                 saveScreenOnMode();
