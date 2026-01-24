@@ -6,15 +6,16 @@
     <title>StudyMaster Pro</title>
     
     <!-- ===== APP ICONS ===== -->
-    <!-- Apple Touch Icons - CRITICAL FOR iOS HOMESCREEN -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%234361ee'/%3E%3Ctext x='90' y='120' font-size='90' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E">
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234361ee%22/><text x=%2250%22 y=%2268%22 font-size=%2250%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
+    <link rel="apple-touch-icon" sizes="152x152" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234361ee%22/><text x=%2250%22 y=%2268%22 font-size=%2250%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
     
-    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%234361ee'/%3E%3Ctext x='90' y='120' font-size='90' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2215%22 fill=%22%234361ee%22/><text x=%2250%22 y=%2268%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
+    <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%234361ee%22/><text x=%2216%22 y=%2222%22 font-size=%2216%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
+    <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2215%22 fill=%22%234361ee%22/><text x=%2250%22 y=%2268%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
     
-    <!-- Favicon for browsers -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%234361ee'/%3E%3Ctext x='32' y='45' font-size='32' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E" type="image/svg+xml">
-    
-    <!-- ===== APP METADATA FOR FULLSCREEN/STANDALONE MODE ===== -->
+    <!-- ===== APP METADATA ===== -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="StudyMaster">
@@ -22,29 +23,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     
-    <!-- PWA Manifest for Android -->
-    <link rel="manifest" href="data:application/manifest+json,{
-        'name': 'StudyMaster Pro',
-        'short_name': 'StudyMaster',
-        'description': 'Study Timer with Pomodoro & Spaced Repetition',
-        'start_url': '/',
-        'display': 'standalone',
-        'orientation': 'portrait',
-        'theme_color': '#4361ee',
-        'background_color': '#ffffff',
-        'icons': [
-            {
-                'src': 'data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 192 192\"%3E%3Crect width=\"192\" height=\"192\" rx=\"40\" fill=\"%234361ee\"/%3E%3Ctext x=\"96\" y=\"128\" font-size=\"96\" text-anchor=\"middle\" fill=\"white\"%3E📚%3C/text%3E%3C/svg%3E',
-                'sizes': '192x192',
-                'type': 'image/svg+xml'
-            },
-            {
-                'src': 'data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"%3E%3Crect width=\"512\" height=\"512\" rx=\"100\" fill=\"%234361ee\"/%3E%3Ctext x=\"256\" y=\"340\" font-size=\"256\" text-anchor=\"middle\" fill=\"white\"%3E📚%3C/text%3E%3C/svg%3E',
-                'sizes': '512x512',
-                'type': 'image/svg+xml'
-            }
-        ]
-    }">
+    <!-- PWA Manifest -->
+    <link rel="manifest" crossorigin="use-credentials" href="data:application/manifest+json,%7B%22name%22%3A%22StudyMaster%20Pro%22%2C%22short_name%22%3A%22StudyMaster%22%2C%22description%22%3A%22Study%20Timer%20with%20Pomodoro%20%26%20Spaced%20Repetition%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait%22%2C%22theme_color%22%3A%22%234361ee%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22categories%22%3A%5B%22education%22%2C%22productivity%22%2C%22utilities%22%5D%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2522http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%2522%2520viewBox%253D%25220%25200%2520192%2520192%2522%253E%253Crect%2520width%253D%2522192%2522%2520height%253D%2522192%2522%2520rx%253D%252240%2522%2520fill%253D%2522%25234361ee%2522%252F%253E%253Ctext%2520x%253D%252296%2522%2520y%253D%2522128%2522%2520font-size%253D%252296%2522%2520text-anchor%253D%2522middle%2522%2520fill%253D%2522white%2522%253E%25F0%259F%2593%259A%253C%252Ftext%253E%253C%252Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%2C%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2522http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%2522%2520viewBox%253D%25220%25200%2520512%2520512%2522%253E%253Crect%2520width%253D%2522512%2522%2520height%253D%2522512%2522%2520rx%253D%2522100%2522%2520fill%253D%2522%25234361ee%2522%252F%253E%253Ctext%2520x%253D%2522256%2522%2520y%253D%2522340%2522%2520font-size%253D%2522256%2522%2520text-anchor%253D%2522middle%2522%2520fill%253D%2522white%2522%253E%25F0%259F%2593%259A%253C%252Ftext%253E%253C%252Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22maskable%22%7D%5D%7D">
     
     <style>
         /* ===== CSS RESET ===== */
@@ -740,10 +720,68 @@
             animation: ring 0.3s ease-in-out 3;
             color: var(--accent) !important;
         }
+
+        /* ===== INSTALL BANNER ===== */
+        .install-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 20px;
+            z-index: 9999;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .install-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .install-banner-icon {
+            font-size: 28px;
+        }
+
+        .install-banner-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 10px;
+        }
     </style>
 </head>
 <body data-theme="light">
-    <!-- Install Prompt -->
+    <!-- Install Banner (Top) -->
+    <div id="installBanner" class="install-banner">
+        <div class="install-banner-content">
+            <div class="install-banner-icon">📚</div>
+            <div>
+                <strong>Install StudyMaster</strong>
+                <div style="font-size: 14px; opacity: 0.9;">Get the full app experience</div>
+            </div>
+        </div>
+        <button class="install-banner-close" onclick="hideInstallBanner()">×</button>
+    </div>
+
+    <!-- Install Prompt (Bottom) -->
     <div id="installPrompt" class="install-prompt">
         <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
             <div style="font-size: 32px;">📚</div>
@@ -775,6 +813,9 @@
             <div class="header-actions">
                 <button class="icon-button" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">
                     🌙
+                </button>
+                <button class="icon-button" onclick="showInstallHelp()" title="Install App">
+                    📲
                 </button>
             </div>
         </header>
@@ -845,6 +886,21 @@
                     Today: 0/48 tasks completed
                 </div>
             </div>
+
+            <!-- Install Instructions -->
+            <section class="sr-section" id="installSection" style="display: none;">
+                <h2 class="section-title">
+                    <span>📱</span> Install as App
+                </h2>
+                <div style="color: var(--text-secondary); line-height: 1.6;">
+                    <p><strong>Android:</strong> Tap "Install" button when prompted</p>
+                    <p><strong>iPhone:</strong> Tap Share → "Add to Home Screen"</p>
+                    <p><strong>Chrome Desktop:</strong> Click install icon in address bar</p>
+                    <button class="btn btn-primary" onclick="showInstallPrompt()" style="margin-top: 15px;">
+                        <span>📲</span> Show Install Prompt
+                    </button>
+                </div>
+            </section>
         </div>
 
         <!-- ===== CYCLE PAGE (SECOND TAB) ===== -->
@@ -1074,6 +1130,7 @@
             if (isStandalone) {
                 console.log('Running as standalone app');
                 document.body.classList.add('standalone');
+                hideAllInstallPrompts();
                 return;
             }
             
@@ -1081,7 +1138,16 @@
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredPrompt = e;
-                showInstallPrompt();
+                
+                // Show install banner after 3 seconds
+                setTimeout(showInstallBanner, 3000);
+                
+                // Show bottom prompt after 10 seconds if not dismissed
+                setTimeout(() => {
+                    if (!localStorage.getItem('installPromptDismissed')) {
+                        showInstallPrompt();
+                    }
+                }, 10000);
             });
             
             // Check for iOS
@@ -1093,48 +1159,90 @@
                 setTimeout(() => {
                     if (!localStorage.getItem('iosInstallShown')) {
                         showNotification('Tap Share → "Add to Home Screen" to install as app! 📱');
+                        showInstallBanner();
                         localStorage.setItem('iosInstallShown', 'true');
                     }
                 }, 5000);
             }
         }
 
+        function showInstallBanner() {
+            if (!isStandalone && !localStorage.getItem('installBannerDismissed')) {
+                document.getElementById('installBanner').style.display = 'flex';
+            }
+        }
+
+        function hideInstallBanner() {
+            document.getElementById('installBanner').style.display = 'none';
+            localStorage.setItem('installBannerDismissed', 'true');
+        }
+
         function showInstallPrompt() {
-            if (deferredPrompt && !localStorage.getItem('installPromptShown')) {
-                setTimeout(() => {
-                    document.getElementById('installPrompt').style.display = 'block';
-                }, 3000);
+            if (!isStandalone && !localStorage.getItem('installPromptDismissed')) {
+                document.getElementById('installPrompt').style.display = 'block';
             }
         }
 
         function hideInstallPrompt() {
             document.getElementById('installPrompt').style.display = 'none';
-            localStorage.setItem('installPromptShown', 'true');
+            localStorage.setItem('installPromptDismissed', 'true');
+        }
+
+        function hideAllInstallPrompts() {
+            hideInstallBanner();
+            hideInstallPrompt();
+            document.getElementById('installSection').style.display = 'none';
         }
 
         function installApp() {
             if (deferredPrompt) {
+                // Android/Chrome PWA install
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
                         console.log('User accepted the install prompt');
                         showNotification('App installed successfully! 🎉');
+                        hideAllInstallPrompts();
                     } else {
                         console.log('User dismissed the install prompt');
+                        showInstallHelp();
                     }
                     deferredPrompt = null;
-                    hideInstallPrompt();
                 });
             } else {
-                // iOS or manual install instructions
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-                if (isIOS) {
-                    showNotification('Tap Share → "Add to Home Screen" 📱');
-                } else {
-                    showNotification('Look for "Install" option in browser menu 📲');
-                }
-                hideInstallPrompt();
+                // iOS or other browsers
+                showInstallHelp();
             }
+        }
+
+        function showInstallHelp() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            
+            let message = '';
+            let icon = '📱';
+            
+            if (isIOS) {
+                message = '1. Tap the Share button\n2. Scroll down\n3. Tap "Add to Home Screen"\n4. Tap "Add"';
+                icon = '📱';
+            } else if (isAndroid) {
+                message = '1. Tap the menu (⋮)\n2. Tap "Install app" or "Add to Home screen"\n3. Tap "Install"';
+                icon = '🤖';
+            } else {
+                message = 'Look for the install icon (📱) in your browser\'s address bar or menu';
+                icon = '💻';
+            }
+            
+            showNotification('Install instructions: ' + icon);
+            
+            // Show install section in pomodoro page
+            document.getElementById('installSection').style.display = 'block';
+            showPage('pomodoro');
+            
+            // Create a more detailed help modal
+            setTimeout(() => {
+                alert(`📱 How to Install StudyMaster as an App:\n\n${message}\n\nOnce installed, it will open like a native app with its own icon!`);
+            }, 500);
         }
 
         // ========== PAGE NAVIGATION ==========
