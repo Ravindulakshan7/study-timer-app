@@ -393,6 +393,17 @@
         .btn-accent { background: linear-gradient(135deg, var(--accent), #ec4899); }
         .btn-info { background: linear-gradient(135deg, var(--info), #7209b7); }
 
+        /* ===== SCREEN ON BUTTON ===== */
+        .btn-screen-on {
+            background: linear-gradient(135deg, #10b981, #059669);
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-screen-on:active {
+            transform: scale(0.98);
+        }
+
         /* ===== CYCLE PAGE ===== */
         .cycle-section {
             background: var(--bg-card);
@@ -847,27 +858,61 @@
             margin-left: 5px;
         }
 
-        /* Background timer indicator */
-        .background-timer-indicator {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(76, 201, 240, 0.2);
-            color: var(--success);
-            padding: 4px 10px;
-            border-radius: 20px;
+        /* iOS specific warning */
+        .ios-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        /* Screen On Status */
+        .screen-on-status {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            color: #10b981;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin: 10px 0;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .screen-on-status.inactive {
+            background: rgba(248, 150, 30, 0.1);
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+
+        /* Battery Status */
+        .battery-status {
             font-size: 12px;
-            display: none;
+            color: var(--text-muted);
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
 
-        .background-timer-indicator.active {
-            display: block;
-            animation: pulse 2s infinite;
+        .battery-good {
+            color: #10b981;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        .battery-low {
+            color: var(--warning);
+        }
+
+        .battery-critical {
+            color: var(--danger);
         }
     </style>
 </head>
@@ -904,11 +949,6 @@
     </div>
 
     <div class="container">
-        <!-- Background Timer Indicator -->
-        <div id="backgroundTimerIndicator" class="background-timer-indicator">
-            ⏰ Working in background
-        </div>
-
         <!-- Header -->
         <header class="header">
             <div class="logo">
@@ -951,8 +991,22 @@
                 <div class="progress-container">
                     <div class="progress-bar" id="progress"></div>
                 </div>
+                
+                <!-- iOS Specific Warning -->
+                <div id="iosWarning" class="ios-warning" style="display: none;">
+                    <strong>📱 iPhone Users:</strong> Timer pauses when screen is off.<br>
+                    Use "Keep Screen On" mode below for best results.
+                </div>
+                
+                <!-- Screen On Status -->
+                <div id="screenOnStatus" class="screen-on-status inactive" style="display: none;">
+                    <span>⚡</span>
+                    <span id="screenStatusText">Screen On mode: OFF</span>
+                </div>
+                
                 <div style="font-size: 14px; color: var(--text-muted); margin-top: 15px;">
-                    ⏱️ Timer works even when screen is off!
+                    <span id="timerStatus">Ready to start ...</span>
+                    <div id="batteryStatus" class="battery-status" style="display: none;"></div>
                 </div>
             </section>
 
@@ -970,6 +1024,11 @@
                     <span>⏭</span> Skip Break
                 </button>
             </div>
+
+            <!-- Keep Screen On Button -->
+            <button id="keepScreenOnBtn" class="btn btn-screen-on" onclick="toggleScreenOnMode()">
+                <span>⚡</span> Keep Screen On Mode
+            </button>
 
             <section class="sr-section">
                 <h2 class="section-title">
@@ -1151,7 +1210,6 @@
         let audioContext;
         let timeLeft = 35 * 60;
         let timerId = null;
-        let backgroundTimerId = null;
         let isRunning = false;
         let isBreak = false;
         let currentTaskIndex = 0;
@@ -1160,9 +1218,13 @@
         let currentCycle = 1;
         let deferredPrompt = null;
         let isStandalone = false;
-        let wakeLock = null;
-        let lastTimerUpdate = Date.now();
+        let isIOS = false;
         let timerStartTime = null;
+        let estimatedEndTime = null;
+        let screenOnMode = false;
+        let wakeLock = null;
+        let batteryCheckInterval = null;
+        let lastUserInteraction = Date.now();
 
         // ========== 8-CYCLE TIMETABLE ==========
         const fullTimetable = [
@@ -1231,28 +1293,199 @@
             { time: "11:25-11:30", task: "Wind Down", type: "long_break", cycle: 8, done: false }
         ];
 
-        // ========== BACKGROUND TIMER FUNCTIONS ==========
-        async function requestWakeLock() {
-            if ('wakeLock' in navigator) {
-                try {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                    console.log('Wake Lock activated - Screen will stay on');
-                    document.getElementById('backgroundTimerIndicator').classList.add('active');
-                } catch (err) {
-                    console.log('Wake Lock failed:', err.message);
+        // ========== KEEP SCREEN ON FUNCTIONS ==========
+        function detectIOS() {
+            isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            if (isIOS) {
+                document.getElementById('iosWarning').style.display = 'block';
+                document.getElementById('timerStatus').textContent = 'Use "Keep Screen On" mode';
+                
+                // Show battery status if available
+                if (navigator.getBattery) {
+                    document.getElementById('batteryStatus').style.display = 'flex';
+                    updateBatteryStatus();
                 }
             }
         }
 
-        function releaseWakeLock() {
+        async function toggleScreenOnMode() {
+            if (screenOnMode) {
+                // Turn OFF screen on mode
+                screenOnMode = false;
+                await releaseWakeLock();
+                document.getElementById('keepScreenOnBtn').innerHTML = '<span>⚡</span> Keep Screen On Mode';
+                document.getElementById('screenStatusText').textContent = 'Screen On mode: OFF';
+                document.getElementById('screenOnStatus').className = 'screen-on-status inactive';
+                document.getElementById('screenOnStatus').style.display = 'block';
+                
+                showNotification('Screen On mode turned OFF');
+                
+                if (batteryCheckInterval) {
+                    clearInterval(batteryCheckInterval);
+                    batteryCheckInterval = null;
+                }
+            } else {
+                // Turn ON screen on mode
+                if (isIOS) {
+                    // On iOS, we need to check battery and suggest charger
+                    if (navigator.getBattery) {
+                        try {
+                            const battery = await navigator.getBattery();
+                            
+                            if (!battery.charging && battery.level < 0.3) {
+                                const shouldProceed = confirm(
+                                    "⚠️ Battery is low (" + Math.round(battery.level * 100) + "%)\n" +
+                                    "Keeping screen ON will drain battery quickly.\n" +
+                                    "Please plug in charger for best results.\n\n" +
+                                    "Continue anyway?"
+                                );
+                                
+                                if (!shouldProceed) {
+                                    return;
+                                }
+                            }
+                        } catch (error) {
+                            console.log("Could not get battery info:", error);
+                        }
+                    }
+                    
+                    // Show iOS instructions
+                    showNotification(
+                        "📱 iPhone Tip:\n" +
+                        "1. Plug in charger\n" +
+                        "2. Turn OFF Auto-Lock\n" +
+                        "3. Screen will stay on!"
+                    );
+                }
+                
+                screenOnMode = true;
+                await requestWakeLock();
+                document.getElementById('keepScreenOnBtn').innerHTML = '<span>🔋</span> Turn OFF Screen Mode';
+                document.getElementById('screenStatusText').textContent = 'Screen On mode: ACTIVE';
+                document.getElementById('screenOnStatus').className = 'screen-on-status';
+                document.getElementById('screenOnStatus').style.display = 'block';
+                
+                showNotification('Screen On mode activated! Screen will stay awake.');
+                
+                // Start battery monitoring
+                if (navigator.getBattery) {
+                    updateBatteryStatus();
+                    batteryCheckInterval = setInterval(updateBatteryStatus, 60000); // Check every minute
+                }
+                
+                // Start timer automatically if not running
+                if (!isRunning) {
+                    setTimeout(() => {
+                        if (confirm("Start timer with Screen On mode?")) {
+                            startTimer();
+                        }
+                    }, 500);
+                }
+            }
+            
+            saveScreenOnMode();
+        }
+
+        async function requestWakeLock() {
+            if ('wakeLock' in navigator) {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('Wake Lock activated');
+                    
+                    // Handle wake lock release
+                    wakeLock.addEventListener('release', () => {
+                        console.log('Wake Lock was released');
+                        if (screenOnMode) {
+                            showNotification('Screen sleep was prevented');
+                            // Try to re-acquire wake lock
+                            setTimeout(requestWakeLock, 1000);
+                        }
+                    });
+                    
+                    return true;
+                } catch (err) {
+                    console.log('Wake Lock failed:', err.message);
+                    showNotification('Could not keep screen on. Please check device settings.');
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        async function releaseWakeLock() {
             if (wakeLock) {
-                wakeLock.release();
-                wakeLock = null;
-                console.log('Wake Lock released');
-                document.getElementById('backgroundTimerIndicator').classList.remove('active');
+                try {
+                    await wakeLock.release();
+                    wakeLock = null;
+                    console.log('Wake Lock released');
+                } catch (err) {
+                    console.log('Error releasing Wake Lock:', err);
+                }
             }
         }
 
+        function updateBatteryStatus() {
+            if (navigator.getBattery) {
+                navigator.getBattery().then(battery => {
+                    const level = Math.round(battery.level * 100);
+                    const charging = battery.charging;
+                    
+                    let batteryClass = 'battery-good';
+                    let batteryIcon = '🔋';
+                    
+                    if (level < 20) {
+                        batteryClass = 'battery-critical';
+                        batteryIcon = '🪫';
+                    } else if (level < 50) {
+                        batteryClass = 'battery-low';
+                        batteryIcon = '🔋';
+                    }
+                    
+                    if (charging) {
+                        batteryIcon = '⚡';
+                        batteryClass = 'battery-good';
+                    }
+                    
+                    document.getElementById('batteryStatus').innerHTML = `
+                        ${batteryIcon} Battery: ${level}% ${charging ? '(Charging)' : ''}
+                    `;
+                    document.getElementById('batteryStatus').className = `battery-status ${batteryClass}`;
+                    
+                    // Warn if battery is low and not charging
+                    if (screenOnMode && !charging && level < 20) {
+                        showNotification('⚠️ Battery low! Plug in charger to keep screen on.');
+                    }
+                });
+            }
+        }
+
+        function saveScreenOnMode() {
+            localStorage.setItem('screenOnMode', screenOnMode.toString());
+        }
+
+        function restoreScreenOnMode() {
+            const saved = localStorage.getItem('screenOnMode');
+            if (saved === 'true') {
+                screenOnMode = true;
+                // Don't auto-enable on load, let user choose
+                document.getElementById('screenOnStatus').style.display = 'block';
+                document.getElementById('screenStatusText').textContent = 'Screen On mode: Ready to activate';
+            }
+        }
+
+        // Keep screen awake by simulating user activity
+        function keepScreenAwake() {
+            if (screenOnMode && isRunning) {
+                // Simulate a tiny scroll to keep screen awake
+                if (Date.now() - lastUserInteraction > 30000) { // Every 30 seconds
+                    window.scrollBy(0, 1);
+                    setTimeout(() => window.scrollBy(0, -1), 100);
+                    lastUserInteraction = Date.now();
+                }
+            }
+        }
+
+        // ========== TIMER FUNCTIONS ==========
         function saveTimerState() {
             const timerState = {
                 timeLeft: timeLeft,
@@ -1260,7 +1493,7 @@
                 isBreak: isBreak,
                 currentTaskIndex: currentTaskIndex,
                 startTime: timerStartTime,
-                lastUpdate: lastTimerUpdate
+                estimatedEndTime: estimatedEndTime
             };
             localStorage.setItem('pomodoroTimerState', JSON.stringify(timerState));
         }
@@ -1271,65 +1504,160 @@
                 try {
                     const state = JSON.parse(saved);
                     timeLeft = state.timeLeft || 35 * 60;
-                    isRunning = state.isRunning || false;
+                    isRunning = false; // Always stop when restoring on iOS
                     isBreak = state.isBreak || false;
                     currentTaskIndex = state.currentTaskIndex || 0;
                     timerStartTime = state.startTime;
-                    lastTimerUpdate = state.lastUpdate || Date.now();
+                    estimatedEndTime = state.estimatedEndTime;
                     
-                    if (isRunning && timerStartTime) {
+                    // If there was a running timer, show what happened
+                    if (state.isRunning && state.estimatedEndTime) {
                         const now = Date.now();
-                        const elapsed = Math.floor((now - lastTimerUpdate) / 1000);
+                        const endTime = new Date(state.estimatedEndTime);
                         
-                        if (elapsed > 0) {
-                            timeLeft = Math.max(0, state.timeLeft - elapsed);
-                            lastTimerUpdate = now;
+                        if (now >= endTime) {
+                            // Timer should have completed
+                            showNotification('Timer completed while app was closed!');
+                            timerComplete();
+                        } else {
+                            // Timer was interrupted
+                            const remaining = Math.floor((endTime - now) / 1000);
+                            timeLeft = remaining > 0 ? remaining : 35 * 60;
                             
-                            if (timeLeft <= 0) {
-                                timerComplete();
-                                isRunning = false;
+                            if (isIOS) {
+                                showNotification('Timer was paused. Use Screen On mode to prevent this.');
                             } else {
-                                startBackgroundTimer();
-                                requestWakeLock();
+                                showNotification('Timer restored. Tap Start to continue.');
                             }
                         }
                     }
                     
                     updateDisplay();
-                    showNotification('Timer state restored');
                 } catch (e) {
-                    console.log('Error restoring timer state:', e);
+                    console.log('Error restoring timer:', e);
                 }
             }
         }
 
-        function startBackgroundTimer() {
-            if (isRunning) {
-                const now = Date.now();
-                const elapsed = Math.floor((now - lastTimerUpdate) / 1000);
-                
-                if (elapsed > 0) {
-                    timeLeft -= elapsed;
-                    lastTimerUpdate = now;
+        function scheduleNotificationForTimerEnd() {
+            if (!("Notification" in window)) return;
+            
+            if (Notification.permission === "granted") {
+                estimatedEndTime = new Date(Date.now() + (timeLeft * 1000));
+                saveTimerState();
+            }
+        }
+
+        // ========== POMODORO TIMER FUNCTIONS ==========
+        function startTimer() {
+            if (!isRunning) {
+                // Check if screen on mode is recommended for iOS
+                if (isIOS && !screenOnMode && !localStorage.getItem('iosScreenWarningShown')) {
+                    const useScreenMode = confirm(
+                        "For best results on iPhone:\n\n" +
+                        "1. Enable 'Keep Screen On' mode\n" +
+                        "2. Plug in charger\n" +
+                        "3. Timer won't pause\n\n" +
+                        "Enable Screen On mode now?"
+                    );
                     
-                    if (timeLeft <= 0) {
-                        timerComplete();
-                        return;
+                    if (useScreenMode) {
+                        toggleScreenOnMode();
+                        localStorage.setItem('iosScreenWarningShown', 'true');
+                        return; // Let the screen mode callback start the timer
                     }
-                    
-                    updateDisplay();
-                    saveTimerState();
+                    localStorage.setItem('iosScreenWarningShown', 'true');
                 }
                 
-                backgroundTimerId = setTimeout(startBackgroundTimer, 1000);
+                isRunning = true;
+                timerStartTime = Date.now();
+                
+                timerId = setInterval(updateTimer, 1000);
+                
+                // Schedule notification
+                scheduleNotificationForTimerEnd();
+                
+                // Update status
+                let statusText = 'Timer running';
+                if (isIOS && !screenOnMode) {
+                    statusText = 'Timer running - Keep screen ON!';
+                } else if (screenOnMode) {
+                    statusText = 'Timer running - Screen staying ON';
+                }
+                document.getElementById('timerStatus').textContent = statusText;
+                
+                showNotification('Timer started! ' + (screenOnMode ? 'Screen staying ON ⚡' : ''));
+                saveTimerState();
+                
+                // Start screen keep-awake routine
+                if (screenOnMode) {
+                    setInterval(keepScreenAwake, 30000);
+                }
             }
+        }
+
+        function pauseTimer() {
+            isRunning = false;
+            clearInterval(timerId);
+            document.getElementById('timerStatus').textContent = 'Timer paused';
+            showNotification('Timer paused');
+            saveTimerState();
+        }
+
+        function resetTimer() {
+            isRunning = false;
+            clearInterval(timerId);
+            timeLeft = isBreak ? 5 * 60 : 35 * 60;
+            document.getElementById('timerStatus').textContent = 'Ready to start';
+            updateDisplay();
+            showNotification('Timer reset');
+            localStorage.removeItem('pomodoroTimerState');
+        }
+
+        function skipBreak() {
+            if (isBreak && currentTaskIndex < fullTimetable.length) {
+                isBreak = false;
+                timeLeft = 35 * 60;
+                currentTaskIndex++;
+                updateDisplay();
+                showNotification('Break skipped');
+                saveTimerState();
+            }
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            updateDisplay();
+            
+            if (timeLeft <= 0) {
+                timerComplete();
+            }
+        }
+
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const totalTime = isBreak ? 5 * 60 : 35 * 60;
+            const progressPercent = 100 - ((timeLeft / totalTime) * 100);
+            document.getElementById('progress').style.width = progressPercent + '%';
         }
 
         function timerComplete() {
             isRunning = false;
             clearInterval(timerId);
-            clearTimeout(backgroundTimerId);
-            releaseWakeLock();
+            
+            // Release wake lock if screen was on
+            if (screenOnMode) {
+                releaseWakeLock();
+                screenOnMode = false;
+                document.getElementById('keepScreenOnBtn').innerHTML = '<span>⚡</span> Keep Screen On Mode';
+                document.getElementById('screenStatusText').textContent = 'Screen On mode: OFF';
+                document.getElementById('screenOnStatus').className = 'screen-on-status inactive';
+                saveScreenOnMode();
+            }
             
             if (currentTaskIndex < fullTimetable.length) {
                 fullTimetable[currentTaskIndex].done = true;
@@ -1351,6 +1679,7 @@
                 }
             }
             
+            document.getElementById('timerStatus').textContent = 'Timer completed!';
             showNotification('Timer completed! 🎉');
             
             if (Notification.permission === "granted") {
@@ -1368,103 +1697,48 @@
         // Handle visibility change
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
-                console.log('App is in background');
-                saveTimerState();
-            } else {
-                console.log('App is in foreground');
+                // App is in background
                 if (isRunning) {
-                    const now = Date.now();
-                    const elapsed = Math.floor((now - lastTimerUpdate) / 1000);
+                    saveTimerState();
                     
-                    if (elapsed > 0) {
-                        timeLeft -= elapsed;
-                        lastTimerUpdate = now;
-                        
-                        if (timeLeft <= 0) {
-                            timerComplete();
-                        } else {
-                            updateDisplay();
+                    if (isIOS && !screenOnMode) {
+                        // On iOS without screen on mode, timer pauses
+                        isRunning = false;
+                        clearInterval(timerId);
+                        showNotification('Timer paused (screen went off)');
+                    }
+                }
+            } else {
+                // App is in foreground
+                if (!isRunning) {
+                    // Check if timer should have completed
+                    const saved = localStorage.getItem('pomodoroTimerState');
+                    if (saved) {
+                        const state = JSON.parse(saved);
+                        if (state.isRunning && state.estimatedEndTime) {
+                            const now = Date.now();
+                            const endTime = new Date(state.estimatedEndTime);
+                            
+                            if (now >= endTime) {
+                                timerComplete();
+                            }
                         }
                     }
                 }
+                
+                // Update last interaction time
+                lastUserInteraction = Date.now();
             }
         });
 
-        // Handle page becoming visible
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted) {
-                console.log('Page restored from bfcache');
-                restoreTimerState();
-            }
+        // Handle user interaction to keep screen awake
+        document.addEventListener('touchstart', () => {
+            lastUserInteraction = Date.now();
         });
-
-        // ========== POMODORO TIMER FUNCTIONS ==========
-        function startTimer() {
-            if (!isRunning) {
-                isRunning = true;
-                timerStartTime = Date.now();
-                lastTimerUpdate = Date.now();
-                
-                timerId = setInterval(updateTimer, 1000);
-                startBackgroundTimer();
-                requestWakeLock();
-                
-                showNotification('Timer started! Focus time 🎯');
-                saveTimerState();
-            }
-        }
-
-        function pauseTimer() {
-            isRunning = false;
-            clearInterval(timerId);
-            clearTimeout(backgroundTimerId);
-            releaseWakeLock();
-            showNotification('Timer paused');
-            saveTimerState();
-        }
-
-        function resetTimer() {
-            isRunning = false;
-            clearInterval(timerId);
-            clearTimeout(backgroundTimerId);
-            releaseWakeLock();
-            timeLeft = isBreak ? 5 * 60 : 35 * 60;
-            updateDisplay();
-            showNotification('Timer reset');
-            localStorage.removeItem('pomodoroTimerState');
-        }
-
-        function skipBreak() {
-            if (isBreak && currentTaskIndex < fullTimetable.length) {
-                isBreak = false;
-                timeLeft = 35 * 60;
-                currentTaskIndex++;
-                updateDisplay();
-                showNotification('Break skipped');
-                saveTimerState();
-            }
-        }
-
-        function updateTimer() {
-            timeLeft--;
-            lastTimerUpdate = Date.now();
-            updateDisplay();
-            
-            if (timeLeft <= 0) {
-                timerComplete();
-            }
-        }
-
-        function updateDisplay() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            document.getElementById('timer').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            const totalTime = isBreak ? 5 * 60 : 35 * 60;
-            const progressPercent = 100 - ((timeLeft / totalTime) * 100);
-            document.getElementById('progress').style.width = progressPercent + '%';
-        }
+        
+        document.addEventListener('click', () => {
+            lastUserInteraction = Date.now();
+        });
 
         // ========== APP INSTALLATION ==========
         function checkInstallation() {
@@ -1488,7 +1762,6 @@
                 }, 10000);
             });
             
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             
             if (isIOS && isSafari) {
@@ -2312,6 +2585,7 @@
             saveTasks();
             saveTopics();
             saveTimerState();
+            saveScreenOnMode();
             showNotification('All data saved successfully! 💾');
         }
 
@@ -2368,6 +2642,8 @@
             document.body.setAttribute('data-theme', savedTheme);
             document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
             
+            detectIOS();
+            restoreScreenOnMode();
             loadCycle();
             loadTopics();
             loadTasks();
@@ -2399,13 +2675,6 @@
                 }
                 document.removeEventListener('click', initSound);
             });
-            
-            // Auto-save timer state every 10 seconds
-            setInterval(() => {
-                if (isRunning) {
-                    saveTimerState();
-                }
-            }, 10000);
             
             showPage('pomodoro');
         }
