@@ -6,35 +6,42 @@
     <title>StudyMaster Pro</title>
     
     <!-- ===== APP ICONS ===== -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234361ee%22/><text x=%2250%25%22 y=%2268%25%22 font-size=%2250%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
+    <!-- Apple Touch Icons - CRITICAL FOR iOS HOMESCREEN -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%234361ee'/%3E%3Ctext x='90' y='120' font-size='90' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E">
     
-    <!-- Apple Touch Icons for iOS -->
-    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 180 180%22><rect width=%22180%22 height=%22180%22 rx=%2240%22 fill=%22%234361ee%22/><text x=%2250%25%22 y=%2268%25%22 font-size=%2290%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%234361ee'/%3E%3Ctext x='90' y='120' font-size='90' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E">
     
-    <!-- iOS App Metadata -->
+    <!-- Favicon for browsers -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%234361ee'/%3E%3Ctext x='32' y='45' font-size='32' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E" type="image/svg+xml">
+    
+    <!-- ===== APP METADATA FOR FULLSCREEN/STANDALONE MODE ===== -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="StudyMaster">
     <meta name="theme-color" content="#4361ee">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     
-    <!-- PWA Manifest -->
+    <!-- PWA Manifest for Android -->
     <link rel="manifest" href="data:application/manifest+json,{
-        &quot;name&quot;: &quot;StudyMaster Pro&quot;,
-        &quot;short_name&quot;: &quot;StudyMaster&quot;,
-        &quot;description&quot;: &quot;Pomodoro Timer with Study Cycles&quot;,
-        &quot;theme_color&quot;: &quot;#4361ee&quot;,
-        &quot;background_color&quot;: &quot;#ffffff&quot;,
-        &quot;display&quot;: &quot;standalone&quot;,
-        &quot;icons&quot;: [
+        'name': 'StudyMaster Pro',
+        'short_name': 'StudyMaster',
+        'description': 'Study Timer with Pomodoro & Spaced Repetition',
+        'start_url': '/',
+        'display': 'standalone',
+        'orientation': 'portrait',
+        'theme_color': '#4361ee',
+        'background_color': '#ffffff',
+        'icons': [
             {
-                &quot;src&quot;: &quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%234361ee'/%3E%3Ctext x='96' y='128' font-size='96' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E&quot;,
-                &quot;sizes&quot;: &quot;192x192&quot;,
-                &quot;type&quot;: &quot;image/svg+xml&quot;
+                'src': 'data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 192 192\"%3E%3Crect width=\"192\" height=\"192\" rx=\"40\" fill=\"%234361ee\"/%3E%3Ctext x=\"96\" y=\"128\" font-size=\"96\" text-anchor=\"middle\" fill=\"white\"%3E📚%3C/text%3E%3C/svg%3E',
+                'sizes': '192x192',
+                'type': 'image/svg+xml'
             },
             {
-                &quot;src&quot;: &quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%234361ee'/%3E%3Ctext x='256' y='340' font-size='256' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E&quot;,
-                &quot;sizes&quot;: &quot;512x512&quot;,
-                &quot;type&quot;: &quot;image/svg+xml&quot;
+                'src': 'data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"%3E%3Crect width=\"512\" height=\"512\" rx=\"100\" fill=\"%234361ee\"/%3E%3Ctext x=\"256\" y=\"340\" font-size=\"256\" text-anchor=\"middle\" fill=\"white\"%3E📚%3C/text%3E%3C/svg%3E',
+                'sizes': '512x512',
+                'type': 'image/svg+xml'
             }
         ]
     }">
@@ -46,6 +53,15 @@
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            position: fixed;
         }
 
         /* ===== VARIABLES ===== */
@@ -74,6 +90,12 @@
             --radius: 16px;
             
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Safe area insets for notch phones */
+            --safe-area-top: env(safe-area-inset-top, 0px);
+            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-area-left: env(safe-area-inset-left, 0px);
+            --safe-area-right: env(safe-area-inset-right, 0px);
         }
 
         [data-theme="dark"] {
@@ -108,12 +130,17 @@
             min-height: 100vh;
             transition: var(--transition);
             line-height: 1.6;
+            padding-top: var(--safe-area-top);
+            padding-bottom: var(--safe-area-bottom);
         }
 
         .container {
             max-width: 500px;
             margin: 0 auto;
             padding: 20px;
+            height: calc(100vh - var(--safe-area-top) - var(--safe-area-bottom));
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* ===== HEADER & NAVIGATION ===== */
@@ -123,6 +150,7 @@
             align-items: center;
             padding: 20px 0;
             margin-bottom: 10px;
+            padding-top: calc(10px + var(--safe-area-top));
         }
 
         .logo {
@@ -511,6 +539,7 @@
             max-height: 400px;
             overflow-y: auto;
             margin-top: 20px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .task-item {
@@ -612,7 +641,7 @@
         /* ===== NOTIFICATION ===== */
         .notification {
             position: fixed;
-            top: 30px;
+            top: max(30px, var(--safe-area-top));
             right: 30px;
             background: linear-gradient(135deg, var(--success), var(--primary));
             color: white;
@@ -632,6 +661,33 @@
             }
             to {
                 transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== INSTALL PROMPT ===== */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
                 opacity: 1;
             }
         }
@@ -660,6 +716,19 @@
             }
         }
 
+        /* ===== FULLSCREEN APP STYLES ===== */
+        @media all and (display-mode: standalone) {
+            body {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                user-select: none;
+            }
+            
+            .container {
+                padding-top: calc(20px + var(--safe-area-top));
+            }
+        }
+
         /* ===== ANIMATIONS ===== */
         @keyframes ring {
             0%, 100% { transform: rotate(0); }
@@ -674,6 +743,25 @@
     </style>
 </head>
 <body data-theme="light">
+    <!-- Install Prompt -->
+    <div id="installPrompt" class="install-prompt">
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+            <div style="font-size: 32px;">📚</div>
+            <div>
+                <h3 style="margin-bottom: 5px;">Install StudyMaster</h3>
+                <p style="opacity: 0.9; font-size: 14px;">Get the full app experience on your home screen!</p>
+            </div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-success" onclick="installApp()" style="flex: 1;">
+                <span>📲</span> Install
+            </button>
+            <button class="btn btn-secondary" onclick="hideInstallPrompt()" style="flex: 1; background: rgba(255,255,255,0.2);">
+                <span>✕</span> Later
+            </button>
+        </div>
+    </div>
+
     <div class="container">
         <!-- Header -->
         <header class="header">
@@ -906,6 +994,8 @@
         let topics = [];
         let tasks = [];
         let currentCycle = 1;
+        let deferredPrompt = null;
+        let isStandalone = false;
 
         // ========== COMPLETE 8-CYCLE TIMETABLE ==========
         const fullTimetable = [
@@ -973,6 +1063,79 @@
             { time: "11:00-11:25", task: "Study Session", type: "study", cycle: 8, done: false },
             { time: "11:25-11:30", task: "Wind Down", type: "long_break", cycle: 8, done: false }
         ];
+
+        // ========== APP INSTALLATION ==========
+        function checkInstallation() {
+            // Check if already running as standalone app
+            isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                          window.navigator.standalone || 
+                          document.referrer.includes('android-app://');
+            
+            if (isStandalone) {
+                console.log('Running as standalone app');
+                document.body.classList.add('standalone');
+                return;
+            }
+            
+            // Check for PWA install prompt (Android)
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                showInstallPrompt();
+            });
+            
+            // Check for iOS
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            
+            if (isIOS && isSafari) {
+                // Show iOS install instructions after 5 seconds
+                setTimeout(() => {
+                    if (!localStorage.getItem('iosInstallShown')) {
+                        showNotification('Tap Share → "Add to Home Screen" to install as app! 📱');
+                        localStorage.setItem('iosInstallShown', 'true');
+                    }
+                }, 5000);
+            }
+        }
+
+        function showInstallPrompt() {
+            if (deferredPrompt && !localStorage.getItem('installPromptShown')) {
+                setTimeout(() => {
+                    document.getElementById('installPrompt').style.display = 'block';
+                }, 3000);
+            }
+        }
+
+        function hideInstallPrompt() {
+            document.getElementById('installPrompt').style.display = 'none';
+            localStorage.setItem('installPromptShown', 'true');
+        }
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                        showNotification('App installed successfully! 🎉');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    deferredPrompt = null;
+                    hideInstallPrompt();
+                });
+            } else {
+                // iOS or manual install instructions
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                if (isIOS) {
+                    showNotification('Tap Share → "Add to Home Screen" 📱');
+                } else {
+                    showNotification('Look for "Install" option in browser menu 📲');
+                }
+                hideInstallPrompt();
+            }
+        }
 
         // ========== PAGE NAVIGATION ==========
         function showPage(pageId) {
@@ -1279,7 +1442,6 @@
                         dateClass += ' missed';
                     }
                     
-                    // FIXED: Pass the correct key to toggleTopicDate function
                     datesHTML += `
                         <div class="${dateClass}" onclick="toggleTopicDate(${topic.id}, '${dateInfo.key}')">
                             <div class="date-label">${dateInfo.label}</div>
@@ -1769,6 +1931,9 @@
             // Restore scheduled reminders
             restoreScheduledReminders();
             
+            // Check for app installation
+            checkInstallation();
+            
             // Auto-enable sound on first interaction
             document.addEventListener('click', function initSound() {
                 if (!soundEnabled) {
@@ -1776,6 +1941,12 @@
                 }
                 document.removeEventListener('click', initSound);
             });
+            
+            // Fix for iOS standalone mode
+            if (window.navigator.standalone) {
+                document.body.style.paddingTop = 'calc(20px + env(safe-area-inset-top))';
+                document.body.style.paddingBottom = 'env(safe-area-inset-bottom)';
+            }
         }
 
         // Start the app
