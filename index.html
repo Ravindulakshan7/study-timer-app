@@ -240,6 +240,34 @@
             padding-right: 40px;
         }
 
+        /* ===== DELETE BUTTON STYLES ===== */
+        .delete-topic-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            transition: var(--transition);
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+
+        .delete-topic-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        .delete-topic-btn:active {
+            transform: scale(0.9);
+        }
+
         /* ===== NAVIGATION TABS ===== */
         .nav-tabs {
             display: flex;
@@ -480,6 +508,7 @@
             margin-bottom: 15px;
             border-left: 4px solid var(--primary);
             transition: var(--transition);
+            position: relative;
         }
 
         .topic-item:active {
@@ -807,6 +836,16 @@
         .touch-feedback:active {
             opacity: 0.7;
         }
+
+        /* Progress indicator */
+        .progress-indicator {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body data-theme="light">
@@ -983,7 +1022,7 @@
         <div id="topicsPage" class="page">
             <section class="sr-section">
                 <h2 class="section-title">
-                    <span>➕</span> Add Topic
+                    <span>➕</span> Add Topic for Spaced Repetition
                 </h2>
                 <div class="topic-input-section">
                     <input type="text" id="topicInput" placeholder="Enter topic name (e.g., Physics Unit 3)">
@@ -1000,7 +1039,8 @@
                     <option value="other">Other</option>
                 </select>
                 <p style="font-size: 14px; color: var(--text-muted); margin-top: 10px;">
-                    Topics will be reviewed on Day 1, 3, 6, 10
+                    Topics will be reviewed on Day 1, 3, 6, 10<br>
+                    <small>✓ Day 10 review auto-deletes topic</small>
                 </p>
             </section>
 
@@ -1021,7 +1061,10 @@
                     <span>🔔</span> Set Reminders
                 </button>
                 <button class="btn btn-danger" onclick="clearCompletedTopics()">
-                    <span>🗑️</span> Clear Completed
+                    <span>🗑️</span> Clear All Completed
+                </button>
+                <button class="btn" onclick="deleteAllTopics()" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                    <span>⚠️</span> Delete All
                 </button>
             </div>
         </div>
@@ -1164,7 +1207,6 @@
                 return;
             }
             
-            // Check for PWA install prompt
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredPrompt = e;
@@ -1176,7 +1218,6 @@
                 }, 10000);
             });
             
-            // iOS detection
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             
@@ -1496,6 +1537,11 @@
             return result;
         }
 
+        function getTopicProgress(topic) {
+            const completed = Object.values(topic.completed).filter(c => c).length;
+            return `${completed}/4 reviews`;
+        }
+
         function renderTopics() {
             const container = document.getElementById('topicsList');
             container.innerHTML = '';
@@ -1562,16 +1608,31 @@
                     `;
                 });
                 
+                const progress = getTopicProgress(topic);
+                
                 topicElement.innerHTML = `
                     <div class="topic-header">
-                        <div class="topic-name">${subjectIcons[topic.subject] || '📝'} ${topic.name}</div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <button class="delete-topic-btn" onclick="deleteTopic(${topic.id})" 
+                                    title="Delete this topic">
+                                ×
+                            </button>
+                            <div class="topic-name">${subjectIcons[topic.subject] || '📝'} ${topic.name}</div>
+                        </div>
                         <div class="topic-date">${subjectNames[topic.subject]}</div>
                     </div>
                     <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;">
                         Added: ${topicDate.toLocaleDateString()}
+                        <span style="margin-left: 10px; background: var(--primary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px;">
+                            ${progress}
+                        </span>
                     </div>
                     <div class="spaced-dates">
                         ${datesHTML}
+                    </div>
+                    <div style="margin-top: 15px; font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between;">
+                        <span>Click Day 10 to complete & auto-delete</span>
+                        <span>${topic.completed.day10 ? '✅ Complete' : '⏳ In Progress'}</span>
                     </div>
                 `;
                 
@@ -1579,10 +1640,21 @@
             });
         }
 
+        // ===== TOPIC DELETION FUNCTIONS =====
         function toggleTopicDate(topicId, dayKey) {
             const topic = topics.find(t => t.id === topicId);
             if (topic) {
                 topic.completed[dayKey] = !topic.completed[dayKey];
+                
+                // If Day 10 is marked as reviewed, auto-delete the topic
+                if (dayKey === 'day10' && topic.completed.day10) {
+                    setTimeout(() => {
+                        deleteTopic(topicId);
+                        showNotification(`Topic "${topic.name}" completed all reviews and removed! 🎉`);
+                    }, 500);
+                    return;
+                }
+                
                 saveTopics();
                 renderTopics();
                 
@@ -1593,9 +1665,35 @@
             }
         }
 
+        function deleteTopic(topicId) {
+            const topicIndex = topics.findIndex(t => t.id === topicId);
+            if (topicIndex !== -1) {
+                const topicName = topics[topicIndex].name;
+                topics.splice(topicIndex, 1);
+                saveTopics();
+                renderTopics();
+                showNotification(`Topic "${topicName}" deleted`);
+            }
+        }
+
+        function deleteAllTopics() {
+            if (topics.length === 0) {
+                showNotification('No topics to delete');
+                return;
+            }
+            
+            if (confirm(`Are you sure? This will delete ALL ${topics.length} topics permanently!`)) {
+                topics = [];
+                saveTopics();
+                renderTopics();
+                showNotification('All topics deleted');
+            }
+        }
+
         function markAllAsReviewed() {
             const today = new Date();
             const todayStr = today.toDateString();
+            let count = 0;
             
             topics.forEach(topic => {
                 const dates = [
@@ -1606,15 +1704,16 @@
                 ];
                 
                 dates.forEach(dateInfo => {
-                    if (dateInfo.date.toDateString() === todayStr) {
+                    if (dateInfo.date.toDateString() === todayStr && !topic.completed[dateInfo.day]) {
                         topic.completed[dateInfo.day] = true;
+                        count++;
                     }
                 });
             });
             
             saveTopics();
             renderTopics();
-            showNotification('Marked today\'s review dates as completed! ✅');
+            showNotification(`Marked ${count} review dates as completed! ✅`);
         }
 
         function setTopicReminders() {
@@ -1653,7 +1752,24 @@
         }
 
         function clearCompletedTopics() {
-            if (confirm('Remove topics where all 4 reviews are completed?')) {
+            if (topics.length === 0) {
+                showNotification('No topics to clear');
+                return;
+            }
+            
+            const completedTopics = topics.filter(topic => 
+                topic.completed.day1 && 
+                topic.completed.day3 && 
+                topic.completed.day6 && 
+                topic.completed.day10
+            );
+            
+            if (completedTopics.length === 0) {
+                showNotification('No completed topics found');
+                return;
+            }
+            
+            if (confirm(`Remove ${completedTopics.length} topics where all 4 reviews are completed?`)) {
                 topics = topics.filter(topic => {
                     const allCompleted = topic.completed.day1 && 
                                         topic.completed.day3 && 
@@ -1664,7 +1780,7 @@
                 
                 saveTopics();
                 renderTopics();
-                showNotification('Completed topics removed');
+                showNotification(`Removed ${completedTopics.length} completed topics`);
             }
         }
 
