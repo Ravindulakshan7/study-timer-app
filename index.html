@@ -5,8 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StudyMaster Pro</title>
     
-    <!-- App Icons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%234361ee;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%233a0ca3;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='url(%23grad)'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='Arial, sans-serif'%3E📚🧠%3C/text%3E%3C/svg%3E">
+    <!-- ===== APP ICONS ===== -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234361ee%22/><text x=%2250%25%22 y=%2268%25%22 font-size=%2250%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
+    
+    <!-- Apple Touch Icons for iOS -->
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 180 180%22><rect width=%22180%22 height=%22180%22 rx=%2240%22 fill=%22%234361ee%22/><text x=%2250%25%22 y=%2268%25%22 font-size=%2290%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
+    
+    <!-- iOS App Metadata -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="StudyMaster">
+    <meta name="theme-color" content="#4361ee">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/manifest+json,{
+        &quot;name&quot;: &quot;StudyMaster Pro&quot;,
+        &quot;short_name&quot;: &quot;StudyMaster&quot;,
+        &quot;description&quot;: &quot;Pomodoro Timer with Study Cycles&quot;,
+        &quot;theme_color&quot;: &quot;#4361ee&quot;,
+        &quot;background_color&quot;: &quot;#ffffff&quot;,
+        &quot;display&quot;: &quot;standalone&quot;,
+        &quot;icons&quot;: [
+            {
+                &quot;src&quot;: &quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%234361ee'/%3E%3Ctext x='96' y='128' font-size='96' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E&quot;,
+                &quot;sizes&quot;: &quot;192x192&quot;,
+                &quot;type&quot;: &quot;image/svg+xml&quot;
+            },
+            {
+                &quot;src&quot;: &quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%234361ee'/%3E%3Ctext x='256' y='340' font-size='256' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E&quot;,
+                &quot;sizes&quot;: &quot;512x512&quot;,
+                &quot;type&quot;: &quot;image/svg+xml&quot;
+            }
+        ]
+    }">
     
     <style>
         /* ===== CSS RESET ===== */
@@ -195,7 +226,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== POMODORO PAGE ===== */
+        /* ===== POMODORO PAGE (FIRST TAB) ===== */
         .timer-section {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -239,8 +270,8 @@
             margin-bottom: 25px;
         }
 
-        /* ===== SPACED REPETITION PAGE ===== */
-        .sr-section {
+        /* ===== CYCLE PAGE (SECOND TAB) ===== */
+        .cycle-section {
             background: var(--bg-card);
             border-radius: var(--radius);
             padding: 25px;
@@ -256,6 +287,90 @@
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 20px;
+        }
+
+        .cycle-header {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 16px;
+            border-radius: 12px;
+            margin: 20px 0 15px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 16px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .cycle-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .nav-cycle-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-weight: bold;
+            font-size: 18px;
+            transition: var(--transition);
+        }
+
+        .nav-cycle-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .current-cycle {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            padding: 10px 20px;
+            background: var(--bg-input);
+            border-radius: 12px;
+        }
+
+        .cycle-progress {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .cycle-progress-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .cycle-progress-text {
+            font-size: 16px;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+
+        /* ===== TOPICS PAGE (THIRD TAB) ===== */
+        .sr-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
         }
 
         .topic-input-section {
@@ -361,7 +476,7 @@
             font-weight: 600;
         }
 
-        /* ===== TASK MANAGEMENT ===== */
+        /* ===== TASKS PAGE (FOURTH TAB) ===== */
         .task-input-section {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -494,31 +609,6 @@
         .btn-accent { background: linear-gradient(135deg, var(--accent), #ec4899); }
         .btn-info { background: linear-gradient(135deg, var(--info), #7209b7); }
 
-        /* ===== STATUS CARD ===== */
-        .status-card {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border-radius: var(--radius);
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: var(--shadow);
-        }
-
-        .status-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .status-text {
-            font-size: 16px;
-            opacity: 0.95;
-            line-height: 1.5;
-        }
-
         /* ===== NOTIFICATION ===== */
         .notification {
             position: fixed;
@@ -544,64 +634,6 @@
                 transform: translateX(0);
                 opacity: 1;
             }
-        }
-
-        /* ===== CYCLE PAGE ===== */
-        .cycle-section {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 25px;
-            margin-bottom: 25px;
-            border: 1px solid var(--border);
-        }
-
-        .cycle-header {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            padding: 16px;
-            border-radius: 12px;
-            margin: 20px 0 15px;
-            font-weight: 600;
-            text-align: center;
-            font-size: 16px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .cycle-nav {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .nav-cycle-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: var(--bg-input);
-            border: 2px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-primary);
-            font-weight: bold;
-            font-size: 18px;
-            transition: var(--transition);
-        }
-
-        .nav-cycle-btn:hover {
-            border-color: var(--primary);
-            background: var(--primary);
-            color: white;
-        }
-
-        .current-cycle {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-            text-align: center;
-            margin: 15px 0;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -646,7 +678,7 @@
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <div class="logo-icon">📚🧠</div>
+                <div class="logo-icon">📚</div>
                 <div class="logo-text">
                     <h1>StudyMaster</h1>
                     <p>A/L Maths Stream</p>
@@ -661,13 +693,13 @@
 
         <!-- Navigation Tabs -->
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="showPage('cycle')">
-                🔄 Cycles
-            </button>
-            <button class="nav-tab" onclick="showPage('pomodoro')">
+            <button class="nav-tab active" onclick="showPage('pomodoro')">
                 ⏰ Pomodoro
             </button>
-            <button class="nav-tab" onclick="showPage('spaced')">
+            <button class="nav-tab" onclick="showPage('cycle')">
+                🔄 Cycles
+            </button>
+            <button class="nav-tab" onclick="showPage('topics')">
                 📚 Topics
             </button>
             <button class="nav-tab" onclick="showPage('tasks')">
@@ -675,48 +707,9 @@
             </button>
         </div>
 
-        <!-- ===== CYCLE PAGE ===== -->
-        <div id="cyclePage" class="page active">
-            <section class="cycle-section">
-                <h2 class="section-title">
-                    <span>🔄</span> 8-Cycle Study Schedule
-                </h2>
-                
-                <div class="cycle-nav">
-                    <button class="nav-cycle-btn" onclick="prevCycle()">←</button>
-                    <div class="current-cycle">Cycle <span id="currentCycleDisplay">1</span></div>
-                    <button class="nav-cycle-btn" onclick="nextCycle()">→</button>
-                </div>
-                
-                <div id="cycleSchedule">
-                    <!-- Cycle schedule will be loaded here -->
-                </div>
-            </section>
-
-            <div class="status-card">
-                <div class="status-header">
-                    <span>📊</span> Today's Progress
-                </div>
-                <div class="status-text" id="cycleStatus">
-                    No cycles completed yet. Start with Cycle 1!
-                </div>
-            </div>
-
-            <div class="controls-grid">
-                <button class="btn btn-success" onclick="startCycleTimer()">
-                    <span>▶</span> Start Cycle
-                </button>
-                <button class="btn btn-warning" onclick="resetCurrentCycle()">
-                    <span>🔄</span> Reset Cycle
-                </button>
-                <button class="btn btn-danger" onclick="resetAllCycles()">
-                    <span>🗑️</span> Reset All
-                </button>
-            </div>
-        </div>
-
-        <!-- ===== POMODORO PAGE ===== -->
-        <div id="pomodoroPage" class="page">
+        <!-- ===== POMODORO PAGE (FIRST TAB) ===== -->
+        <div id="pomodoroPage" class="page active">
+            <!-- Timer Section -->
             <section class="timer-section">
                 <div class="timer-display" id="timer">35:00</div>
                 <div class="progress-container">
@@ -724,6 +717,7 @@
                 </div>
             </section>
 
+            <!-- Timer Controls -->
             <div class="controls-grid">
                 <button class="btn btn-success" onclick="startTimer()">
                     <span>▶</span> Start Study
@@ -737,15 +731,6 @@
                 <button class="btn btn-accent" onclick="skipBreak()">
                     <span>⏭</span> Skip Break
                 </button>
-            </div>
-
-            <div class="status-card">
-                <div class="status-header">
-                    <span>📊</span> Current Status
-                </div>
-                <div class="status-text" id="status">
-                    Cycle 1 - Study Session (35min) ⏸ Ready
-                </div>
             </div>
 
             <!-- Sound Controls -->
@@ -762,10 +747,63 @@
                     </button>
                 </div>
             </section>
+
+            <!-- Quick Progress -->
+            <div class="cycle-progress">
+                <div class="cycle-progress-header">
+                    <span>📊</span> Today's Quick View
+                </div>
+                <div class="cycle-progress-text" id="quickStatus">
+                    Today: 0/48 tasks completed
+                </div>
+            </div>
         </div>
 
-        <!-- ===== SPACED REPETITION TOPICS PAGE ===== -->
-        <div id="spacedPage" class="page">
+        <!-- ===== CYCLE PAGE (SECOND TAB) ===== -->
+        <div id="cyclePage" class="page">
+            <!-- Cycle Progress -->
+            <div class="cycle-progress">
+                <div class="cycle-progress-header">
+                    <span>📊</span> Today's Progress
+                </div>
+                <div class="cycle-progress-text" id="cycleStatus">
+                    No cycles completed yet. Start with Cycle 1!
+                </div>
+            </div>
+
+            <!-- Cycle Navigation -->
+            <section class="cycle-section">
+                <h2 class="section-title">
+                    <span>🔄</span> Study Cycles
+                </h2>
+                
+                <div class="cycle-nav">
+                    <button class="nav-cycle-btn" onclick="prevCycle()">←</button>
+                    <div class="current-cycle">Cycle <span id="currentCycleDisplay">1</span></div>
+                    <button class="nav-cycle-btn" onclick="nextCycle()">→</button>
+                </div>
+                
+                <div id="cycleSchedule">
+                    <!-- Cycle schedule will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Cycle Controls -->
+            <div class="controls-grid">
+                <button class="btn btn-success" onclick="startCycleTimer()">
+                    <span>▶</span> Start Cycle
+                </button>
+                <button class="btn btn-warning" onclick="resetCurrentCycle()">
+                    <span>🔄</span> Reset Cycle
+                </button>
+                <button class="btn btn-danger" onclick="resetAllCycles()">
+                    <span>🗑️</span> Reset All
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== TOPICS PAGE (THIRD TAB) ===== -->
+        <div id="topicsPage" class="page">
             <section class="sr-section">
                 <h2 class="section-title">
                     <span>➕</span> Add Topic for Spaced Repetition
@@ -811,7 +849,7 @@
             </div>
         </div>
 
-        <!-- ===== TASKS PAGE ===== -->
+        <!-- ===== TASKS PAGE (FOURTH TAB) ===== -->
         <div id="tasksPage" class="page">
             <section class="task-input-section">
                 <h2 class="section-title">
@@ -868,7 +906,6 @@
         let topics = [];
         let tasks = [];
         let currentCycle = 1;
-        let cycleTasks = [];
 
         // ========== COMPLETE 8-CYCLE TIMETABLE ==========
         const fullTimetable = [
@@ -956,9 +993,11 @@
             event.target.classList.add('active');
             
             // Load data for specific pages
-            if (pageId === 'cycle') {
+            if (pageId === 'pomodoro') {
+                updateQuickStatus();
+            } else if (pageId === 'cycle') {
                 loadCycle();
-            } else if (pageId === 'spaced') {
+            } else if (pageId === 'topics') {
                 loadTopics();
             } else if (pageId === 'tasks') {
                 loadTasks();
@@ -970,12 +1009,9 @@
             currentCycle = parseInt(localStorage.getItem('currentCycle')) || 1;
             document.getElementById('currentCycleDisplay').textContent = currentCycle;
             
-            // Filter tasks for current cycle
-            cycleTasks = fullTimetable.filter(task => task.cycle === currentCycle);
-            
             // Load saved progress
             const savedProgress = JSON.parse(localStorage.getItem('cycleProgress') || '{}');
-            cycleTasks.forEach(task => {
+            fullTimetable.forEach(task => {
                 const key = `${task.cycle}-${task.time}`;
                 if (savedProgress[key]) {
                     task.done = savedProgress[key];
@@ -990,6 +1026,9 @@
             const container = document.getElementById('cycleSchedule');
             container.innerHTML = '';
             
+            // Filter tasks for current cycle
+            const cycleTasks = fullTimetable.filter(task => task.cycle === currentCycle);
+            
             const cycleTitle = document.createElement('div');
             cycleTitle.className = 'cycle-header';
             cycleTitle.textContent = `Cycle ${currentCycle} Schedule`;
@@ -1000,12 +1039,11 @@
                 taskElement.className = `task-item ${task.done ? 'completed' : ''}`;
                 
                 const icon = task.type === 'study' ? '📚' : task.type === 'long_break' ? '🍽️' : '☕';
-                const globalIndex = fullTimetable.findIndex(t => t === task);
                 
                 taskElement.innerHTML = `
                     <div class="task-info">
                         <div class="task-checkbox ${task.done ? 'checked' : ''}" 
-                             onclick="toggleCycleTask(${globalIndex})">
+                             onclick="toggleCycleTask(${currentCycle}, '${task.time}')">
                             ${task.done ? '✓' : ''}
                         </div>
                         <div class="task-text ${task.done ? 'completed' : ''}">
@@ -1013,7 +1051,7 @@
                             <div style="font-size: 14px; color: var(--text-secondary);">${icon} ${task.task}</div>
                         </div>
                     </div>
-                    <div class="task-status">
+                    <div class="task-date">
                         ${task.done ? '✅' : '⏳'}
                     </div>
                 `;
@@ -1022,8 +1060,8 @@
             });
         }
 
-        function toggleCycleTask(globalIndex) {
-            const task = fullTimetable[globalIndex];
+        function toggleCycleTask(cycle, time) {
+            const task = fullTimetable.find(t => t.cycle === cycle && t.time === time);
             if (task) {
                 task.done = !task.done;
                 
@@ -1035,6 +1073,7 @@
                 
                 renderCycle();
                 updateCycleStatus();
+                updateQuickStatus();
                 
                 if (task.done) {
                     showNotification('Task marked as completed! ✅');
@@ -1047,7 +1086,8 @@
                 currentCycle++;
                 document.getElementById('currentCycleDisplay').textContent = currentCycle;
                 localStorage.setItem('currentCycle', currentCycle);
-                loadCycle();
+                renderCycle();
+                updateCycleStatus();
             }
         }
 
@@ -1056,11 +1096,13 @@
                 currentCycle--;
                 document.getElementById('currentCycleDisplay').textContent = currentCycle;
                 localStorage.setItem('currentCycle', currentCycle);
-                loadCycle();
+                renderCycle();
+                updateCycleStatus();
             }
         }
 
         function updateCycleStatus() {
+            const cycleTasks = fullTimetable.filter(task => task.cycle === currentCycle);
             const completed = cycleTasks.filter(t => t.done).length;
             const total = cycleTasks.length;
             const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -1074,13 +1116,22 @@
             `;
         }
 
+        function updateQuickStatus() {
+            const completed = fullTimetable.filter(t => t.done).length;
+            const total = fullTimetable.length;
+            document.getElementById('quickStatus').textContent = 
+                `Today: ${completed}/${total} tasks completed`;
+        }
+
         function startCycleTimer() {
             // Find first incomplete task in current cycle
+            const cycleTasks = fullTimetable.filter(task => task.cycle === currentCycle);
             const incompleteTasks = cycleTasks.filter(task => !task.done);
             if (incompleteTasks.length > 0) {
-                // Switch to pomodoro page
-                showPage('pomodoro');
                 showNotification(`Starting ${incompleteTasks[0].task} from Cycle ${currentCycle}`);
+                // Switch to pomodoro tab to start timer
+                showPage('pomodoro');
+                startTimer();
             } else {
                 showNotification('All tasks in this cycle are completed! 🎉');
             }
@@ -1088,13 +1139,12 @@
 
         function resetCurrentCycle() {
             if (confirm('Reset all tasks in current cycle?')) {
-                cycleTasks.forEach(task => {
-                    task.done = false;
-                });
+                const cycleTasks = fullTimetable.filter(task => task.cycle === currentCycle);
                 
                 // Remove from saved progress
                 const savedProgress = JSON.parse(localStorage.getItem('cycleProgress') || '{}');
                 cycleTasks.forEach(task => {
+                    task.done = false;
                     const key = `${task.cycle}-${task.time}`;
                     delete savedProgress[key];
                 });
@@ -1102,6 +1152,7 @@
                 
                 renderCycle();
                 updateCycleStatus();
+                updateQuickStatus();
                 showNotification('Cycle reset successfully');
             }
         }
@@ -1114,7 +1165,10 @@
                 localStorage.removeItem('cycleProgress');
                 localStorage.removeItem('currentCycle');
                 currentCycle = 1;
-                loadCycle();
+                document.getElementById('currentCycleDisplay').textContent = currentCycle;
+                renderCycle();
+                updateCycleStatus();
+                updateQuickStatus();
                 showNotification('All cycles reset');
             }
         }
@@ -1147,8 +1201,7 @@
                     day3: false,
                     day6: false,
                     day10: false
-                },
-                remindersSet: false
+                }
             };
             
             topics.push(topic);
@@ -1182,10 +1235,9 @@
                 return;
             }
             
-            topics.forEach((topic, index) => {
+            topics.forEach((topic) => {
                 const today = new Date();
                 const topicDate = new Date(topic.dateAdded);
-                const daysSinceAdded = Math.floor((today - topicDate) / (1000 * 60 * 60 * 24));
                 
                 const topicElement = document.createElement('div');
                 topicElement.className = 'topic-item';
@@ -1208,15 +1260,16 @@
                     'other': 'Other'
                 };
                 
+                // Create dates array with proper keys
                 const dates = [
-                    { label: 'Day 1', date: new Date(topic.spacedDates.day1), completed: topic.completed.day1 },
-                    { label: 'Day 3', date: new Date(topic.spacedDates.day3), completed: topic.completed.day3 },
-                    { label: 'Day 6', date: new Date(topic.spacedDates.day6), completed: topic.completed.day6 },
-                    { label: 'Day 10', date: new Date(topic.spacedDates.day10), completed: topic.completed.day10 }
+                    { label: 'Day 1', key: 'day1', date: new Date(topic.spacedDates.day1), completed: topic.completed.day1 },
+                    { label: 'Day 3', key: 'day3', date: new Date(topic.spacedDates.day3), completed: topic.completed.day3 },
+                    { label: 'Day 6', key: 'day6', date: new Date(topic.spacedDates.day6), completed: topic.completed.day6 },
+                    { label: 'Day 10', key: 'day10', date: new Date(topic.spacedDates.day10), completed: topic.completed.day10 }
                 ];
                 
                 let datesHTML = '';
-                dates.forEach((dateInfo, i) => {
+                dates.forEach((dateInfo) => {
                     let dateClass = 'spaced-date';
                     const dateStr = dateInfo.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                     
@@ -1224,12 +1277,11 @@
                         dateClass += ' completed';
                     } else if (today >= dateInfo.date) {
                         dateClass += ' missed';
-                    } else if (i === 0 && daysSinceAdded >= 0) {
-                        dateClass += ' upcoming';
                     }
                     
+                    // FIXED: Pass the correct key to toggleTopicDate function
                     datesHTML += `
-                        <div class="${dateClass}" onclick="toggleTopicDate(${topic.id}, 'day${(i+1)}')">
+                        <div class="${dateClass}" onclick="toggleTopicDate(${topic.id}, '${dateInfo.key}')">
                             <div class="date-label">${dateInfo.label}</div>
                             <div class="date-value">${dateStr}</div>
                         </div>
@@ -1253,15 +1305,16 @@
             });
         }
 
-        function toggleTopicDate(topicId, day) {
+        function toggleTopicDate(topicId, dayKey) {
             const topic = topics.find(t => t.id === topicId);
             if (topic) {
-                topic.completed[day] = !topic.completed[day];
+                // Toggle the completion status for the specific day
+                topic.completed[dayKey] = !topic.completed[dayKey];
                 saveTopics();
                 renderTopics();
                 
-                const dayNum = day.replace('day', '');
-                if (topic.completed[day]) {
+                const dayNum = dayKey.replace('day', '');
+                if (topic.completed[dayKey]) {
                     showNotification(`Marked Day ${dayNum} as reviewed for ${topic.name}`);
                 }
             }
@@ -1477,7 +1530,6 @@
             if (!isRunning) {
                 isRunning = true;
                 timerId = setInterval(updateTimer, 1000);
-                updateStatus();
                 showNotification('Timer started! Focus time 🎯');
             }
         }
@@ -1485,7 +1537,6 @@
         function pauseTimer() {
             isRunning = false;
             clearInterval(timerId);
-            updateStatus();
             showNotification('Timer paused');
         }
 
@@ -1494,7 +1545,6 @@
             isRunning = false;
             timeLeft = isBreak ? 5 * 60 : 35 * 60;
             updateDisplay();
-            updateStatus();
             showNotification('Timer reset');
         }
 
@@ -1504,7 +1554,6 @@
                 timeLeft = 35 * 60;
                 currentTaskIndex++;
                 updateDisplay();
-                updateStatus();
                 showNotification('Break skipped');
             }
         }
@@ -1531,7 +1580,6 @@
                         timeLeft = (nextTask.type === 'long_break') ? 20 * 60 : 5 * 60;
                         
                         setTimeout(() => {
-                            updateStatus();
                             showNotification(isBreak ? 'Break time! ☕' : 'Study time! 📚');
                             startTimer();
                         }, 2000);
@@ -1549,23 +1597,6 @@
             const totalTime = isBreak ? 5 * 60 : 35 * 60;
             const progressPercent = 100 - ((timeLeft / totalTime) * 100);
             document.getElementById('progress').style.width = progressPercent + '%';
-        }
-
-        function updateStatus() {
-            let status = "";
-            if (currentTaskIndex < fullTimetable.length) {
-                const task = fullTimetable[currentTaskIndex];
-                status = `Cycle ${task.cycle} - `;
-                
-                if (isBreak) {
-                    status += task.type === 'long_break' ? 'Long Break (20min)' : 'Short Break (5min)';
-                } else {
-                    status += 'Study Session (35min)';
-                }
-                
-                status += isRunning ? " ▶ Running" : " ⏸ Ready";
-            }
-            document.getElementById('status').textContent = status;
         }
 
         // ========== SOUND SYSTEM ==========
@@ -1694,7 +1725,6 @@
         function saveAllData() {
             saveTasks();
             saveTopics();
-            localStorage.setItem('selectedSubjects', JSON.stringify([...selectedSubjects]));
             showNotification('All data saved successfully! 💾');
         }
 
@@ -1734,7 +1764,7 @@
             
             // Initial display
             updateDisplay();
-            updateStatus();
+            updateQuickStatus();
             
             // Restore scheduled reminders
             restoreScheduledReminders();
