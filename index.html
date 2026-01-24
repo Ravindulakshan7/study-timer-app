@@ -57,6 +57,8 @@
             --warning: #f8961e;
             --danger: #f94144;
             --info: #7209b7;
+            --thoughts: #ff6b6b;
+            --notes: #ffd93d;
             
             --bg-primary: #ffffff;
             --bg-secondary: #f8f9fa;
@@ -90,6 +92,8 @@
             --warning: #f9a826;
             --danger: #fa5254;
             --info: #8a2be2;
+            --thoughts: #ff8787;
+            --notes: #ffe066;
             
             --bg-primary: #121212;
             --bg-secondary: #1e1e1e;
@@ -225,6 +229,12 @@
             transition: var(--transition);
         }
 
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
         /* IMPORTANT: iOS 7+ specific fix for keyboard */
         input[type="text"]:focus, textarea:focus {
             font-size: 16px !important; /* Prevent zoom on focus */
@@ -241,7 +251,7 @@
         }
 
         /* ===== DELETE BUTTON STYLES ===== */
-        .delete-topic-btn {
+        .delete-btn {
             background: var(--danger);
             color: white;
             border: none;
@@ -259,12 +269,12 @@
             font-weight: bold;
         }
 
-        .delete-topic-btn:hover {
+        .delete-btn:hover {
             background: #dc2626;
             transform: scale(1.1);
         }
 
-        .delete-topic-btn:active {
+        .delete-btn:active {
             transform: scale(0.9);
         }
 
@@ -276,21 +286,23 @@
             padding: 5px;
             margin-bottom: 25px;
             border: 1px solid var(--border);
+            flex-wrap: wrap;
         }
 
         .nav-tab {
             flex: 1;
-            padding: 15px;
+            padding: 15px 8px;
             text-align: center;
             border: none;
             background: transparent;
             color: var(--text-muted);
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14px;
             cursor: pointer;
             transition: var(--transition);
             border-radius: 10px;
             -webkit-tap-highlight-color: transparent;
+            min-width: 80px;
         }
 
         .nav-tab.active {
@@ -392,6 +404,8 @@
         .btn-danger { background: linear-gradient(135deg, var(--danger), #ef4444); }
         .btn-accent { background: linear-gradient(135deg, var(--accent), #ec4899); }
         .btn-info { background: linear-gradient(135deg, var(--info), #7209b7); }
+        .btn-thoughts { background: linear-gradient(135deg, var(--thoughts), #ff8787); }
+        .btn-notes { background: linear-gradient(135deg, var(--notes), #ffc107); }
 
         /* ===== SCREEN ON BUTTON ===== */
         .btn-screen-on {
@@ -683,6 +697,110 @@
             border-radius: 20px;
         }
 
+        /* ===== THOUGHTS PAGE ===== */
+        .thought-item {
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--thoughts);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .thought-item:active {
+            transform: translateX(4px);
+        }
+
+        .thought-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .thought-title {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .thought-content {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .thought-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .thought-tag {
+            background: rgba(255, 107, 107, 0.1);
+            color: var(--thoughts);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* ===== NOTES PAGE ===== */
+        .note-item {
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--notes);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .note-item:active {
+            transform: translateX(4px);
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .note-title {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .note-content {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .note-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .note-tag {
+            background: rgba(255, 217, 61, 0.1);
+            color: var(--notes);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
         /* ===== NOTIFICATION ===== */
         .notification {
             position: fixed;
@@ -802,12 +920,18 @@
             }
             
             .nav-tab {
-                padding: 12px 8px;
-                font-size: 14px;
+                padding: 12px 5px;
+                font-size: 13px;
+                min-width: 70px;
+                flex: 1 0 auto;
             }
             
             .header {
                 padding: 5px 0 15px 0;
+            }
+            
+            .nav-tabs {
+                gap: 5px;
             }
         }
 
@@ -958,6 +1082,98 @@
             50% { opacity: 0.7; }
             100% { opacity: 1; }
         }
+
+        /* Tag Input */
+        .tag-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            background: var(--primary-light);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tag-remove {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 0;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Mood Selector */
+        .mood-selector {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .mood-btn {
+            padding: 8px 15px;
+            border: 2px solid var(--border);
+            background: var(--bg-input);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .mood-btn.active {
+            border-color: var(--thoughts);
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        /* Priority Selector */
+        .priority-selector {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .priority-btn {
+            padding: 8px 15px;
+            border: 2px solid var(--border);
+            background: var(--bg-input);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .priority-btn.active {
+            border-color: var(--notes);
+            background: rgba(255, 217, 61, 0.1);
+        }
     </style>
 </head>
 <body data-theme="light">
@@ -999,7 +1215,7 @@
                 <div class="logo-icon">📚</div>
                 <div class="logo-text">
                     <h1>StudyMaster</h1>
-                    <p>A/L Maths Stream</p>
+                    <p>Personal Study Companion</p>
                 </div>
             </div>
             <div class="header-actions">
@@ -1025,6 +1241,12 @@
             </button>
             <button class="nav-tab" onclick="showPage('tasks', this)">
                 ✅ Tasks
+            </button>
+            <button class="nav-tab" onclick="showPage('thoughts', this)">
+                💭 Thoughts
+            </button>
+            <button class="nav-tab" onclick="showPage('notes', this)">
+                📝 Notes
             </button>
         </div>
 
@@ -1243,6 +1465,143 @@
                 </button>
             </div>
         </div>
+
+        <!-- THOUGHTS PAGE -->
+        <div id="thoughtsPage" class="page">
+            <section class="sr-section">
+                <h2 class="section-title">
+                    <span>💭</span> Capture Your Thoughts
+                </h2>
+                <div class="input-group">
+                    <input type="text" id="thoughtTitle" placeholder="Title (optional)">
+                </div>
+                <textarea id="thoughtContent" placeholder="What's on your mind? Write your thoughts, feelings, ideas, or reflections here..."></textarea>
+                
+                <div style="margin-top: 15px;">
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Mood:</div>
+                    <div class="mood-selector" id="moodSelector">
+                        <button class="mood-btn" data-mood="happy" onclick="selectMood(this)">😊 Happy</button>
+                        <button class="mood-btn" data-mood="neutral" onclick="selectMood(this)">😐 Neutral</button>
+                        <button class="mood-btn" data-mood="sad" onclick="selectMood(this)">😔 Sad</button>
+                        <button class="mood-btn" data-mood="stressed" onclick="selectMood(this)">😫 Stressed</button>
+                        <button class="mood-btn" data-mood="motivated" onclick="selectMood(this)">🚀 Motivated</button>
+                        <button class="mood-btn" data-mood="tired" onclick="selectMood(this)">😴 Tired</button>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Tags (optional):</div>
+                    <div class="input-group">
+                        <input type="text" id="thoughtTagInput" placeholder="Add a tag (press Enter)">
+                        <button class="btn btn-thoughts" onclick="addThoughtTag()">
+                            <span>+</span> Add
+                        </button>
+                    </div>
+                    <div class="tag-input" id="thoughtTagsContainer">
+                        <!-- Tags will appear here -->
+                    </div>
+                </div>
+                
+                <button class="btn btn-thoughts" onclick="addThought()" style="width: 100%; margin-top: 20px;">
+                    <span>💾</span> Save Thought
+                </button>
+            </section>
+
+            <section class="sr-section">
+                <h2 class="section-title">
+                    <span>📖</span> My Thoughts
+                </h2>
+                <div id="thoughtsList">
+                    <!-- Thoughts will be loaded here -->
+                </div>
+            </section>
+
+            <div class="controls-grid">
+                <button class="btn btn-danger" onclick="clearAllThoughts()">
+                    <span>🗑️</span> Clear All Thoughts
+                </button>
+                <button class="btn btn-warning" onclick="exportThoughts()">
+                    <span>📤</span> Export Thoughts
+                </button>
+            </div>
+        </div>
+
+        <!-- NOTES PAGE -->
+        <div id="notesPage" class="page">
+            <section class="sr-section">
+                <h2 class="section-title">
+                    <span>📝</span> Create Special Note
+                </h2>
+                <div class="input-group">
+                    <input type="text" id="noteTitle" placeholder="Note title (e.g., Important Formula, Exam Tips)">
+                </div>
+                <textarea id="noteContent" placeholder="Write your special notes here... This could be important formulas, study tips, reminders, or anything special you want to remember."></textarea>
+                
+                <div style="margin-top: 15px;">
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Priority:</div>
+                    <div class="priority-selector" id="prioritySelector">
+                        <button class="priority-btn" data-priority="low" onclick="selectPriority(this)">📌 Low</button>
+                        <button class="priority-btn" data-priority="medium" onclick="selectPriority(this)">📍 Medium</button>
+                        <button class="priority-btn" data-priority="high" onclick="selectPriority(this)">🔴 High</button>
+                        <button class="priority-btn" data-priority="critical" onclick="selectPriority(this)">🚨 Critical</button>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Category:</div>
+                    <select id="noteCategory" style="width: 100%;">
+                        <option value="formulas">📐 Formulas</option>
+                        <option value="concepts">🧠 Concepts</option>
+                        <option value="tips">💡 Study Tips</option>
+                        <option value="reminders">🔔 Reminders</option>
+                        <option value="resources">📚 Resources</option>
+                        <option value="personal">⭐ Personal</option>
+                        <option value="other">📝 Other</option>
+                    </select>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Tags (optional):</div>
+                    <div class="input-group">
+                        <input type="text" id="noteTagInput" placeholder="Add a tag (press Enter)">
+                        <button class="btn btn-notes" onclick="addNoteTag()">
+                            <span>+</span> Add
+                        </button>
+                    </div>
+                    <div class="tag-input" id="noteTagsContainer">
+                        <!-- Tags will appear here -->
+                    </div>
+                </div>
+                
+                <button class="btn btn-notes" onclick="addNote()" style="width: 100%; margin-top: 20px;">
+                    <span>💾</span> Save Note
+                </button>
+            </section>
+
+            <section class="sr-section">
+                <h2 class="section-title">
+                    <span>📋</span> My Notes
+                </h2>
+                <div style="margin-bottom: 15px;">
+                    <input type="text" id="searchNotes" placeholder="🔍 Search notes..." style="width: 100%;">
+                </div>
+                <div id="notesList">
+                    <!-- Notes will be loaded here -->
+                </div>
+            </section>
+
+            <div class="controls-grid">
+                <button class="btn btn-danger" onclick="clearAllNotes()">
+                    <span>🗑️</span> Clear All Notes
+                </button>
+                <button class="btn btn-success" onclick="exportNotes()">
+                    <span>📤</span> Export Notes
+                </button>
+                <button class="btn btn-info" onclick="backupAllData()">
+                    <span>💾</span> Backup All
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Notification -->
@@ -1259,6 +1618,8 @@
         let currentTaskIndex = 0;
         let topics = [];
         let tasks = [];
+        let thoughts = [];
+        let notes = [];
         let currentCycle = 1;
         let deferredPrompt = null;
         let isStandalone = false;
@@ -1269,6 +1630,10 @@
         let screenKeepAliveInterval = null;
         let batteryCheckInterval = null;
         let lastUserInteraction = Date.now();
+        let currentMood = 'neutral';
+        let currentPriority = 'medium';
+        let thoughtTags = [];
+        let noteTags = [];
 
         // ========== 8-CYCLE TIMETABLE ==========
         const fullTimetable = [
@@ -1337,14 +1702,13 @@
             { time: "11:25-11:30", task: "Wind Down", type: "long_break", cycle: 8, done: false }
         ];
 
-        // ========== KEEP SCREEN ON FUNCTIONS (WORKING VERSION) ==========
+        // ========== KEEP SCREEN ON FUNCTIONS ==========
         function detectIOS() {
             isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             if (isIOS) {
                 document.getElementById('iosWarning').style.display = 'block';
                 document.getElementById('timerStatus').textContent = 'Use "Keep Screen On" mode';
                 
-                // Show battery status if available
                 if (navigator.getBattery) {
                     document.getElementById('batteryStatus').style.display = 'flex';
                     updateBatteryStatus();
@@ -1352,29 +1716,17 @@
             }
         }
 
-        function setupIOSScreenOn() {
-            if (!isIOS) return;
-            
-            // iOS-specific setup
-            const meta = document.createElement('meta');
-            meta.name = 'apple-mobile-web-app-capable';
-            meta.content = 'yes';
-            document.head.appendChild(meta);
-        }
-
-        // SIMPLE AND RELIABLE SCREEN ON MODE
         async function toggleScreenOnMode() {
             if (screenOnMode) {
-                // Turn OFF screen on mode
+                // Turn OFF
                 screenOnMode = false;
                 stopScreenKeepAlive();
                 updateScreenOnUI(false);
                 showNotification('Screen On mode turned OFF');
             } else {
-                // Turn ON screen on mode
+                // Turn ON
                 screenOnMode = true;
                 
-                // Show instructions for iOS
                 if (isIOS) {
                     const confirmed = confirm(
                         '📱 iPhone Users:\n\n' +
@@ -1392,14 +1744,12 @@
                     }
                 }
                 
-                // Start screen keep-alive methods
                 const success = startScreenKeepAlive();
                 
                 if (success) {
                     updateScreenOnUI(true);
                     showNotification('Screen On mode enabled! ⚡\nKeep app open and plug in charger.');
                     
-                    // Start timer automatically if not running
                     setTimeout(() => {
                         if (!isRunning && confirm('Start timer with Screen On mode?')) {
                             startTimer();
@@ -1416,7 +1766,6 @@
 
         function startScreenKeepAlive() {
             try {
-                // Method 1: Create hidden video (works on most browsers)
                 const video = document.createElement('video');
                 video.setAttribute('playsinline', '');
                 video.setAttribute('webkit-playsinline', '');
@@ -1425,7 +1774,6 @@
                 video.height = 2;
                 video.loop = true;
                 
-                // Create a minimal silent video
                 const canvas = document.createElement('canvas');
                 canvas.width = 2;
                 canvas.height = 2;
@@ -1433,11 +1781,9 @@
                 ctx.fillStyle = 'black';
                 ctx.fillRect(0, 0, 2, 2);
                 
-                // Capture stream and assign to video
                 const stream = canvas.captureStream(1);
                 video.srcObject = stream;
                 
-                // Play video
                 const playPromise = video.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(e => {
@@ -1445,28 +1791,24 @@
                     });
                 }
                 
-                // Store for cleanup
                 window._screenKeepAliveVideo = video;
                 
-                // Method 2: Periodic activity simulation
                 screenKeepAliveInterval = setInterval(() => {
                     if (screenOnMode && isRunning) {
-                        // Simulate user activity to keep screen awake
                         simulateUserActivity();
                     }
-                }, 15000); // Every 15 seconds
+                }, 15000);
                 
                 console.log('Screen keep-alive started');
                 return true;
             } catch (error) {
                 console.error('Failed to start screen keep-alive:', error);
                 
-                // Fallback: Just use periodic simulation
                 screenKeepAliveInterval = setInterval(() => {
                     if (screenOnMode && isRunning) {
                         simulateUserActivity();
                     }
-                }, 10000); // Every 10 seconds
+                }, 10000);
                 
                 return true;
             }
@@ -1474,17 +1816,13 @@
 
         function simulateUserActivity() {
             try {
-                // Dispatch multiple events to simulate user activity
                 const events = ['mousemove', 'touchstart', 'scroll'];
                 events.forEach(eventType => {
                     const event = new Event(eventType, { bubbles: true });
                     document.dispatchEvent(event);
                 });
                 
-                // Also dispatch focus event on window
                 window.dispatchEvent(new Event('focus'));
-                
-                // Update last interaction time
                 lastUserInteraction = Date.now();
                 
                 console.log('Screen keep-alive triggered at', new Date().toLocaleTimeString());
@@ -1494,13 +1832,11 @@
         }
 
         function stopScreenKeepAlive() {
-            // Clear interval
             if (screenKeepAliveInterval) {
                 clearInterval(screenKeepAliveInterval);
                 screenKeepAliveInterval = null;
             }
             
-            // Stop and remove video
             if (window._screenKeepAliveVideo) {
                 try {
                     window._screenKeepAliveVideo.pause();
@@ -1512,7 +1848,6 @@
                 delete window._screenKeepAliveVideo;
             }
             
-            // Clear battery check interval
             if (batteryCheckInterval) {
                 clearInterval(batteryCheckInterval);
                 batteryCheckInterval = null;
@@ -1531,10 +1866,9 @@
                 status.className = 'screen-on-status';
                 status.style.display = 'block';
                 
-                // Start battery monitoring
                 if (navigator.getBattery) {
                     updateBatteryStatus();
-                    batteryCheckInterval = setInterval(updateBatteryStatus, 60000); // Check every minute
+                    batteryCheckInterval = setInterval(updateBatteryStatus, 60000);
                 }
             } else {
                 btn.innerHTML = '<span>⚡</span> Keep Screen On Mode';
@@ -1572,7 +1906,6 @@
                     `;
                     document.getElementById('batteryStatus').className = `battery-status ${batteryClass}`;
                     
-                    // Warn if battery is low and not charging
                     if (screenOnMode && !charging && level < 20) {
                         showNotification('⚠️ Battery low! Plug in charger to keep screen on.');
                     }
@@ -1593,6 +1926,456 @@
             }
         }
 
+        // ========== THOUGHTS FUNCTIONS ==========
+        function selectMood(button) {
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+            currentMood = button.getAttribute('data-mood');
+        }
+
+        function addThoughtTag() {
+            const tagInput = document.getElementById('thoughtTagInput');
+            const tagText = tagInput.value.trim();
+            
+            if (!tagText) return;
+            
+            if (!thoughtTags.includes(tagText)) {
+                thoughtTags.push(tagText);
+                renderThoughtTags();
+                tagInput.value = '';
+            }
+        }
+
+        function renderThoughtTags() {
+            const container = document.getElementById('thoughtTagsContainer');
+            container.innerHTML = '';
+            
+            thoughtTags.forEach((tag, index) => {
+                const tagElement = document.createElement('div');
+                tagElement.className = 'tag';
+                tagElement.innerHTML = `
+                    ${tag}
+                    <button class="tag-remove" onclick="removeThoughtTag(${index})">×</button>
+                `;
+                container.appendChild(tagElement);
+            });
+        }
+
+        function removeThoughtTag(index) {
+            thoughtTags.splice(index, 1);
+            renderThoughtTags();
+        }
+
+        function addThought() {
+            const titleInput = document.getElementById('thoughtTitle');
+            const contentInput = document.getElementById('thoughtContent');
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+            
+            if (!content) {
+                showNotification('Please write something in your thought');
+                return;
+            }
+            
+            const thought = {
+                id: Date.now(),
+                title: title || 'Untitled Thought',
+                content: content,
+                mood: currentMood,
+                tags: [...thoughtTags],
+                date: new Date().toISOString()
+            };
+            
+            thoughts.push(thought);
+            saveThoughts();
+            renderThoughts();
+            
+            titleInput.value = '';
+            contentInput.value = '';
+            thoughtTags = [];
+            renderThoughtTags();
+            
+            showNotification('Thought saved! 💭');
+        }
+
+        function renderThoughts() {
+            const container = document.getElementById('thoughtsList');
+            container.innerHTML = '';
+            
+            if (thoughts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💭</div>
+                        <h3>No thoughts yet</h3>
+                        <p>Write your first thought above!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const sortedThoughts = [...thoughts].sort((a, b) => {
+                return new Date(b.date) - new Date(a.date);
+            });
+            
+            const moodIcons = {
+                'happy': '😊',
+                'neutral': '😐',
+                'sad': '😔',
+                'stressed': '😫',
+                'motivated': '🚀',
+                'tired': '😴'
+            };
+            
+            sortedThoughts.forEach(thought => {
+                const date = new Date(thought.date);
+                const dateStr = date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const thoughtElement = document.createElement('div');
+                thoughtElement.className = 'thought-item';
+                
+                let tagsHTML = '';
+                if (thought.tags.length > 0) {
+                    tagsHTML = `
+                        <div class="thought-tags">
+                            ${thought.tags.map(tag => `<span class="thought-tag">${tag}</span>`).join('')}
+                        </div>
+                    `;
+                }
+                
+                thoughtElement.innerHTML = `
+                    <div class="thought-header">
+                        <div class="thought-title">
+                            ${moodIcons[thought.mood] || '💭'} ${thought.title}
+                        </div>
+                        <button class="delete-btn" onclick="deleteThought(${thought.id})" title="Delete this thought">
+                            ×
+                        </button>
+                    </div>
+                    <div class="thought-content">
+                        ${thought.content.replace(/\n/g, '<br>')}
+                    </div>
+                    ${tagsHTML}
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 15px;">
+                        ${dateStr}
+                    </div>
+                `;
+                
+                container.appendChild(thoughtElement);
+            });
+        }
+
+        function deleteThought(thoughtId) {
+            const thoughtIndex = thoughts.findIndex(t => t.id === thoughtId);
+            if (thoughtIndex !== -1) {
+                thoughts.splice(thoughtIndex, 1);
+                saveThoughts();
+                renderThoughts();
+                showNotification('Thought deleted');
+            }
+        }
+
+        function clearAllThoughts() {
+            if (thoughts.length === 0) {
+                showNotification('No thoughts to clear');
+                return;
+            }
+            
+            if (confirm('Are you sure? This will delete ALL your thoughts permanently!')) {
+                thoughts = [];
+                saveThoughts();
+                renderThoughts();
+                showNotification('All thoughts cleared');
+            }
+        }
+
+        function exportThoughts() {
+            if (thoughts.length === 0) {
+                showNotification('No thoughts to export');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(thoughts, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'my-thoughts-' + new Date().toISOString().split('T')[0] + '.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showNotification('Thoughts exported! 📤');
+        }
+
+        function loadThoughts() {
+            const savedThoughts = localStorage.getItem('studyThoughts');
+            if (savedThoughts) {
+                thoughts = JSON.parse(savedThoughts);
+                renderThoughts();
+            }
+        }
+
+        function saveThoughts() {
+            localStorage.setItem('studyThoughts', JSON.stringify(thoughts));
+        }
+
+        // ========== NOTES FUNCTIONS ==========
+        function selectPriority(button) {
+            document.querySelectorAll('.priority-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+            currentPriority = button.getAttribute('data-priority');
+        }
+
+        function addNoteTag() {
+            const tagInput = document.getElementById('noteTagInput');
+            const tagText = tagInput.value.trim();
+            
+            if (!tagText) return;
+            
+            if (!noteTags.includes(tagText)) {
+                noteTags.push(tagText);
+                renderNoteTags();
+                tagInput.value = '';
+            }
+        }
+
+        function renderNoteTags() {
+            const container = document.getElementById('noteTagsContainer');
+            container.innerHTML = '';
+            
+            noteTags.forEach((tag, index) => {
+                const tagElement = document.createElement('div');
+                tagElement.className = 'tag';
+                tagElement.innerHTML = `
+                    ${tag}
+                    <button class="tag-remove" onclick="removeNoteTag(${index})">×</button>
+                `;
+                container.appendChild(tagElement);
+            });
+        }
+
+        function removeNoteTag(index) {
+            noteTags.splice(index, 1);
+            renderNoteTags();
+        }
+
+        function addNote() {
+            const titleInput = document.getElementById('noteTitle');
+            const contentInput = document.getElementById('noteContent');
+            const categorySelect = document.getElementById('noteCategory');
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+            const category = categorySelect.value;
+            
+            if (!content) {
+                showNotification('Please write something in your note');
+                return;
+            }
+            
+            const note = {
+                id: Date.now(),
+                title: title || 'Untitled Note',
+                content: content,
+                priority: currentPriority,
+                category: category,
+                tags: [...noteTags],
+                date: new Date().toISOString()
+            };
+            
+            notes.push(note);
+            saveNotes();
+            renderNotes();
+            
+            titleInput.value = '';
+            contentInput.value = '';
+            noteTags = [];
+            renderNoteTags();
+            
+            showNotification('Note saved! 📝');
+        }
+
+        function renderNotes() {
+            const container = document.getElementById('notesList');
+            container.innerHTML = '';
+            
+            if (notes.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <h3>No notes yet</h3>
+                        <p>Create your first special note above!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const sortedNotes = [...notes].sort((a, b) => {
+                const priorityOrder = { 'critical': 0, 'high': 1, 'medium': 2, 'low': 3 };
+                return priorityOrder[a.priority] - priorityOrder[b.priority] || new Date(b.date) - new Date(a.date);
+            });
+            
+            const priorityIcons = {
+                'low': '📌',
+                'medium': '📍',
+                'high': '🔴',
+                'critical': '🚨'
+            };
+            
+            const categoryIcons = {
+                'formulas': '📐',
+                'concepts': '🧠',
+                'tips': '💡',
+                'reminders': '🔔',
+                'resources': '📚',
+                'personal': '⭐',
+                'other': '📝'
+            };
+            
+            sortedNotes.forEach(note => {
+                const date = new Date(note.date);
+                const dateStr = date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const noteElement = document.createElement('div');
+                noteElement.className = 'note-item';
+                
+                let tagsHTML = '';
+                if (note.tags.length > 0) {
+                    tagsHTML = `
+                        <div class="note-tags">
+                            ${note.tags.map(tag => `<span class="note-tag">${tag}</span>`).join('')}
+                        </div>
+                    `;
+                }
+                
+                noteElement.innerHTML = `
+                    <div class="note-header">
+                        <div class="note-title">
+                            ${priorityIcons[note.priority] || '📝'} ${categoryIcons[note.category] || '📝'} ${note.title}
+                        </div>
+                        <button class="delete-btn" onclick="deleteNote(${note.id})" title="Delete this note">
+                            ×
+                        </button>
+                    </div>
+                    <div class="note-content">
+                        ${note.content.replace(/\n/g, '<br>')}
+                    </div>
+                    ${tagsHTML}
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 15px;">
+                        ${dateStr}
+                    </div>
+                `;
+                
+                container.appendChild(noteElement);
+            });
+        }
+
+        function deleteNote(noteId) {
+            const noteIndex = notes.findIndex(n => n.id === noteId);
+            if (noteIndex !== -1) {
+                notes.splice(noteIndex, 1);
+                saveNotes();
+                renderNotes();
+                showNotification('Note deleted');
+            }
+        }
+
+        function clearAllNotes() {
+            if (notes.length === 0) {
+                showNotification('No notes to clear');
+                return;
+            }
+            
+            if (confirm('Are you sure? This will delete ALL your notes permanently!')) {
+                notes = [];
+                saveNotes();
+                renderNotes();
+                showNotification('All notes cleared');
+            }
+        }
+
+        function exportNotes() {
+            if (notes.length === 0) {
+                showNotification('No notes to export');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(notes, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'my-notes-' + new Date().toISOString().split('T')[0] + '.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showNotification('Notes exported! 📤');
+        }
+
+        function backupAllData() {
+            const allData = {
+                topics: topics,
+                tasks: tasks,
+                thoughts: thoughts,
+                notes: notes,
+                cycles: fullTimetable.filter(t => t.done),
+                timestamp: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(allData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'studymaster-backup-' + new Date().toISOString().split('T')[0] + '.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showNotification('All data backed up! 💾');
+        }
+
+        function loadNotes() {
+            const savedNotes = localStorage.getItem('studyNotes');
+            if (savedNotes) {
+                notes = JSON.parse(savedNotes);
+                renderNotes();
+            }
+        }
+
+        function saveNotes() {
+            localStorage.setItem('studyNotes', JSON.stringify(notes));
+        }
+
+        // ========== SEARCH NOTES ==========
+        document.getElementById('searchNotes').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const noteElements = document.querySelectorAll('.note-item');
+            
+            noteElements.forEach(element => {
+                const text = element.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    element.style.display = 'block';
+                } else {
+                    element.style.display = 'none';
+                }
+            });
+        });
+
         // ========== TIMER FUNCTIONS ==========
         function saveTimerState() {
             const timerState = {
@@ -1612,23 +2395,20 @@
                 try {
                     const state = JSON.parse(saved);
                     timeLeft = state.timeLeft || 35 * 60;
-                    isRunning = false; // Always stop when restoring on iOS
+                    isRunning = false;
                     isBreak = state.isBreak || false;
                     currentTaskIndex = state.currentTaskIndex || 0;
                     timerStartTime = state.startTime;
                     estimatedEndTime = state.estimatedEndTime;
                     
-                    // If there was a running timer, show what happened
                     if (state.isRunning && state.estimatedEndTime) {
                         const now = Date.now();
                         const endTime = new Date(state.estimatedEndTime);
                         
                         if (now >= endTime) {
-                            // Timer should have completed
                             showNotification('Timer completed while app was closed!');
                             timerComplete();
                         } else {
-                            // Timer was interrupted
                             const remaining = Math.floor((endTime - now) / 1000);
                             timeLeft = remaining > 0 ? remaining : 35 * 60;
                             
@@ -1647,19 +2427,8 @@
             }
         }
 
-        function scheduleNotificationForTimerEnd() {
-            if (!("Notification" in window)) return;
-            
-            if (Notification.permission === "granted") {
-                estimatedEndTime = new Date(Date.now() + (timeLeft * 1000));
-                saveTimerState();
-            }
-        }
-
-        // ========== POMODORO TIMER FUNCTIONS ==========
         function startTimer() {
             if (!isRunning) {
-                // Check if screen on mode is recommended for iOS
                 if (isIOS && !screenOnMode && !localStorage.getItem('iosScreenWarningShown')) {
                     const useScreenMode = confirm(
                         "For best results on iPhone:\n\n" +
@@ -1672,7 +2441,7 @@
                     if (useScreenMode) {
                         toggleScreenOnMode();
                         localStorage.setItem('iosScreenWarningShown', 'true');
-                        return; // Let the screen mode callback start the timer
+                        return;
                     }
                     localStorage.setItem('iosScreenWarningShown', 'true');
                 }
@@ -1682,10 +2451,8 @@
                 
                 timerId = setInterval(updateTimer, 1000);
                 
-                // Schedule notification
                 scheduleNotificationForTimerEnd();
                 
-                // Update status
                 let statusText = 'Timer running';
                 if (isIOS && !screenOnMode) {
                     statusText = 'Timer running - Keep screen ON!';
@@ -1697,7 +2464,6 @@
                 showNotification('Timer started! ' + (screenOnMode ? 'Screen staying ON ⚡' : ''));
                 saveTimerState();
                 
-                // Start battery monitoring if in screen on mode
                 if (screenOnMode && navigator.getBattery) {
                     updateBatteryStatus();
                     batteryCheckInterval = setInterval(updateBatteryStatus, 60000);
@@ -1758,7 +2524,6 @@
             isRunning = false;
             clearInterval(timerId);
             
-            // Stop screen keep-alive if active
             if (screenOnMode) {
                 stopScreenKeepAlive();
                 screenOnMode = false;
@@ -1801,179 +2566,12 @@
             updateQuickStatus();
         }
 
-        // Handle visibility change
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                // App is in background
-                if (isRunning) {
-                    saveTimerState();
-                    
-                    if (isIOS && !screenOnMode) {
-                        // On iOS without screen on mode, timer pauses
-                        isRunning = false;
-                        clearInterval(timerId);
-                        showNotification('Timer paused (screen went off)');
-                    }
-                }
-            } else {
-                // App is in foreground
-                if (!isRunning) {
-                    // Check if timer should have completed
-                    const saved = localStorage.getItem('pomodoroTimerState');
-                    if (saved) {
-                        const state = JSON.parse(saved);
-                        if (state.isRunning && state.estimatedEndTime) {
-                            const now = Date.now();
-                            const endTime = new Date(state.estimatedEndTime);
-                            
-                            if (now >= endTime) {
-                                timerComplete();
-                            }
-                        }
-                    }
-                }
-                
-                // Update last interaction time
-                lastUserInteraction = Date.now();
-            }
-        });
-
-        // Handle user interaction to keep screen awake
-        document.addEventListener('touchstart', () => {
-            lastUserInteraction = Date.now();
-        });
-        
-        document.addEventListener('click', () => {
-            lastUserInteraction = Date.now();
-        });
-
-        // ========== APP INSTALLATION ==========
-        function checkInstallation() {
-            isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                          window.navigator.standalone;
+        function scheduleNotificationForTimerEnd() {
+            if (!("Notification" in window)) return;
             
-            if (isStandalone) {
-                console.log('Running as standalone app');
-                hideAllInstallPrompts();
-                return;
-            }
-            
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                setTimeout(showInstallBanner, 3000);
-                setTimeout(() => {
-                    if (!localStorage.getItem('installPromptDismissed')) {
-                        showInstallPrompt();
-                    }
-                }, 10000);
-            });
-            
-            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-            
-            if (isIOS && isSafari) {
-                setTimeout(() => {
-                    if (!localStorage.getItem('iosInstallShown')) {
-                        showNotification('Tap Share → "Add to Home Screen" to install!');
-                        showInstallBanner();
-                        localStorage.setItem('iosInstallShown', 'true');
-                    }
-                }, 5000);
-            }
-        }
-
-        function showInstallBanner() {
-            if (!isStandalone && !localStorage.getItem('installBannerDismissed')) {
-                document.getElementById('installBanner').style.display = 'flex';
-            }
-        }
-
-        function hideInstallBanner() {
-            document.getElementById('installBanner').style.display = 'none';
-            localStorage.setItem('installBannerDismissed', 'true');
-        }
-
-        function showInstallPrompt() {
-            if (!isStandalone && !localStorage.getItem('installPromptDismissed')) {
-                document.getElementById('installPrompt').style.display = 'block';
-            }
-        }
-
-        function hideInstallPrompt() {
-            document.getElementById('installPrompt').style.display = 'none';
-            localStorage.setItem('installPromptDismissed', 'true');
-        }
-
-        function hideAllInstallPrompts() {
-            hideInstallBanner();
-            hideInstallPrompt();
-            document.getElementById('installSection').style.display = 'none';
-        }
-
-        function installApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        showNotification('App installed! 🎉');
-                        hideAllInstallPrompts();
-                    }
-                    deferredPrompt = null;
-                });
-            } else {
-                showInstallHelp();
-            }
-        }
-
-        function showInstallHelp() {
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-            let message = '';
-            
-            if (isIOS) {
-                message = '1. Tap Share button\n2. Scroll down\n3. Tap "Add to Home Screen"\n4. Tap "Add"';
-            } else {
-                message = '1. Tap menu (⋮)\n2. Tap "Install app" or "Add to Home screen"\n3. Tap "Install"';
-            }
-            
-            showNotification('📱 Install instructions');
-            document.getElementById('installSection').style.display = 'block';
-            showPage('pomodoro');
-            
-            setTimeout(() => {
-                alert(`📱 How to Install StudyMaster:\n\n${message}\n\nOnce installed, it will open like a native app!`);
-            }, 500);
-        }
-
-        // ========== PAGE NAVIGATION ==========
-        function showPage(pageId, clickedElement = null) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.getElementById(pageId + 'Page').classList.add('active');
-            
-            if (clickedElement) {
-                clickedElement.classList.add('active');
-            } else {
-                document.querySelectorAll('.nav-tab').forEach(tab => {
-                    if (tab.getAttribute('onclick')?.includes(pageId)) {
-                        tab.classList.add('active');
-                    }
-                });
-            }
-            
-            if (pageId === 'pomodoro') {
-                updateQuickStatus();
-            } else if (pageId === 'cycle') {
-                loadCycle();
-            } else if (pageId === 'topics') {
-                loadTopics();
-            } else if (pageId === 'tasks') {
-                loadTasks();
+            if (Notification.permission === "granted") {
+                estimatedEndTime = new Date(Date.now() + (timeLeft * 1000));
+                saveTimerState();
             }
         }
 
@@ -2196,11 +2794,6 @@
             return result;
         }
 
-        function getTopicProgress(topic) {
-            const completed = Object.values(topic.completed).filter(c => c).length;
-            return `${completed}/4 reviews`;
-        }
-
         function renderTopics() {
             const container = document.getElementById('topicsList');
             container.innerHTML = '';
@@ -2267,12 +2860,12 @@
                     `;
                 });
                 
-                const progress = getTopicProgress(topic);
+                const progress = Object.values(topic.completed).filter(c => c).length;
                 
                 topicElement.innerHTML = `
                     <div class="topic-header">
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <button class="delete-topic-btn" onclick="deleteTopic(${topic.id})" 
+                            <button class="delete-btn" onclick="deleteTopic(${topic.id})" 
                                     title="Delete this topic">
                                 ×
                             </button>
@@ -2283,7 +2876,7 @@
                     <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;">
                         Added: ${topicDate.toLocaleDateString()}
                         <span style="margin-left: 10px; background: var(--primary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px;">
-                            ${progress}
+                            ${progress}/4 reviews
                         </span>
                     </div>
                     <div class="spaced-dates">
@@ -2691,6 +3284,8 @@
         function saveAllData() {
             saveTasks();
             saveTopics();
+            saveThoughts();
+            saveNotes();
             saveTimerState();
             saveScreenOnMode();
             showNotification('All data saved successfully! 💾');
@@ -2718,30 +3313,197 @@
             });
         }
 
-        // ========== iOS INPUT FIX ==========
-        function fixIOSInput() {
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        // ========== PAGE NAVIGATION ==========
+        function showPage(pageId, clickedElement = null) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
             
-            if (isIOS) {
-                document.addEventListener('touchstart', function(e) {
-                    const target = e.target;
-                    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT') {
-                        setTimeout(() => {
-                            target.focus();
-                        }, 100);
-                    }
-                });
-                
-                document.addEventListener('focusin', function(e) {
-                    const target = e.target;
-                    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-                        setTimeout(() => {
-                            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }, 300);
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(pageId + 'Page').classList.add('active');
+            
+            if (clickedElement) {
+                clickedElement.classList.add('active');
+            } else {
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    if (tab.getAttribute('onclick')?.includes(pageId)) {
+                        tab.classList.add('active');
                     }
                 });
             }
+            
+            if (pageId === 'pomodoro') {
+                updateQuickStatus();
+            } else if (pageId === 'cycle') {
+                loadCycle();
+            } else if (pageId === 'topics') {
+                loadTopics();
+            } else if (pageId === 'tasks') {
+                loadTasks();
+            } else if (pageId === 'thoughts') {
+                loadThoughts();
+                // Set default mood button as active
+                document.querySelector('.mood-btn[data-mood="neutral"]').classList.add('active');
+            } else if (pageId === 'notes') {
+                loadNotes();
+                // Set default priority button as active
+                document.querySelector('.priority-btn[data-priority="medium"]').classList.add('active');
+            }
         }
+
+        // ========== APP INSTALLATION ==========
+        function checkInstallation() {
+            isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                          window.navigator.standalone;
+            
+            if (isStandalone) {
+                console.log('Running as standalone app');
+                hideAllInstallPrompts();
+                return;
+            }
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                setTimeout(showInstallBanner, 3000);
+                setTimeout(() => {
+                    if (!localStorage.getItem('installPromptDismissed')) {
+                        showInstallPrompt();
+                    }
+                }, 10000);
+            });
+            
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            
+            if (isIOS && isSafari) {
+                setTimeout(() => {
+                    if (!localStorage.getItem('iosInstallShown')) {
+                        showNotification('Tap Share → "Add to Home Screen" to install!');
+                        showInstallBanner();
+                        localStorage.setItem('iosInstallShown', 'true');
+                    }
+                }, 5000);
+            }
+        }
+
+        function showInstallBanner() {
+            if (!isStandalone && !localStorage.getItem('installBannerDismissed')) {
+                document.getElementById('installBanner').style.display = 'flex';
+            }
+        }
+
+        function hideInstallBanner() {
+            document.getElementById('installBanner').style.display = 'none';
+            localStorage.setItem('installBannerDismissed', 'true');
+        }
+
+        function showInstallPrompt() {
+            if (!isStandalone && !localStorage.getItem('installPromptDismissed')) {
+                document.getElementById('installPrompt').style.display = 'block';
+            }
+        }
+
+        function hideInstallPrompt() {
+            document.getElementById('installPrompt').style.display = 'none';
+            localStorage.setItem('installPromptDismissed', 'true');
+        }
+
+        function hideAllInstallPrompts() {
+            hideInstallBanner();
+            hideInstallPrompt();
+            document.getElementById('installSection').style.display = 'none';
+        }
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        showNotification('App installed! 🎉');
+                        hideAllInstallPrompts();
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                showInstallHelp();
+            }
+        }
+
+        function showInstallHelp() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            let message = '';
+            
+            if (isIOS) {
+                message = '1. Tap Share button\n2. Scroll down\n3. Tap "Add to Home Screen"\n4. Tap "Add"';
+            } else {
+                message = '1. Tap menu (⋮)\n2. Tap "Install app" or "Add to Home screen"\n3. Tap "Install"';
+            }
+            
+            showNotification('📱 Install instructions');
+            document.getElementById('installSection').style.display = 'block';
+            showPage('pomodoro');
+            
+            setTimeout(() => {
+                alert(`📱 How to Install StudyMaster:\n\n${message}\n\nOnce installed, it will open like a native app!`);
+            }, 500);
+        }
+
+        // ========== EVENT LISTENERS ==========
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                if (isRunning) {
+                    saveTimerState();
+                    
+                    if (isIOS && !screenOnMode) {
+                        isRunning = false;
+                        clearInterval(timerId);
+                        showNotification('Timer paused (screen went off)');
+                    }
+                }
+            } else {
+                if (!isRunning) {
+                    const saved = localStorage.getItem('pomodoroTimerState');
+                    if (saved) {
+                        const state = JSON.parse(saved);
+                        if (state.isRunning && state.estimatedEndTime) {
+                            const now = Date.now();
+                            const endTime = new Date(state.estimatedEndTime);
+                            
+                            if (now >= endTime) {
+                                timerComplete();
+                            }
+                        }
+                    }
+                }
+                lastUserInteraction = Date.now();
+            }
+        });
+
+        document.addEventListener('touchstart', () => {
+            lastUserInteraction = Date.now();
+        });
+        
+        document.addEventListener('click', () => {
+            lastUserInteraction = Date.now();
+        });
+
+        // Handle Enter key for tag inputs
+        document.getElementById('thoughtTagInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addThoughtTag();
+            }
+        });
+
+        document.getElementById('noteTagInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addNoteTag();
+            }
+        });
 
         // ========== INITIALIZATION ==========
         function init() {
@@ -2750,13 +3512,12 @@
             document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
             
             detectIOS();
-            if (isIOS) {
-                setupIOSScreenOn();
-            }
             restoreScreenOnMode();
             loadCycle();
             loadTopics();
             loadTasks();
+            loadThoughts();
+            loadNotes();
             restoreTimerState();
             
             updateDisplay();
@@ -2764,9 +3525,7 @@
             
             restoreScheduledReminders();
             checkInstallation();
-            fixIOSInput();
             
-            // Request notification permission
             if (!("Notification" in window)) {
                 console.log("This browser does not support notifications");
             } else if (Notification.permission === "granted") {
