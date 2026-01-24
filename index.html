@@ -846,6 +846,29 @@
             border-radius: 10px;
             margin-left: 5px;
         }
+
+        /* Background timer indicator */
+        .background-timer-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(76, 201, 240, 0.2);
+            color: var(--success);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: none;
+        }
+
+        .background-timer-indicator.active {
+            display: block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
     </style>
 </head>
 <body data-theme="light">
@@ -881,6 +904,11 @@
     </div>
 
     <div class="container">
+        <!-- Background Timer Indicator -->
+        <div id="backgroundTimerIndicator" class="background-timer-indicator">
+            ⏰ Working in background
+        </div>
+
         <!-- Header -->
         <header class="header">
             <div class="logo">
@@ -922,6 +950,9 @@
                 <div class="timer-display" id="timer">35:00</div>
                 <div class="progress-container">
                     <div class="progress-bar" id="progress"></div>
+                </div>
+                <div style="font-size: 14px; color: var(--text-muted); margin-top: 15px;">
+                    ⏱️ Timer works even when screen is off!
                 </div>
             </section>
 
@@ -1120,6 +1151,7 @@
         let audioContext;
         let timeLeft = 35 * 60;
         let timerId = null;
+        let backgroundTimerId = null;
         let isRunning = false;
         let isBreak = false;
         let currentTaskIndex = 0;
@@ -1128,6 +1160,9 @@
         let currentCycle = 1;
         let deferredPrompt = null;
         let isStandalone = false;
+        let wakeLock = null;
+        let lastTimerUpdate = Date.now();
+        let timerStartTime = null;
 
         // ========== 8-CYCLE TIMETABLE ==========
         const fullTimetable = [
@@ -1195,6 +1230,241 @@
             { time: "11:00-11:25", task: "Study Session", type: "study", cycle: 8, done: false },
             { time: "11:25-11:30", task: "Wind Down", type: "long_break", cycle: 8, done: false }
         ];
+
+        // ========== BACKGROUND TIMER FUNCTIONS ==========
+        async function requestWakeLock() {
+            if ('wakeLock' in navigator) {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    console.log('Wake Lock activated - Screen will stay on');
+                    document.getElementById('backgroundTimerIndicator').classList.add('active');
+                } catch (err) {
+                    console.log('Wake Lock failed:', err.message);
+                }
+            }
+        }
+
+        function releaseWakeLock() {
+            if (wakeLock) {
+                wakeLock.release();
+                wakeLock = null;
+                console.log('Wake Lock released');
+                document.getElementById('backgroundTimerIndicator').classList.remove('active');
+            }
+        }
+
+        function saveTimerState() {
+            const timerState = {
+                timeLeft: timeLeft,
+                isRunning: isRunning,
+                isBreak: isBreak,
+                currentTaskIndex: currentTaskIndex,
+                startTime: timerStartTime,
+                lastUpdate: lastTimerUpdate
+            };
+            localStorage.setItem('pomodoroTimerState', JSON.stringify(timerState));
+        }
+
+        function restoreTimerState() {
+            const saved = localStorage.getItem('pomodoroTimerState');
+            if (saved) {
+                try {
+                    const state = JSON.parse(saved);
+                    timeLeft = state.timeLeft || 35 * 60;
+                    isRunning = state.isRunning || false;
+                    isBreak = state.isBreak || false;
+                    currentTaskIndex = state.currentTaskIndex || 0;
+                    timerStartTime = state.startTime;
+                    lastTimerUpdate = state.lastUpdate || Date.now();
+                    
+                    if (isRunning && timerStartTime) {
+                        const now = Date.now();
+                        const elapsed = Math.floor((now - lastTimerUpdate) / 1000);
+                        
+                        if (elapsed > 0) {
+                            timeLeft = Math.max(0, state.timeLeft - elapsed);
+                            lastTimerUpdate = now;
+                            
+                            if (timeLeft <= 0) {
+                                timerComplete();
+                                isRunning = false;
+                            } else {
+                                startBackgroundTimer();
+                                requestWakeLock();
+                            }
+                        }
+                    }
+                    
+                    updateDisplay();
+                    showNotification('Timer state restored');
+                } catch (e) {
+                    console.log('Error restoring timer state:', e);
+                }
+            }
+        }
+
+        function startBackgroundTimer() {
+            if (isRunning) {
+                const now = Date.now();
+                const elapsed = Math.floor((now - lastTimerUpdate) / 1000);
+                
+                if (elapsed > 0) {
+                    timeLeft -= elapsed;
+                    lastTimerUpdate = now;
+                    
+                    if (timeLeft <= 0) {
+                        timerComplete();
+                        return;
+                    }
+                    
+                    updateDisplay();
+                    saveTimerState();
+                }
+                
+                backgroundTimerId = setTimeout(startBackgroundTimer, 1000);
+            }
+        }
+
+        function timerComplete() {
+            isRunning = false;
+            clearInterval(timerId);
+            clearTimeout(backgroundTimerId);
+            releaseWakeLock();
+            
+            if (currentTaskIndex < fullTimetable.length) {
+                fullTimetable[currentTaskIndex].done = true;
+                saveCycleProgress();
+                
+                if (soundEnabled) testBell();
+                
+                currentTaskIndex++;
+                
+                if (currentTaskIndex < fullTimetable.length) {
+                    const nextTask = fullTimetable[currentTaskIndex];
+                    isBreak = (nextTask.type === 'break' || nextTask.type === 'long_break');
+                    timeLeft = (nextTask.type === 'long_break') ? 20 * 60 : 5 * 60;
+                    
+                    setTimeout(() => {
+                        showNotification(isBreak ? 'Break time! ☕' : 'Study time! 📚');
+                        startTimer();
+                    }, 2000);
+                }
+            }
+            
+            showNotification('Timer completed! 🎉');
+            
+            if (Notification.permission === "granted") {
+                new Notification("StudyMaster Timer", {
+                    body: isBreak ? "Break time is over! ⏰" : "Study session completed! 📚",
+                    icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234361ee'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E",
+                    tag: "timer-complete"
+                });
+            }
+            
+            localStorage.removeItem('pomodoroTimerState');
+            updateQuickStatus();
+        }
+
+        // Handle visibility change
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                console.log('App is in background');
+                saveTimerState();
+            } else {
+                console.log('App is in foreground');
+                if (isRunning) {
+                    const now = Date.now();
+                    const elapsed = Math.floor((now - lastTimerUpdate) / 1000);
+                    
+                    if (elapsed > 0) {
+                        timeLeft -= elapsed;
+                        lastTimerUpdate = now;
+                        
+                        if (timeLeft <= 0) {
+                            timerComplete();
+                        } else {
+                            updateDisplay();
+                        }
+                    }
+                }
+            }
+        });
+
+        // Handle page becoming visible
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                console.log('Page restored from bfcache');
+                restoreTimerState();
+            }
+        });
+
+        // ========== POMODORO TIMER FUNCTIONS ==========
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                timerStartTime = Date.now();
+                lastTimerUpdate = Date.now();
+                
+                timerId = setInterval(updateTimer, 1000);
+                startBackgroundTimer();
+                requestWakeLock();
+                
+                showNotification('Timer started! Focus time 🎯');
+                saveTimerState();
+            }
+        }
+
+        function pauseTimer() {
+            isRunning = false;
+            clearInterval(timerId);
+            clearTimeout(backgroundTimerId);
+            releaseWakeLock();
+            showNotification('Timer paused');
+            saveTimerState();
+        }
+
+        function resetTimer() {
+            isRunning = false;
+            clearInterval(timerId);
+            clearTimeout(backgroundTimerId);
+            releaseWakeLock();
+            timeLeft = isBreak ? 5 * 60 : 35 * 60;
+            updateDisplay();
+            showNotification('Timer reset');
+            localStorage.removeItem('pomodoroTimerState');
+        }
+
+        function skipBreak() {
+            if (isBreak && currentTaskIndex < fullTimetable.length) {
+                isBreak = false;
+                timeLeft = 35 * 60;
+                currentTaskIndex++;
+                updateDisplay();
+                showNotification('Break skipped');
+                saveTimerState();
+            }
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            lastTimerUpdate = Date.now();
+            updateDisplay();
+            
+            if (timeLeft <= 0) {
+                timerComplete();
+            }
+        }
+
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const totalTime = isBreak ? 5 * 60 : 35 * 60;
+            const progressPercent = 100 - ((timeLeft / totalTime) * 100);
+            document.getElementById('progress').style.width = progressPercent + '%';
+        }
 
         // ========== APP INSTALLATION ==========
         function checkInstallation() {
@@ -1328,6 +1598,15 @@
         }
 
         // ========== CYCLE SYSTEM ==========
+        function saveCycleProgress() {
+            const savedProgress = JSON.parse(localStorage.getItem('cycleProgress') || '{}');
+            fullTimetable.forEach(task => {
+                const key = `${task.cycle}-${task.time}`;
+                savedProgress[key] = task.done;
+            });
+            localStorage.setItem('cycleProgress', JSON.stringify(savedProgress));
+        }
+
         function loadCycle() {
             currentCycle = parseInt(localStorage.getItem('currentCycle')) || 1;
             document.getElementById('currentCycleDisplay').textContent = currentCycle;
@@ -1640,13 +1919,11 @@
             });
         }
 
-        // ===== TOPIC DELETION FUNCTIONS =====
         function toggleTopicDate(topicId, dayKey) {
             const topic = topics.find(t => t.id === topicId);
             if (topic) {
                 topic.completed[dayKey] = !topic.completed[dayKey];
                 
-                // If Day 10 is marked as reviewed, auto-delete the topic
                 if (dayKey === 'day10' && topic.completed.day10) {
                     setTimeout(() => {
                         deleteTopic(topicId);
@@ -1913,79 +2190,6 @@
             }
         }
 
-        // ========== POMODORO TIMER ==========
-        function startTimer() {
-            if (!isRunning) {
-                isRunning = true;
-                timerId = setInterval(updateTimer, 1000);
-                showNotification('Timer started! Focus time 🎯');
-            }
-        }
-
-        function pauseTimer() {
-            isRunning = false;
-            clearInterval(timerId);
-            showNotification('Timer paused');
-        }
-
-        function resetTimer() {
-            clearInterval(timerId);
-            isRunning = false;
-            timeLeft = isBreak ? 5 * 60 : 35 * 60;
-            updateDisplay();
-            showNotification('Timer reset');
-        }
-
-        function skipBreak() {
-            if (isBreak && currentTaskIndex < fullTimetable.length) {
-                isBreak = false;
-                timeLeft = 35 * 60;
-                currentTaskIndex++;
-                updateDisplay();
-                showNotification('Break skipped');
-            }
-        }
-
-        function updateTimer() {
-            timeLeft--;
-            updateDisplay();
-            
-            if (timeLeft <= 0) {
-                clearInterval(timerId);
-                isRunning = false;
-                
-                if (currentTaskIndex < fullTimetable.length) {
-                    fullTimetable[currentTaskIndex].done = true;
-                    
-                    if (soundEnabled) testBell();
-                    
-                    currentTaskIndex++;
-                    
-                    if (currentTaskIndex < fullTimetable.length) {
-                        const nextTask = fullTimetable[currentTaskIndex];
-                        isBreak = (nextTask.type === 'break' || nextTask.type === 'long_break');
-                        timeLeft = (nextTask.type === 'long_break') ? 20 * 60 : 5 * 60;
-                        
-                        setTimeout(() => {
-                            showNotification(isBreak ? 'Break time! ☕' : 'Study time! 📚');
-                            startTimer();
-                        }, 2000);
-                    }
-                }
-            }
-        }
-
-        function updateDisplay() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            document.getElementById('timer').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            const totalTime = isBreak ? 5 * 60 : 35 * 60;
-            const progressPercent = 100 - ((timeLeft / totalTime) * 100);
-            document.getElementById('progress').style.width = progressPercent + '%';
-        }
-
         // ========== SOUND SYSTEM ==========
         function enableSound() {
             try {
@@ -2107,6 +2311,7 @@
         function saveAllData() {
             saveTasks();
             saveTopics();
+            saveTimerState();
             showNotification('All data saved successfully! 💾');
         }
 
@@ -2166,6 +2371,7 @@
             loadCycle();
             loadTopics();
             loadTasks();
+            restoreTimerState();
             
             updateDisplay();
             updateQuickStatus();
@@ -2174,12 +2380,32 @@
             checkInstallation();
             fixIOSInput();
             
+            // Request notification permission
+            if (!("Notification" in window)) {
+                console.log("This browser does not support notifications");
+            } else if (Notification.permission === "granted") {
+                console.log("Notification permission already granted");
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        console.log("Notification permission granted");
+                    }
+                });
+            }
+            
             document.addEventListener('click', function initSound() {
                 if (!soundEnabled) {
                     setTimeout(enableSound, 100);
                 }
                 document.removeEventListener('click', initSound);
             });
+            
+            // Auto-save timer state every 10 seconds
+            setInterval(() => {
+                if (isRunning) {
+                    saveTimerState();
+                }
+            }, 10000);
             
             showPage('pomodoro');
         }
