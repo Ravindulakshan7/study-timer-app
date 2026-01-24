@@ -3,17 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyFocus Timer</title>
+    <title>StudyMaster Pro</title>
     
-    <!-- ===== APP ICONS ===== -->
-    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%234361ee;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%233a0ca3;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='url(%23grad)'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='Arial, sans-serif'%3E⏰📚%3C/text%3E%3C/svg%3E">
-    <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%234361ee'/%3E%3Ctext x='16' y='22' font-size='18' text-anchor='middle' fill='white'%3E⏰%3C/text%3E%3C/svg%3E">
-    <link rel="icon" type="image/png" sizes="16x16" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%234361ee'/%3E%3Ctext x='8' y='12' font-size='9' text-anchor='middle' fill='white'%3E⏰%3C/text%3E%3C/svg%3E">
-    
-    <!-- iOS App Metadata -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="StudyFocus">
+    <!-- App Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%234361ee;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%233a0ca3;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='url(%23grad)'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white' font-family='Arial, sans-serif'%3E📚🧠%3C/text%3E%3C/svg%3E">
     
     <style>
         /* ===== CSS RESET ===== */
@@ -34,6 +27,7 @@
             --success: #4cc9f0;
             --warning: #f8961e;
             --danger: #f94144;
+            --info: #7209b7;
             
             --bg-primary: #ffffff;
             --bg-secondary: #f8f9fa;
@@ -60,6 +54,7 @@
             --success: #5acff2;
             --warning: #f9a826;
             --danger: #fa5254;
+            --info: #8a2be2;
             
             --bg-primary: #121212;
             --bg-secondary: #1e1e1e;
@@ -90,7 +85,7 @@
             padding: 20px;
         }
 
-        /* ===== HEADER ===== */
+        /* ===== HEADER & NAVIGATION ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -155,7 +150,52 @@
             border-color: var(--primary);
         }
 
-        /* ===== TIMER DISPLAY ===== */
+        /* ===== MAIN NAVIGATION ===== */
+        .nav-tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 10px;
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        /* ===== PAGES ===== */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== POMODORO PAGE ===== */
         .timer-section {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -192,7 +232,6 @@
             transition: width 1s linear;
         }
 
-        /* ===== CONTROL BUTTONS ===== */
         .controls-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -200,43 +239,8 @@
             margin-bottom: 25px;
         }
 
-        .btn {
-            padding: 18px 24px;
-            border: none;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            color: white;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            grid-column: span 2;
-        }
-
-        .btn-secondary {
-            background: var(--bg-card);
-            color: var(--text-primary);
-            border: 2px solid var(--border);
-        }
-
-        .btn-success { background: linear-gradient(135deg, var(--success), #38bdf8); }
-        .btn-warning { background: linear-gradient(135deg, var(--warning), #f59e0b); }
-        .btn-danger { background: linear-gradient(135deg, var(--danger), #ef4444); }
-        .btn-accent { background: linear-gradient(135deg, var(--accent), #ec4899); }
-
-        /* ===== SOUND SECTION ===== */
-        .sound-section {
+        /* ===== SPACED REPETITION PAGE ===== */
+        .sr-section {
             background: var(--bg-card);
             border-radius: var(--radius);
             padding: 25px;
@@ -254,31 +258,241 @@
             margin-bottom: 20px;
         }
 
-        .sound-controls {
+        .topic-input-section {
             display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .topic-input-section input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .topic-input-section input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .topic-item {
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+
+        .topic-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow);
+        }
+
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .topic-name {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .topic-date {
+            font-size: 14px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .spaced-dates {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .spaced-date {
+            text-align: center;
+            padding: 12px 5px;
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .spaced-date:hover {
+            transform: translateY(-2px);
+        }
+
+        .spaced-date.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        .spaced-date.upcoming {
+            background: var(--warning);
+            color: white;
+        }
+
+        .spaced-date.missed {
+            background: var(--danger);
+            color: white;
+        }
+
+        .date-label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .date-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* ===== TASK MANAGEMENT ===== */
+        .task-input-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .tasks-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .task-item {
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .task-item:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .task-item.completed {
+            background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(76, 201, 240, 0.05));
+            opacity: 0.8;
+        }
+
+        .task-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
             gap: 15px;
         }
 
-        .sound-btn {
-            flex: 1;
-            padding: 16px;
-            border-radius: 12px;
+        .task-checkbox {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
             border: 2px solid var(--border);
-            background: var(--bg-input);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .task-checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .task-text {
+            font-weight: 500;
             color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .task-text.completed {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .task-date {
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
+            color: white;
         }
 
-        .sound-btn:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
+        .btn:active {
+            transform: scale(0.98);
         }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        }
+
+        .btn-success { background: linear-gradient(135deg, var(--success), #38bdf8); }
+        .btn-warning { background: linear-gradient(135deg, var(--warning), #f59e0b); }
+        .btn-danger { background: linear-gradient(135deg, var(--danger), #ef4444); }
+        .btn-accent { background: linear-gradient(135deg, var(--accent), #ec4899); }
+        .btn-info { background: linear-gradient(135deg, var(--info), #7209b7); }
 
         /* ===== STATUS CARD ===== */
         .status-card {
@@ -303,206 +517,6 @@
             font-size: 16px;
             opacity: 0.95;
             line-height: 1.5;
-        }
-
-        /* ===== SCHEDULE ===== */
-        .schedule-section {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 25px;
-            margin-bottom: 25px;
-            border: 1px solid var(--border);
-        }
-
-        .schedule-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .cycle-nav {
-            display: flex;
-            gap: 10px;
-        }
-
-        .nav-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: var(--bg-input);
-            border: 2px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-primary);
-            font-weight: bold;
-            transition: var(--transition);
-        }
-
-        .nav-btn:hover {
-            border-color: var(--primary);
-            background: var(--primary);
-            color: white;
-        }
-
-        .cycle-header {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            padding: 16px;
-            border-radius: 12px;
-            margin: 20px 0 15px;
-            font-weight: 600;
-            text-align: center;
-            font-size: 16px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .task-item {
-            background: var(--bg-input);
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: var(--transition);
-            border: 1px solid transparent;
-        }
-
-        .task-item:hover {
-            border-color: var(--primary);
-            transform: translateX(4px);
-        }
-
-        .task-item.current {
-            background: linear-gradient(135deg, rgba(248, 150, 30, 0.1), rgba(248, 150, 30, 0.05));
-            border-left: 4px solid var(--warning);
-        }
-
-        .task-item.completed {
-            background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(76, 201, 240, 0.05));
-            opacity: 0.8;
-        }
-
-        .task-item.next {
-            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(67, 97, 238, 0.05));
-        }
-
-        .task-info {
-            flex: 1;
-        }
-
-        .task-time {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-
-        .task-activity {
-            color: var(--text-secondary);
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .task-status {
-            font-size: 28px;
-            min-width: 40px;
-            text-align: center;
-        }
-
-        /* ===== RESET BUTTON ===== */
-        .reset-section {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .btn-reset {
-            background: var(--bg-input);
-            color: var(--text-primary);
-            border: 2px solid var(--border);
-            padding: 16px 32px;
-            border-radius: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-reset:hover {
-            border-color: var(--danger);
-            color: var(--danger);
-            transform: translateY(-2px);
-        }
-
-        /* ===== INFO PAGE ===== */
-        .info-page {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--bg-primary);
-            z-index: 1000;
-            padding: 20px;
-            overflow-y: auto;
-            display: none;
-        }
-
-        .info-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .info-content {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .info-section {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 25px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .info-section h3 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            color: var(--text-primary);
-        }
-
-        .info-item {
-            margin-bottom: 15px;
-        }
-
-        .info-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .info-item strong {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-
-        .info-item p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.6;
         }
 
         /* ===== NOTIFICATION ===== */
@@ -532,6 +546,64 @@
             }
         }
 
+        /* ===== CYCLE PAGE ===== */
+        .cycle-section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .cycle-header {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 16px;
+            border-radius: 12px;
+            margin: 20px 0 15px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 16px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .cycle-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .nav-cycle-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-weight: bold;
+            font-size: 18px;
+            transition: var(--transition);
+        }
+
+        .nav-cycle-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .current-cycle {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin: 15px 0;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
             .container {
@@ -546,12 +618,13 @@
                 grid-template-columns: 1fr;
             }
             
-            .btn-primary {
-                grid-column: span 1;
+            .spaced-dates {
+                grid-template-columns: repeat(2, 1fr);
             }
             
-            .sound-controls {
-                flex-direction: column;
+            .nav-tab {
+                padding: 12px 8px;
+                font-size: 14px;
             }
         }
 
@@ -566,192 +639,216 @@
             animation: ring 0.3s ease-in-out 3;
             color: var(--accent) !important;
         }
-
-        .fade-in {
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
     </style>
 </head>
 <body data-theme="light">
-    <!-- Main App -->
     <div class="container">
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <div class="logo-icon">⏰📚</div>
+                <div class="logo-icon">📚🧠</div>
                 <div class="logo-text">
-                    <h1>StudyFocus</h1>
+                    <h1>StudyMaster</h1>
                     <p>A/L Maths Stream</p>
                 </div>
             </div>
             <div class="header-actions">
-                <button class="icon-button" onclick="showInfoPage()" title="Info">
-                    ℹ️
-                </button>
                 <button class="icon-button" onclick="toggleTheme()" id="themeBtn" title="Toggle Theme">
                     🌙
                 </button>
             </div>
         </header>
 
-        <!-- Timer Section -->
-        <section class="timer-section fade-in">
-            <div class="timer-display" id="timer">35:00</div>
-            <div class="progress-container">
-                <div class="progress-bar" id="progress"></div>
-            </div>
-        </section>
-
-        <!-- Sound Controls -->
-        <section class="sound-section fade-in">
-            <h2 class="section-title">
-                <span>🔊</span> Sound Setup
-            </h2>
-            <div class="sound-controls">
-                <button class="sound-btn" onclick="enableSound()" id="soundBtn">
-                    <span>🔓</span> Enable Sound
-                </button>
-                <button class="sound-btn" onclick="testBell()">
-                    <span>🔔</span> Test Bell
-                </button>
-            </div>
-        </section>
-
-        <!-- Main Controls -->
-        <div class="controls-grid fade-in">
-            <button class="btn btn-success" onclick="startTimer()">
-                <span>▶</span> Start Study
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showPage('cycle')">
+                🔄 Cycles
             </button>
-            <button class="btn btn-warning" onclick="pauseTimer()">
-                <span>⏸</span> Pause
+            <button class="nav-tab" onclick="showPage('pomodoro')">
+                ⏰ Pomodoro
             </button>
-            <button class="btn btn-danger" onclick="resetTimer()">
-                <span>🔄</span> Reset
+            <button class="nav-tab" onclick="showPage('spaced')">
+                📚 Topics
             </button>
-            <button class="btn btn-accent" onclick="skipBreak()">
-                <span>⏭</span> Skip Break
+            <button class="nav-tab" onclick="showPage('tasks')">
+                ✅ Tasks
             </button>
         </div>
 
-        <!-- Status -->
-        <div class="status-card fade-in">
-            <div class="status-header">
-                <span>📊</span> Current Status
-            </div>
-            <div class="status-text" id="status">
-                Cycle 1 - Study Session (35min) ⏸ Ready
-            </div>
-        </div>
-
-        <!-- Schedule -->
-        <section class="schedule-section fade-in">
-            <div class="schedule-header">
+        <!-- ===== CYCLE PAGE ===== -->
+        <div id="cyclePage" class="page active">
+            <section class="cycle-section">
                 <h2 class="section-title">
-                    <span>📅</span> 8-Cycle Schedule
+                    <span>🔄</span> 8-Cycle Study Schedule
                 </h2>
+                
                 <div class="cycle-nav">
-                    <button class="nav-btn" onclick="prevCycle()">←</button>
-                    <span style="padding: 8px 15px; background: var(--bg-input); border-radius: 10px; font-weight: 600; color: var(--text-primary);" id="cycleDisplay">Cycle 1</span>
-                    <button class="nav-btn" onclick="nextCycle()">→</button>
+                    <button class="nav-cycle-btn" onclick="prevCycle()">←</button>
+                    <div class="current-cycle">Cycle <span id="currentCycleDisplay">1</span></div>
+                    <button class="nav-cycle-btn" onclick="nextCycle()">→</button>
+                </div>
+                
+                <div id="cycleSchedule">
+                    <!-- Cycle schedule will be loaded here -->
+                </div>
+            </section>
+
+            <div class="status-card">
+                <div class="status-header">
+                    <span>📊</span> Today's Progress
+                </div>
+                <div class="status-text" id="cycleStatus">
+                    No cycles completed yet. Start with Cycle 1!
                 </div>
             </div>
-            <div id="schedule"></div>
-        </section>
 
-        <!-- Reset -->
-        <div class="reset-section">
-            <button class="btn-reset" onclick="resetDay()">
-                <span>🔄</span> Reset Entire Day
-            </button>
+            <div class="controls-grid">
+                <button class="btn btn-success" onclick="startCycleTimer()">
+                    <span>▶</span> Start Cycle
+                </button>
+                <button class="btn btn-warning" onclick="resetCurrentCycle()">
+                    <span>🔄</span> Reset Cycle
+                </button>
+                <button class="btn btn-danger" onclick="resetAllCycles()">
+                    <span>🗑️</span> Reset All
+                </button>
+            </div>
         </div>
-    </div>
 
-    <!-- Info Page -->
-    <div id="infoPage" class="info-page">
-        <div class="info-content">
-            <div class="info-header">
-                <h2>📚 StudyFocus Guide</h2>
-                <button class="btn btn-secondary" onclick="hideInfoPage()">
-                    <span>←</span> Back
+        <!-- ===== POMODORO PAGE ===== -->
+        <div id="pomodoroPage" class="page">
+            <section class="timer-section">
+                <div class="timer-display" id="timer">35:00</div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress"></div>
+                </div>
+            </section>
+
+            <div class="controls-grid">
+                <button class="btn btn-success" onclick="startTimer()">
+                    <span>▶</span> Start Study
+                </button>
+                <button class="btn btn-warning" onclick="pauseTimer()">
+                    <span>⏸</span> Pause
+                </button>
+                <button class="btn btn-danger" onclick="resetTimer()">
+                    <span>🔄</span> Reset
+                </button>
+                <button class="btn btn-accent" onclick="skipBreak()">
+                    <span>⏭</span> Skip Break
                 </button>
             </div>
 
-            <!-- Launch Announcement -->
-            <div class="info-section">
-                <h3><span>🚀</span> App Launch</h3>
-                <div class="info-item">
-                    <strong>Join Our Community</strong>
-                    <p>Connect with fellow A/L students for support and motivation!</p>
-                    <p>📱 <strong>WhatsApp:</strong> Contact for group link</p>
-                    <p>📱 <strong>Telegram:</strong> @AL_Maths_Community</p>
+            <div class="status-card">
+                <div class="status-header">
+                    <span>📊</span> Current Status
                 </div>
-                <div class="info-item">
-                    <strong>About This App</strong>
-                    <p>Specially designed for mobile study sessions. Works best when added to Home Screen.</p>
+                <div class="status-text" id="status">
+                    Cycle 1 - Study Session (35min) ⏸ Ready
                 </div>
             </div>
 
-            <!-- How to Use -->
-            <div class="info-section">
-                <h3><span>🎯</span> How to Use</h3>
-                <div class="info-item">
-                    <strong>Step 1: Enable Sound</strong>
-                    <p>Tap "Enable Sound" then "Test Bell" to allow audio playback.</p>
+            <!-- Sound Controls -->
+            <section class="sr-section">
+                <h2 class="section-title">
+                    <span>🔊</span> Sound Setup
+                </h2>
+                <div class="controls-grid">
+                    <button class="btn btn-info" onclick="enableSound()" id="soundBtn">
+                        <span>🔓</span> Enable Sound
+                    </button>
+                    <button class="btn btn-primary" onclick="testBell()">
+                        <span>🔔</span> Test Bell
+                    </button>
                 </div>
-                <div class="info-item">
-                    <strong>Step 2: Start Studying</strong>
-                    <p>Click "Start Study" to begin 35-minute focused session.</p>
-                </div>
-                <div class="info-item">
-                    <strong>Step 3: Follow 8 Cycles</strong>
-                    <p>Complete all 8 cycles for 14 hours of focused study.</p>
-                </div>
-            </div>
+            </section>
+        </div>
 
-            <!-- 8-Cycle Schedule -->
-            <div class="info-section">
-                <h3><span>⏰</span> 8-Cycle Schedule</h3>
-                <div class="info-item">
-                    <strong>Cycle 1:</strong> 5:30 AM - 7:45 AM
+        <!-- ===== SPACED REPETITION TOPICS PAGE ===== -->
+        <div id="spacedPage" class="page">
+            <section class="sr-section">
+                <h2 class="section-title">
+                    <span>➕</span> Add Topic for Spaced Repetition
+                </h2>
+                <div class="topic-input-section">
+                    <input type="text" id="topicInput" placeholder="Enter topic name (e.g., Physics Unit 3)">
+                    <button class="btn btn-primary" onclick="addTopic()">
+                        <span>+</span> Add
+                    </button>
                 </div>
-                <div class="info-item">
-                    <strong>Cycle 2:</strong> 7:45 AM - 10:00 AM
-                </div>
-                <div class="info-item">
-                    <strong>Cycle 3:</strong> 10:00 AM - 12:35 PM
-                </div>
-                <div class="info-item">
-                    <strong>Cycle 4:</strong> 12:35 PM - 2:50 PM
-                </div>
-                <div class="info-item">
-                    <strong>Cycle 5:</strong> 2:50 PM - 5:05 PM
-                </div>
-                <div class="info-item">
-                    <strong>Cycle 6:</strong> 5:05 PM - 7:25 PM
-                </div>
-                <div class="info-item">
-                    <strong>Cycle 7:</strong> 7:25 PM - 9:40 PM
-                </div>
-                <div class="info-item">
-                    <strong>Cycle 8:</strong> 9:40 PM - 11:30 PM
-                </div>
-            </div>
+                <select id="subjectSelect" style="width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 12px; background: var(--bg-input); color: var(--text-primary); font-size: 16px; margin-bottom: 15px;">
+                    <option value="maths">Mathematics</option>
+                    <option value="physics">Physics</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="combined">Combined Maths</option>
+                    <option value="english">English</option>
+                    <option value="other">Other</option>
+                </select>
+                <p style="font-size: 14px; color: var(--text-muted); margin-top: 10px;">
+                    Topics will be reviewed on Day 1, 3, 6, 10
+                </p>
+            </section>
 
-            <!-- Sound Fix -->
-            <div class="info-section">
-                <h3><span>🔊</span> Sound Setup</h3>
-                <div class="info-item">
-                    <strong>iPhone Users</strong>
-                    <p>1. Tap "Enable Sound" first<br>
-                       2. Tap "Test Bell"<br>
-                       3. Allow audio when prompted<br>
-                       4. Check silent mode is off</p>
+            <section class="sr-section">
+                <h2 class="section-title">
+                    <span>📚</span> My Topics
+                </h2>
+                <div id="topicsList">
+                    <!-- Topics will be loaded here -->
                 </div>
+            </section>
+
+            <div class="controls-grid">
+                <button class="btn btn-success" onclick="markAllAsReviewed()">
+                    <span>✅</span> Mark Today as Reviewed
+                </button>
+                <button class="btn btn-warning" onclick="setTopicReminders()">
+                    <span>🔔</span> Set Reminders
+                </button>
+                <button class="btn btn-danger" onclick="clearCompletedTopics()">
+                    <span>🗑️</span> Clear Completed
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== TASKS PAGE ===== -->
+        <div id="tasksPage" class="page">
+            <section class="task-input-section">
+                <h2 class="section-title">
+                    <span>📝</span> Add Study Task
+                </h2>
+                <div class="input-group">
+                    <input type="text" id="taskInput" placeholder="Enter study task...">
+                    <button class="btn btn-primary" onclick="addTask()">
+                        <span>+</span> Add
+                    </button>
+                </div>
+                <select id="taskSubjectSelect" style="width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 12px; background: var(--bg-input); color: var(--text-primary); font-size: 16px; margin-bottom: 15px;">
+                    <option value="maths">Mathematics</option>
+                    <option value="physics">Physics</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="combined">Combined Maths</option>
+                    <option value="english">English</option>
+                    <option value="other">Other</option>
+                </select>
+            </section>
+
+            <section class="sr-section">
+                <h2 class="section-title">
+                    <span>✅</span> My Tasks
+                </h2>
+                <div class="tasks-list" id="tasksList">
+                    <!-- Tasks will be added here -->
+                </div>
+            </section>
+
+            <div class="controls-grid">
+                <button class="btn btn-danger" onclick="clearCompletedTasks()">
+                    <span>🗑️</span> Clear Completed
+                </button>
+                <button class="btn btn-info" onclick="saveAllData()">
+                    <span>💾</span> Save All Data
+                </button>
             </div>
         </div>
     </div>
@@ -768,10 +865,13 @@
         let isRunning = false;
         let isBreak = false;
         let currentTaskIndex = 0;
-        let currentDisplayCycle = 1;
+        let topics = [];
+        let tasks = [];
+        let currentCycle = 1;
+        let cycleTasks = [];
 
         // ========== COMPLETE 8-CYCLE TIMETABLE ==========
-        const timetable = [
+        const fullTimetable = [
             // ========== CYCLE 1 ==========
             { time: "5:30-6:05", task: "Study Session", type: "study", cycle: 1, done: false },
             { time: "6:05-6:10", task: "Short Break", type: "break", cycle: 1, done: false },
@@ -837,6 +937,637 @@
             { time: "11:25-11:30", task: "Wind Down", type: "long_break", cycle: 8, done: false }
         ];
 
+        // ========== PAGE NAVIGATION ==========
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId + 'Page').classList.add('active');
+            
+            // Activate selected tab
+            event.target.classList.add('active');
+            
+            // Load data for specific pages
+            if (pageId === 'cycle') {
+                loadCycle();
+            } else if (pageId === 'spaced') {
+                loadTopics();
+            } else if (pageId === 'tasks') {
+                loadTasks();
+            }
+        }
+
+        // ========== CYCLE SYSTEM ==========
+        function loadCycle() {
+            currentCycle = parseInt(localStorage.getItem('currentCycle')) || 1;
+            document.getElementById('currentCycleDisplay').textContent = currentCycle;
+            
+            // Filter tasks for current cycle
+            cycleTasks = fullTimetable.filter(task => task.cycle === currentCycle);
+            
+            // Load saved progress
+            const savedProgress = JSON.parse(localStorage.getItem('cycleProgress') || '{}');
+            cycleTasks.forEach(task => {
+                const key = `${task.cycle}-${task.time}`;
+                if (savedProgress[key]) {
+                    task.done = savedProgress[key];
+                }
+            });
+            
+            renderCycle();
+            updateCycleStatus();
+        }
+
+        function renderCycle() {
+            const container = document.getElementById('cycleSchedule');
+            container.innerHTML = '';
+            
+            const cycleTitle = document.createElement('div');
+            cycleTitle.className = 'cycle-header';
+            cycleTitle.textContent = `Cycle ${currentCycle} Schedule`;
+            container.appendChild(cycleTitle);
+            
+            cycleTasks.forEach((task, index) => {
+                const taskElement = document.createElement('div');
+                taskElement.className = `task-item ${task.done ? 'completed' : ''}`;
+                
+                const icon = task.type === 'study' ? '📚' : task.type === 'long_break' ? '🍽️' : '☕';
+                const globalIndex = fullTimetable.findIndex(t => t === task);
+                
+                taskElement.innerHTML = `
+                    <div class="task-info">
+                        <div class="task-checkbox ${task.done ? 'checked' : ''}" 
+                             onclick="toggleCycleTask(${globalIndex})">
+                            ${task.done ? '✓' : ''}
+                        </div>
+                        <div class="task-text ${task.done ? 'completed' : ''}">
+                            <div style="font-weight: 600;">${task.time}</div>
+                            <div style="font-size: 14px; color: var(--text-secondary);">${icon} ${task.task}</div>
+                        </div>
+                    </div>
+                    <div class="task-status">
+                        ${task.done ? '✅' : '⏳'}
+                    </div>
+                `;
+                
+                container.appendChild(taskElement);
+            });
+        }
+
+        function toggleCycleTask(globalIndex) {
+            const task = fullTimetable[globalIndex];
+            if (task) {
+                task.done = !task.done;
+                
+                // Save progress
+                const savedProgress = JSON.parse(localStorage.getItem('cycleProgress') || '{}');
+                const key = `${task.cycle}-${task.time}`;
+                savedProgress[key] = task.done;
+                localStorage.setItem('cycleProgress', JSON.stringify(savedProgress));
+                
+                renderCycle();
+                updateCycleStatus();
+                
+                if (task.done) {
+                    showNotification('Task marked as completed! ✅');
+                }
+            }
+        }
+
+        function nextCycle() {
+            if (currentCycle < 8) {
+                currentCycle++;
+                document.getElementById('currentCycleDisplay').textContent = currentCycle;
+                localStorage.setItem('currentCycle', currentCycle);
+                loadCycle();
+            }
+        }
+
+        function prevCycle() {
+            if (currentCycle > 1) {
+                currentCycle--;
+                document.getElementById('currentCycleDisplay').textContent = currentCycle;
+                localStorage.setItem('currentCycle', currentCycle);
+                loadCycle();
+            }
+        }
+
+        function updateCycleStatus() {
+            const completed = cycleTasks.filter(t => t.done).length;
+            const total = cycleTasks.length;
+            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            document.getElementById('cycleStatus').innerHTML = `
+                <strong>Cycle ${currentCycle}:</strong> ${completed}/${total} tasks completed<br>
+                <div style="height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; margin: 8px 0;">
+                    <div style="height: 100%; width: ${percent}%; background: var(--success); border-radius: 4px;"></div>
+                </div>
+                ${percent}% completed
+            `;
+        }
+
+        function startCycleTimer() {
+            // Find first incomplete task in current cycle
+            const incompleteTasks = cycleTasks.filter(task => !task.done);
+            if (incompleteTasks.length > 0) {
+                // Switch to pomodoro page
+                showPage('pomodoro');
+                showNotification(`Starting ${incompleteTasks[0].task} from Cycle ${currentCycle}`);
+            } else {
+                showNotification('All tasks in this cycle are completed! 🎉');
+            }
+        }
+
+        function resetCurrentCycle() {
+            if (confirm('Reset all tasks in current cycle?')) {
+                cycleTasks.forEach(task => {
+                    task.done = false;
+                });
+                
+                // Remove from saved progress
+                const savedProgress = JSON.parse(localStorage.getItem('cycleProgress') || '{}');
+                cycleTasks.forEach(task => {
+                    const key = `${task.cycle}-${task.time}`;
+                    delete savedProgress[key];
+                });
+                localStorage.setItem('cycleProgress', JSON.stringify(savedProgress));
+                
+                renderCycle();
+                updateCycleStatus();
+                showNotification('Cycle reset successfully');
+            }
+        }
+
+        function resetAllCycles() {
+            if (confirm('Reset ALL cycles? This cannot be undone.')) {
+                fullTimetable.forEach(task => {
+                    task.done = false;
+                });
+                localStorage.removeItem('cycleProgress');
+                localStorage.removeItem('currentCycle');
+                currentCycle = 1;
+                loadCycle();
+                showNotification('All cycles reset');
+            }
+        }
+
+        // ========== SPACED REPETITION TOPICS ==========
+        function addTopic() {
+            const topicInput = document.getElementById('topicInput');
+            const subjectSelect = document.getElementById('subjectSelect');
+            const topicText = topicInput.value.trim();
+            
+            if (!topicText) {
+                showNotification('Please enter a topic name');
+                return;
+            }
+            
+            const today = new Date();
+            const topic = {
+                id: Date.now(),
+                name: topicText,
+                subject: subjectSelect.value,
+                dateAdded: today.toISOString(),
+                spacedDates: {
+                    day1: today.toISOString(),
+                    day3: addDays(today, 2).toISOString(),
+                    day6: addDays(today, 5).toISOString(),
+                    day10: addDays(today, 9).toISOString()
+                },
+                completed: {
+                    day1: false,
+                    day3: false,
+                    day6: false,
+                    day10: false
+                },
+                remindersSet: false
+            };
+            
+            topics.push(topic);
+            saveTopics();
+            renderTopics();
+            
+            topicInput.value = '';
+            topicInput.focus();
+            
+            showNotification(`Topic added: ${topicText}`);
+        }
+
+        function addDays(date, days) {
+            const result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+
+        function renderTopics() {
+            const container = document.getElementById('topicsList');
+            container.innerHTML = '';
+            
+            if (topics.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        <div style="font-size: 48px; margin-bottom: 20px;">📚</div>
+                        <h3>No topics yet</h3>
+                        <p>Add your first topic for spaced repetition above!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            topics.forEach((topic, index) => {
+                const today = new Date();
+                const topicDate = new Date(topic.dateAdded);
+                const daysSinceAdded = Math.floor((today - topicDate) / (1000 * 60 * 60 * 24));
+                
+                const topicElement = document.createElement('div');
+                topicElement.className = 'topic-item';
+                
+                const subjectIcons = {
+                    'maths': '∫',
+                    'physics': '⚛️',
+                    'chemistry': '🧪',
+                    'combined': '🧮',
+                    'english': '📖',
+                    'other': '📝'
+                };
+                
+                const subjectNames = {
+                    'maths': 'Mathematics',
+                    'physics': 'Physics',
+                    'chemistry': 'Chemistry',
+                    'combined': 'Combined Maths',
+                    'english': 'English',
+                    'other': 'Other'
+                };
+                
+                const dates = [
+                    { label: 'Day 1', date: new Date(topic.spacedDates.day1), completed: topic.completed.day1 },
+                    { label: 'Day 3', date: new Date(topic.spacedDates.day3), completed: topic.completed.day3 },
+                    { label: 'Day 6', date: new Date(topic.spacedDates.day6), completed: topic.completed.day6 },
+                    { label: 'Day 10', date: new Date(topic.spacedDates.day10), completed: topic.completed.day10 }
+                ];
+                
+                let datesHTML = '';
+                dates.forEach((dateInfo, i) => {
+                    let dateClass = 'spaced-date';
+                    const dateStr = dateInfo.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    
+                    if (dateInfo.completed) {
+                        dateClass += ' completed';
+                    } else if (today >= dateInfo.date) {
+                        dateClass += ' missed';
+                    } else if (i === 0 && daysSinceAdded >= 0) {
+                        dateClass += ' upcoming';
+                    }
+                    
+                    datesHTML += `
+                        <div class="${dateClass}" onclick="toggleTopicDate(${topic.id}, 'day${(i+1)}')">
+                            <div class="date-label">${dateInfo.label}</div>
+                            <div class="date-value">${dateStr}</div>
+                        </div>
+                    `;
+                });
+                
+                topicElement.innerHTML = `
+                    <div class="topic-header">
+                        <div class="topic-name">${subjectIcons[topic.subject] || '📝'} ${topic.name}</div>
+                        <div class="topic-date">${subjectNames[topic.subject]}</div>
+                    </div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;">
+                        Added: ${topicDate.toLocaleDateString()}
+                    </div>
+                    <div class="spaced-dates">
+                        ${datesHTML}
+                    </div>
+                `;
+                
+                container.appendChild(topicElement);
+            });
+        }
+
+        function toggleTopicDate(topicId, day) {
+            const topic = topics.find(t => t.id === topicId);
+            if (topic) {
+                topic.completed[day] = !topic.completed[day];
+                saveTopics();
+                renderTopics();
+                
+                const dayNum = day.replace('day', '');
+                if (topic.completed[day]) {
+                    showNotification(`Marked Day ${dayNum} as reviewed for ${topic.name}`);
+                }
+            }
+        }
+
+        function markAllAsReviewed() {
+            const today = new Date();
+            const todayStr = today.toDateString();
+            
+            topics.forEach(topic => {
+                const dates = [
+                    { day: 'day1', date: new Date(topic.spacedDates.day1) },
+                    { day: 'day3', date: new Date(topic.spacedDates.day3) },
+                    { day: 'day6', date: new Date(topic.spacedDates.day6) },
+                    { day: 'day10', date: new Date(topic.spacedDates.day10) }
+                ];
+                
+                dates.forEach(dateInfo => {
+                    if (dateInfo.date.toDateString() === todayStr) {
+                        topic.completed[dateInfo.day] = true;
+                    }
+                });
+            });
+            
+            saveTopics();
+            renderTopics();
+            showNotification('Marked today\'s review dates as completed! ✅');
+        }
+
+        function setTopicReminders() {
+            if (!("Notification" in window)) {
+                showNotification("This browser doesn't support notifications");
+                return;
+            }
+            
+            if (Notification.permission === "granted") {
+                scheduleTopicReminders();
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        scheduleTopicReminders();
+                    }
+                });
+            }
+        }
+
+        function scheduleTopicReminders() {
+            topics.forEach(topic => {
+                const dates = [
+                    { day: 'Day 1', date: new Date(topic.spacedDates.day1) },
+                    { day: 'Day 3', date: new Date(topic.spacedDates.day3) },
+                    { day: 'Day 6', date: new Date(topic.spacedDates.day6) },
+                    { day: 'Day 10', date: new Date(topic.spacedDates.day10) }
+                ];
+                
+                dates.forEach(dateInfo => {
+                    scheduleReminderForDate(dateInfo.date, 9, 0, 
+                        `📚 ${topic.name} - Review ${dateInfo.day} of spaced repetition`);
+                });
+            });
+            
+            showNotification('Reminders set for all topics! 🔔');
+        }
+
+        function clearCompletedTopics() {
+            if (confirm('Remove topics where all 4 reviews are completed?')) {
+                topics = topics.filter(topic => {
+                    const allCompleted = topic.completed.day1 && 
+                                        topic.completed.day3 && 
+                                        topic.completed.day6 && 
+                                        topic.completed.day10;
+                    return !allCompleted;
+                });
+                
+                saveTopics();
+                renderTopics();
+                showNotification('Completed topics removed');
+            }
+        }
+
+        function loadTopics() {
+            const savedTopics = localStorage.getItem('spacedTopics');
+            if (savedTopics) {
+                topics = JSON.parse(savedTopics);
+                renderTopics();
+            }
+        }
+
+        function saveTopics() {
+            localStorage.setItem('spacedTopics', JSON.stringify(topics));
+        }
+
+        // ========== TASK MANAGEMENT ==========
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const subjectSelect = document.getElementById('taskSubjectSelect');
+            const taskText = taskInput.value.trim();
+            
+            if (!taskText) {
+                showNotification('Please enter a task');
+                return;
+            }
+            
+            const task = {
+                id: Date.now(),
+                text: taskText,
+                subject: subjectSelect.value,
+                completed: false,
+                date: new Date().toISOString()
+            };
+            
+            tasks.push(task);
+            saveTasks();
+            renderTasks();
+            
+            taskInput.value = '';
+            taskInput.focus();
+            
+            showNotification('Task added!');
+        }
+
+        function renderTasks() {
+            const tasksList = document.getElementById('tasksList');
+            tasksList.innerHTML = '';
+            
+            if (tasks.length === 0) {
+                tasksList.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">No tasks yet. Add your first task above!</p>';
+                return;
+            }
+            
+            // Sort tasks: incomplete first, then by date
+            const sortedTasks = [...tasks].sort((a, b) => {
+                if (a.completed !== b.completed) {
+                    return a.completed ? 1 : -1;
+                }
+                return new Date(b.date) - new Date(a.date);
+            });
+            
+            const subjectIcons = {
+                'maths': '∫',
+                'physics': '⚛️',
+                'chemistry': '🧪',
+                'combined': '🧮',
+                'english': '📖',
+                'other': '📝'
+            };
+            
+            sortedTasks.forEach(task => {
+                const date = new Date(task.date);
+                const dateStr = date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const taskElement = document.createElement('div');
+                taskElement.className = `task-item ${task.completed ? 'completed' : ''}`;
+                
+                taskElement.innerHTML = `
+                    <div class="task-info">
+                        <div class="task-checkbox ${task.completed ? 'checked' : ''}" 
+                             onclick="toggleTaskCompletion(${task.id})">
+                            ${task.completed ? '✓' : ''}
+                        </div>
+                        <div class="task-text ${task.completed ? 'completed' : ''}">
+                            ${subjectIcons[task.subject] || '📝'} ${task.text}
+                        </div>
+                    </div>
+                    <div class="task-date">${dateStr}</div>
+                `;
+                
+                tasksList.appendChild(taskElement);
+            });
+        }
+
+        function toggleTaskCompletion(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                saveTasks();
+                renderTasks();
+                
+                if (task.completed) {
+                    showNotification('Task completed! Good job! 🎉');
+                }
+            }
+        }
+
+        function loadTasks() {
+            const savedTasks = localStorage.getItem('studyTasks');
+            if (savedTasks) {
+                tasks = JSON.parse(savedTasks);
+                renderTasks();
+            }
+        }
+
+        function saveTasks() {
+            localStorage.setItem('studyTasks', JSON.stringify(tasks));
+        }
+
+        function clearCompletedTasks() {
+            if (confirm('Remove all completed tasks?')) {
+                tasks = tasks.filter(task => !task.completed);
+                saveTasks();
+                renderTasks();
+                showNotification('Completed tasks cleared');
+            }
+        }
+
+        // ========== POMODORO TIMER FUNCTIONS ==========
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                timerId = setInterval(updateTimer, 1000);
+                updateStatus();
+                showNotification('Timer started! Focus time 🎯');
+            }
+        }
+
+        function pauseTimer() {
+            isRunning = false;
+            clearInterval(timerId);
+            updateStatus();
+            showNotification('Timer paused');
+        }
+
+        function resetTimer() {
+            clearInterval(timerId);
+            isRunning = false;
+            timeLeft = isBreak ? 5 * 60 : 35 * 60;
+            updateDisplay();
+            updateStatus();
+            showNotification('Timer reset');
+        }
+
+        function skipBreak() {
+            if (isBreak && currentTaskIndex < fullTimetable.length) {
+                isBreak = false;
+                timeLeft = 35 * 60;
+                currentTaskIndex++;
+                updateDisplay();
+                updateStatus();
+                showNotification('Break skipped');
+            }
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            updateDisplay();
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerId);
+                isRunning = false;
+                
+                if (currentTaskIndex < fullTimetable.length) {
+                    fullTimetable[currentTaskIndex].done = true;
+                    
+                    // Play bell when timer ends
+                    if (soundEnabled) testBell();
+                    
+                    currentTaskIndex++;
+                    
+                    if (currentTaskIndex < fullTimetable.length) {
+                        const nextTask = fullTimetable[currentTaskIndex];
+                        isBreak = (nextTask.type === 'break' || nextTask.type === 'long_break');
+                        timeLeft = (nextTask.type === 'long_break') ? 20 * 60 : 5 * 60;
+                        
+                        setTimeout(() => {
+                            updateStatus();
+                            showNotification(isBreak ? 'Break time! ☕' : 'Study time! 📚');
+                            startTimer();
+                        }, 2000);
+                    }
+                }
+            }
+        }
+
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const totalTime = isBreak ? 5 * 60 : 35 * 60;
+            const progressPercent = 100 - ((timeLeft / totalTime) * 100);
+            document.getElementById('progress').style.width = progressPercent + '%';
+        }
+
+        function updateStatus() {
+            let status = "";
+            if (currentTaskIndex < fullTimetable.length) {
+                const task = fullTimetable[currentTaskIndex];
+                status = `Cycle ${task.cycle} - `;
+                
+                if (isBreak) {
+                    status += task.type === 'long_break' ? 'Long Break (20min)' : 'Short Break (5min)';
+                } else {
+                    status += 'Study Session (35min)';
+                }
+                
+                status += isRunning ? " ▶ Running" : " ⏸ Ready";
+            }
+            document.getElementById('status').textContent = status;
+        }
+
         // ========== SOUND SYSTEM ==========
         function enableSound() {
             try {
@@ -857,7 +1588,8 @@
                 
                 soundEnabled = true;
                 document.getElementById('soundBtn').innerHTML = '<span>✅</span> Sound Enabled';
-                document.getElementById('soundBtn').style.background = 'var(--bg-card)';
+                document.getElementById('soundBtn').classList.add('btn-success');
+                document.getElementById('soundBtn').classList.remove('btn-info');
                 showNotification('Sound enabled successfully! 🔊');
                 
             } catch (error) {
@@ -906,221 +1638,12 @@
             }
         }
 
-        // ========== TIMER FUNCTIONS ==========
-        function startTimer() {
-            if (!isRunning) {
-                isRunning = true;
-                timerId = setInterval(updateTimer, 1000);
-                updateStatus();
-            }
-        }
-
-        function pauseTimer() {
-            isRunning = false;
-            clearInterval(timerId);
-            updateStatus();
-        }
-
-        function resetTimer() {
-            clearInterval(timerId);
-            isRunning = false;
-            timeLeft = isBreak ? 5 * 60 : 35 * 60;
-            updateDisplay();
-            updateStatus();
-        }
-
-        function skipBreak() {
-            if (isBreak && currentTaskIndex < timetable.length) {
-                isBreak = false;
-                timeLeft = 35 * 60;
-                currentTaskIndex++;
-                updateDisplay();
-                renderSchedule();
-                updateStatus();
-            }
-        }
-
-        function updateTimer() {
-            timeLeft--;
-            updateDisplay();
-            
-            if (timeLeft <= 0) {
-                clearInterval(timerId);
-                isRunning = false;
-                
-                if (currentTaskIndex < timetable.length) {
-                    timetable[currentTaskIndex].done = true;
-                    
-                    // Play bell when timer ends
-                    if (soundEnabled) testBell();
-                    
-                    currentTaskIndex++;
-                    
-                    if (currentTaskIndex < timetable.length) {
-                        const nextTask = timetable[currentTaskIndex];
-                        isBreak = (nextTask.type === 'break' || nextTask.type === 'long_break');
-                        timeLeft = (nextTask.type === 'long_break') ? 20 * 60 : 5 * 60;
-                        
-                        setTimeout(() => {
-                            updateStatus();
-                            startTimer();
-                        }, 2000);
-                    }
-                    
-                    renderSchedule();
-                    saveProgress();
-                }
-            }
-        }
-
-        function updateDisplay() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            document.getElementById('timer').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            const totalTime = isBreak ? 5 * 60 : 35 * 60;
-            const progressPercent = 100 - ((timeLeft / totalTime) * 100);
-            document.getElementById('progress').style.width = progressPercent + '%';
-        }
-
-        function updateStatus() {
-            let status = "";
-            if (currentTaskIndex < timetable.length) {
-                const task = timetable[currentTaskIndex];
-                status = `Cycle ${task.cycle} - `;
-                
-                if (isBreak) {
-                    status += task.type === 'long_break' ? 'Long Break (20min)' : 'Short Break (5min)';
-                } else {
-                    status += 'Study Session (35min)';
-                }
-                
-                status += isRunning ? " ▶ Running" : " ⏸ Ready";
-            }
-            document.getElementById('status').textContent = status;
-        }
-
-        // ========== SCHEDULE RENDER ==========
-        function renderSchedule() {
-            let html = '';
-            
-            // Filter tasks for current display cycle
-            const cycleTasks = timetable.filter(task => task.cycle === currentDisplayCycle);
-            
-            // Update cycle display
-            document.getElementById('cycleDisplay').textContent = `Cycle ${currentDisplayCycle}`;
-            
-            cycleTasks.forEach((task, index) => {
-                const globalIndex = timetable.findIndex(t => 
-                    t.time === task.time && t.cycle === task.cycle
-                );
-                
-                let className = 'task-item';
-                if (globalIndex === currentTaskIndex) className += ' current';
-                else if (task.done) className += ' completed';
-                else if (globalIndex === currentTaskIndex + 1) className += ' next';
-                
-                let icon = task.type === 'study' ? '📚' : task.type === 'long_break' ? '🍽️' : '☕';
-                
-                html += `
-                    <div class="${className}" onclick="toggleTask(${globalIndex})">
-                        <div class="task-info">
-                            <div class="task-time">${task.time}</div>
-                            <div class="task-activity">${icon} ${task.task}</div>
-                        </div>
-                        <div class="task-status">
-                            ${task.done ? '✅' : (globalIndex === currentTaskIndex ? '▶️' : '⏳')}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            document.getElementById('schedule').innerHTML = html;
-        }
-
-        function toggleTask(index) {
-            if (index === currentTaskIndex && isRunning) {
-                if (confirm("Stop current timer and mark as done?")) {
-                    pauseTimer();
-                    timetable[index].done = true;
-                    currentTaskIndex++;
-                    timeLeft = 35 * 60;
-                    updateDisplay();
-                    renderSchedule();
-                    saveProgress();
-                }
-            } else {
-                timetable[index].done = !timetable[index].done;
-                renderSchedule();
-                saveProgress();
-            }
-        }
-
-        // Cycle navigation
-        function nextCycle() {
-            if (currentDisplayCycle < 8) {
-                currentDisplayCycle++;
-                renderSchedule();
-            }
-        }
-
-        function prevCycle() {
-            if (currentDisplayCycle > 1) {
-                currentDisplayCycle--;
-                renderSchedule();
-            }
-        }
-
-        function resetDay() {
-            if (confirm("Reset all progress for today?")) {
-                timetable.forEach(task => task.done = false);
-                currentTaskIndex = 0;
-                isBreak = false;
-                timeLeft = 35 * 60;
-                isRunning = false;
-                clearInterval(timerId);
-                updateDisplay();
-                renderSchedule();
-                updateStatus();
-                localStorage.removeItem('studyProgress');
-                localStorage.removeItem('currentTaskIndex');
-                showNotification('Day reset successfully! 🔄');
-            }
-        }
-
-        // ========== UTILITIES ==========
-        function saveProgress() {
-            const progress = timetable.map(task => task.done);
-            localStorage.setItem('studyProgress', JSON.stringify(progress));
-            localStorage.setItem('currentTaskIndex', currentTaskIndex.toString());
-        }
-
-        function loadProgress() {
-            const saved = localStorage.getItem('studyProgress');
-            if (saved) {
-                const progress = JSON.parse(saved);
-                timetable.forEach((task, i) => {
-                    if (progress[i]) task.done = progress[i];
-                });
-            }
-            const savedIndex = localStorage.getItem('currentTaskIndex');
-            if (savedIndex) currentTaskIndex = parseInt(savedIndex);
-        }
-
+        // ========== UTILITY FUNCTIONS ==========
         function showNotification(message) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
             notification.style.display = 'block';
             setTimeout(() => notification.style.display = 'none', 3000);
-        }
-
-        function showInfoPage() {
-            document.getElementById('infoPage').style.display = 'block';
-        }
-
-        function hideInfoPage() {
-            document.getElementById('infoPage').style.display = 'none';
         }
 
         function toggleTheme() {
@@ -1134,6 +1657,69 @@
             localStorage.setItem('theme', newTheme);
         }
 
+        function scheduleReminderForDate(date, hour, minute, message) {
+            const reminderTime = new Date(date);
+            reminderTime.setHours(hour, minute, 0, 0);
+            
+            const now = new Date();
+            const timeUntilReminder = reminderTime.getTime() - now.getTime();
+            
+            if (timeUntilReminder > 0) {
+                // Store reminder in localStorage for persistence
+                const reminders = JSON.parse(localStorage.getItem('scheduledReminders') || '[]');
+                reminders.push({
+                    time: reminderTime.getTime(),
+                    message: message
+                });
+                localStorage.setItem('scheduledReminders', JSON.stringify(reminders));
+                
+                setTimeout(() => {
+                    showNotification(message);
+                    
+                    // Also show browser notification if permission granted
+                    if (Notification.permission === "granted") {
+                        new Notification("StudyMaster Reminder", {
+                            body: message,
+                            icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234361ee'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E"
+                        });
+                    }
+                    
+                    // Remove from stored reminders
+                    const updatedReminders = reminders.filter(r => r.time !== reminderTime.getTime());
+                    localStorage.setItem('scheduledReminders', JSON.stringify(updatedReminders));
+                }, timeUntilReminder);
+            }
+        }
+
+        function saveAllData() {
+            saveTasks();
+            saveTopics();
+            localStorage.setItem('selectedSubjects', JSON.stringify([...selectedSubjects]));
+            showNotification('All data saved successfully! 💾');
+        }
+
+        function restoreScheduledReminders() {
+            const scheduledReminders = JSON.parse(localStorage.getItem('scheduledReminders') || '[]');
+            const now = Date.now();
+            
+            scheduledReminders.forEach(reminder => {
+                const timeUntilReminder = reminder.time - now;
+                
+                if (timeUntilReminder > 0) {
+                    setTimeout(() => {
+                        showNotification(reminder.message);
+                        
+                        if (Notification.permission === "granted") {
+                            new Notification("StudyMaster Reminder", {
+                                body: reminder.message,
+                                icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%234361ee'/%3E%3Ctext x='50' y='68' font-size='50' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E"
+                            });
+                        }
+                    }, timeUntilReminder);
+                }
+            });
+        }
+
         // ========== INITIALIZATION ==========
         function init() {
             // Load theme
@@ -1141,13 +1727,17 @@
             document.body.setAttribute('data-theme', savedTheme);
             document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
             
-            // Load progress
-            loadProgress();
+            // Load all data
+            loadCycle();
+            loadTopics();
+            loadTasks();
             
-            // Initial render
+            // Initial display
             updateDisplay();
-            renderSchedule();
             updateStatus();
+            
+            // Restore scheduled reminders
+            restoreScheduledReminders();
             
             // Auto-enable sound on first interaction
             document.addEventListener('click', function initSound() {
