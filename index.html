@@ -822,16 +822,16 @@
 
         <!-- Navigation Tabs -->
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="showPage('pomodoro')">
+            <button class="nav-tab active" onclick="showPage('pomodoro', this)">
                 ⏰ Pomodoro
             </button>
-            <button class="nav-tab" onclick="showPage('cycle')">
+            <button class="nav-tab" onclick="showPage('cycle', this)">
                 🔄 Cycles
             </button>
-            <button class="nav-tab" onclick="showPage('topics')">
+            <button class="nav-tab" onclick="showPage('topics', this)">
                 📚 Topics
             </button>
-            <button class="nav-tab" onclick="showPage('tasks')">
+            <button class="nav-tab" onclick="showPage('tasks', this)">
                 ✅ Tasks
             </button>
         </div>
@@ -1246,7 +1246,7 @@
         }
 
         // ========== PAGE NAVIGATION ==========
-        function showPage(pageId) {
+        function showPage(pageId, clickedElement = null) {
             // Hide all pages
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
@@ -1260,8 +1260,18 @@
             // Show selected page
             document.getElementById(pageId + 'Page').classList.add('active');
             
-            // Activate selected tab
-            event.target.classList.add('active');
+            // Activate selected tab (fix: check if clickedElement exists)
+            if (clickedElement) {
+                clickedElement.classList.add('active');
+            } else {
+                // Find the corresponding tab button and activate it
+                const tabButtons = document.querySelectorAll('.nav-tab');
+                tabButtons.forEach(tab => {
+                    if (tab.getAttribute('onclick')?.includes(pageId)) {
+                        tab.classList.add('active');
+                    }
+                });
+            }
             
             // Load data for specific pages
             if (pageId === 'pomodoro') {
@@ -2055,6 +2065,9 @@
                 document.body.style.paddingTop = 'calc(20px + env(safe-area-inset-top))';
                 document.body.style.paddingBottom = 'env(safe-area-inset-bottom)';
             }
+            
+            // Initial tab setup
+            showPage('pomodoro');
         }
 
         // Start the app
