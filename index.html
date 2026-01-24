@@ -2,18 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>StudyMaster Pro</title>
     
     <!-- ===== APP ICONS ===== -->
-    <!-- Apple Touch Icons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234361ee%22/><text x=%2250%22 y=%2268%22 font-size=%2250%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
-    <link rel="apple-touch-icon" sizes="152x152" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%234361ee%22/><text x=%2250%22 y=%2268%22 font-size=%2250%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2215%22 fill=%22%234361ee%22/><text x=%2250%22 y=%2268%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
-    <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%234361ee%22/><text x=%2216%22 y=%2222%22 font-size=%2216%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
-    <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2215%22 fill=%22%234361ee%22/><text x=%2250%22 y=%2268%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22white%22>📚</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='30' fill='%234361ee'/><text x='90' y='125' font-size='80' text-anchor='middle' fill='white'>📚</text></svg>">
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%234361ee'/><text x='32' y='45' font-size='32' text-anchor='middle' fill='white'>📚</text></svg>">
     
     <!-- ===== APP METADATA ===== -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,10 +15,10 @@
     <meta name="apple-mobile-web-app-title" content="StudyMaster">
     <meta name="theme-color" content="#4361ee">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Study Timer with Pomodoro & Spaced Repetition">
     
     <!-- PWA Manifest -->
-    <link rel="manifest" crossorigin="use-credentials" href="data:application/manifest+json,%7B%22name%22%3A%22StudyMaster%20Pro%22%2C%22short_name%22%3A%22StudyMaster%22%2C%22description%22%3A%22Study%20Timer%20with%20Pomodoro%20%26%20Spaced%20Repetition%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait%22%2C%22theme_color%22%3A%22%234361ee%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22categories%22%3A%5B%22education%22%2C%22productivity%22%2C%22utilities%22%5D%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2522http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%2522%2520viewBox%253D%25220%25200%2520192%2520192%2522%253E%253Crect%2520width%253D%2522192%2522%2520height%253D%2522192%2522%2520rx%253D%252240%2522%2520fill%253D%2522%25234361ee%2522%252F%253E%253Ctext%2520x%253D%252296%2522%2520y%253D%2522128%2522%2520font-size%253D%252296%2522%2520text-anchor%253D%2522middle%2522%2520fill%253D%2522white%2522%253E%25F0%259F%2593%259A%253C%252Ftext%253E%253C%252Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%2C%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2522http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%2522%2520viewBox%253D%25220%25200%2520512%2520512%2522%253E%253Crect%2520width%253D%2522512%2522%2520height%253D%2522512%2522%2520rx%253D%2522100%2522%2520fill%253D%2522%25234361ee%2522%252F%253E%253Ctext%2520x%253D%2522256%2522%2520y%253D%2522340%2522%2520font-size%253D%2522256%2522%2520text-anchor%253D%2522middle%2522%2520fill%253D%2522white%2522%253E%25F0%259F%2593%259A%253C%252Ftext%253E%253C%252Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22maskable%22%7D%5D%7D">
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22StudyMaster%20Pro%22%2C%22short_name%22%3A%22StudyMaster%22%2C%22description%22%3A%22Study%20Timer%20with%20Pomodoro%20%26%20Spaced%20Repetition%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait%22%2C%22theme_color%22%3A%22%234361ee%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22categories%22%3A%5B%22education%22%2C%22productivity%22%5D%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2522http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%2522%2520viewBox%253D%25220%25200%2520192%2520192%2522%253E%253Crect%2520width%253D%2522192%2522%2520height%253D%2522192%2522%2520rx%253D%252240%2522%2520fill%253D%2522%25234361ee%2522%252F%253E%253Ctext%2520x%253D%252296%2522%2520y%253D%2522128%2522%2520font-size%253D%252296%2522%2520text-anchor%253D%2522middle%2522%2520fill%253D%2522white%2522%253E%25F0%259F%2593%259A%253C%252Ftext%253E%253C%252Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
     
     <style>
         /* ===== CSS RESET ===== */
@@ -37,11 +31,19 @@
             user-select: none;
         }
 
+        /* Enable text selection for inputs only */
+        input, textarea, select {
+            -webkit-user-select: text !important;
+            user-select: text !important;
+        }
+
         html, body {
             height: 100%;
             width: 100%;
             overflow: hidden;
             position: fixed;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* ===== VARIABLES ===== */
@@ -71,7 +73,7 @@
             
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             
-            /* Safe area insets for notch phones */
+            /* Safe area insets */
             --safe-area-top: env(safe-area-inset-top, 0px);
             --safe-area-bottom: env(safe-area-inset-bottom, 0px);
             --safe-area-left: env(safe-area-inset-left, 0px);
@@ -104,7 +106,6 @@
 
         /* ===== BASE STYLES ===== */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
@@ -112,6 +113,21 @@
             line-height: 1.6;
             padding-top: var(--safe-area-top);
             padding-bottom: var(--safe-area-bottom);
+            padding-left: var(--safe-area-left);
+            padding-right: var(--safe-area-right);
+        }
+
+        /* iOS FIX: Remove the extra free area at top */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                /* iOS specific fixes */
+                min-height: -webkit-fill-available;
+                height: -webkit-fill-available;
+                position: fixed;
+                width: 100%;
+                top: 0;
+                left: 0;
+            }
         }
 
         .container {
@@ -121,16 +137,20 @@
             height: calc(100vh - var(--safe-area-top) - var(--safe-area-bottom));
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            position: relative;
         }
 
-        /* ===== HEADER & NAVIGATION ===== */
+        /* ===== HEADER ===== */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
+            padding: 10px 0 20px 0;
             margin-bottom: 10px;
-            padding-top: calc(10px + var(--safe-area-top));
+            position: sticky;
+            top: 0;
+            background: var(--bg-primary);
+            z-index: 100;
         }
 
         .logo {
@@ -182,14 +202,45 @@
             font-size: 20px;
             color: var(--text-primary);
             transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .icon-button:hover {
-            transform: translateY(-2px);
+        .icon-button:active {
+            transform: scale(0.95);
+        }
+
+        /* ===== INPUT FIXES FOR iOS ===== */
+        input, textarea, select {
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 16px;
+            padding: 15px;
+            font-family: inherit;
+            outline: none;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        /* IMPORTANT: iOS 7+ specific fix for keyboard */
+        input[type="text"]:focus, textarea:focus {
+            font-size: 16px !important; /* Prevent zoom on focus */
             border-color: var(--primary);
         }
 
-        /* ===== MAIN NAVIGATION ===== */
+        /* Fix for iOS select */
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 40px;
+        }
+
+        /* ===== NAVIGATION TABS ===== */
         .nav-tabs {
             display: flex;
             background: var(--bg-secondary);
@@ -211,12 +262,17 @@
             cursor: pointer;
             transition: var(--transition);
             border-radius: 10px;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .nav-tab.active {
             background: var(--primary);
             color: white;
             box-shadow: var(--shadow);
+        }
+
+        .nav-tab:active {
+            transform: scale(0.98);
         }
 
         /* ===== PAGES ===== */
@@ -234,7 +290,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== POMODORO PAGE (FIRST TAB) ===== */
+        /* ===== POMODORO PAGE ===== */
         .timer-section {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -278,7 +334,38 @@
             margin-bottom: 25px;
         }
 
-        /* ===== CYCLE PAGE (SECOND TAB) ===== */
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: white;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        }
+
+        .btn-success { background: linear-gradient(135deg, var(--success), #38bdf8); }
+        .btn-warning { background: linear-gradient(135deg, var(--warning), #f59e0b); }
+        .btn-danger { background: linear-gradient(135deg, var(--danger), #ef4444); }
+        .btn-accent { background: linear-gradient(135deg, var(--accent), #ec4899); }
+        .btn-info { background: linear-gradient(135deg, var(--info), #7209b7); }
+
+        /* ===== CYCLE PAGE ===== */
         .cycle-section {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -332,10 +419,9 @@
             transition: var(--transition);
         }
 
-        .nav-cycle-btn:hover {
+        .nav-cycle-btn:active {
+            transform: scale(0.95);
             border-color: var(--primary);
-            background: var(--primary);
-            color: white;
         }
 
         .current-cycle {
@@ -372,7 +458,7 @@
             line-height: 1.5;
         }
 
-        /* ===== TOPICS PAGE (THIRD TAB) ===== */
+        /* ===== TOPICS PAGE ===== */
         .sr-section {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -387,22 +473,6 @@
             margin-bottom: 20px;
         }
 
-        .topic-input-section input {
-            flex: 1;
-            padding: 15px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg-input);
-            color: var(--text-primary);
-            font-size: 16px;
-            transition: var(--transition);
-        }
-
-        .topic-input-section input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
         .topic-item {
             background: var(--bg-input);
             border-radius: 12px;
@@ -412,9 +482,8 @@
             transition: var(--transition);
         }
 
-        .topic-item:hover {
+        .topic-item:active {
             transform: translateX(4px);
-            box-shadow: var(--shadow);
         }
 
         .topic-header {
@@ -452,10 +521,11 @@
             background: var(--bg-secondary);
             transition: var(--transition);
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .spaced-date:hover {
-            transform: translateY(-2px);
+        .spaced-date:active {
+            transform: scale(0.95);
         }
 
         .spaced-date.completed {
@@ -484,7 +554,7 @@
             font-weight: 600;
         }
 
-        /* ===== TASKS PAGE (FOURTH TAB) ===== */
+        /* ===== TASKS PAGE ===== */
         .task-input-section {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -497,22 +567,6 @@
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
-        }
-
-        .input-group input {
-            flex: 1;
-            padding: 15px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg-input);
-            color: var(--text-primary);
-            font-size: 16px;
-            transition: var(--transition);
-        }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: var(--primary);
         }
 
         .tasks-list {
@@ -534,9 +588,9 @@
             border: 1px solid transparent;
         }
 
-        .task-item:hover {
-            border-color: var(--primary);
+        .task-item:active {
             transform: translateX(4px);
+            border-color: var(--primary);
         }
 
         .task-item.completed {
@@ -561,6 +615,7 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
+            flex-shrink: 0;
         }
 
         .task-checkbox.checked {
@@ -588,41 +643,12 @@
             border-radius: 20px;
         }
 
-        /* ===== BUTTONS ===== */
-        .btn {
-            padding: 15px 20px;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            color: white;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-        }
-
-        .btn-success { background: linear-gradient(135deg, var(--success), #38bdf8); }
-        .btn-warning { background: linear-gradient(135deg, var(--warning), #f59e0b); }
-        .btn-danger { background: linear-gradient(135deg, var(--danger), #ef4444); }
-        .btn-accent { background: linear-gradient(135deg, var(--accent), #ec4899); }
-        .btn-info { background: linear-gradient(135deg, var(--info), #7209b7); }
-
         /* ===== NOTIFICATION ===== */
         .notification {
             position: fixed;
             top: max(30px, var(--safe-area-top));
-            right: 30px;
+            right: 20px;
+            left: 20px;
             background: linear-gradient(135deg, var(--success), var(--primary));
             color: white;
             padding: 18px 24px;
@@ -632,15 +658,16 @@
             z-index: 1001;
             font-weight: 600;
             animation: slideIn 0.3s ease;
+            text-align: center;
         }
 
         @keyframes slideIn {
             from {
-                transform: translateX(100%);
+                transform: translateY(-20px);
                 opacity: 0;
             }
             to {
-                transform: translateX(0);
+                transform: translateY(0);
                 opacity: 1;
             }
         }
@@ -648,28 +675,72 @@
         /* ===== INSTALL PROMPT ===== */
         .install-prompt {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
+            bottom: 0;
+            left: 0;
+            right: 0;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             padding: 20px;
-            border-radius: var(--radius);
+            border-radius: var(--radius) var(--radius) 0 0;
             box-shadow: var(--shadow);
             z-index: 1000;
             display: none;
             animation: slideUp 0.3s ease;
+            padding-bottom: calc(20px + var(--safe-area-bottom));
         }
 
         @keyframes slideUp {
             from {
                 transform: translateY(100%);
-                opacity: 0;
             }
             to {
                 transform: translateY(0);
-                opacity: 1;
             }
+        }
+
+        /* ===== INSTALL BANNER ===== */
+        .install-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 20px;
+            z-index: 9999;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.3s ease;
+            padding-top: calc(15px + var(--safe-area-top));
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .install-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .install-banner-icon {
+            font-size: 28px;
+        }
+
+        .install-banner-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px 10px;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -694,22 +765,33 @@
                 padding: 12px 8px;
                 font-size: 14px;
             }
+            
+            .header {
+                padding: 5px 0 15px 0;
+            }
         }
 
-        /* ===== FULLSCREEN APP STYLES ===== */
+        /* iOS Standalone Mode Fix */
         @media all and (display-mode: standalone) {
             body {
-                -webkit-touch-callout: none;
-                -webkit-user-select: none;
-                user-select: none;
+                padding-top: 0 !important;
+                margin-top: env(safe-area-inset-top);
             }
             
-            .container {
-                padding-top: calc(20px + var(--safe-area-top));
+            .header {
+                padding-top: 10px;
             }
         }
 
-        /* ===== ANIMATIONS ===== */
+        /* iOS 7+ Specific Fixes */
+        @supports (-webkit-touch-callout: none) and (not (translate: none)) {
+            .container {
+                /* Fix for older iOS versions */
+                -webkit-transform: translateZ(0);
+            }
+        }
+
+        /* Animation */
         @keyframes ring {
             0%, 100% { transform: rotate(0); }
             25% { transform: rotate(15deg); }
@@ -721,55 +803,14 @@
             color: var(--accent) !important;
         }
 
-        /* ===== INSTALL BANNER ===== */
-        .install-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 15px 20px;
-            z-index: 9999;
-            display: none;
-            justify-content: space-between;
-            align-items: center;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .install-banner-content {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .install-banner-icon {
-            font-size: 28px;
-        }
-
-        .install-banner-close {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            padding: 0 10px;
+        /* Touch Feedback */
+        .touch-feedback:active {
+            opacity: 0.7;
         }
     </style>
 </head>
 <body data-theme="light">
-    <!-- Install Banner (Top) -->
+    <!-- Install Banner -->
     <div id="installBanner" class="install-banner">
         <div class="install-banner-content">
             <div class="install-banner-icon">📚</div>
@@ -781,7 +822,7 @@
         <button class="install-banner-close" onclick="hideInstallBanner()">×</button>
     </div>
 
-    <!-- Install Prompt (Bottom) -->
+    <!-- Install Prompt -->
     <div id="installPrompt" class="install-prompt">
         <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
             <div style="font-size: 32px;">📚</div>
@@ -794,7 +835,7 @@
             <button class="btn btn-success" onclick="installApp()" style="flex: 1;">
                 <span>📲</span> Install
             </button>
-            <button class="btn btn-secondary" onclick="hideInstallPrompt()" style="flex: 1; background: rgba(255,255,255,0.2);">
+            <button class="btn" onclick="hideInstallPrompt()" style="flex: 1; background: rgba(255,255,255,0.2);">
                 <span>✕</span> Later
             </button>
         </div>
@@ -820,7 +861,7 @@
             </div>
         </header>
 
-        <!-- Navigation Tabs -->
+        <!-- Navigation -->
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="showPage('pomodoro', this)">
                 ⏰ Pomodoro
@@ -836,9 +877,8 @@
             </button>
         </div>
 
-        <!-- ===== POMODORO PAGE (FIRST TAB) ===== -->
+        <!-- POMODORO PAGE -->
         <div id="pomodoroPage" class="page active">
-            <!-- Timer Section -->
             <section class="timer-section">
                 <div class="timer-display" id="timer">35:00</div>
                 <div class="progress-container">
@@ -846,7 +886,6 @@
                 </div>
             </section>
 
-            <!-- Timer Controls -->
             <div class="controls-grid">
                 <button class="btn btn-success" onclick="startTimer()">
                     <span>▶</span> Start Study
@@ -862,7 +901,6 @@
                 </button>
             </div>
 
-            <!-- Sound Controls -->
             <section class="sr-section">
                 <h2 class="section-title">
                     <span>🔊</span> Sound Setup
@@ -877,7 +915,6 @@
                 </div>
             </section>
 
-            <!-- Quick Progress -->
             <div class="cycle-progress">
                 <div class="cycle-progress-header">
                     <span>📊</span> Today's Quick View
@@ -887,7 +924,6 @@
                 </div>
             </div>
 
-            <!-- Install Instructions -->
             <section class="sr-section" id="installSection" style="display: none;">
                 <h2 class="section-title">
                     <span>📱</span> Install as App
@@ -903,9 +939,8 @@
             </section>
         </div>
 
-        <!-- ===== CYCLE PAGE (SECOND TAB) ===== -->
+        <!-- CYCLE PAGE -->
         <div id="cyclePage" class="page">
-            <!-- Cycle Progress -->
             <div class="cycle-progress">
                 <div class="cycle-progress-header">
                     <span>📊</span> Today's Progress
@@ -915,7 +950,6 @@
                 </div>
             </div>
 
-            <!-- Cycle Navigation -->
             <section class="cycle-section">
                 <h2 class="section-title">
                     <span>🔄</span> Study Cycles
@@ -932,7 +966,6 @@
                 </div>
             </section>
 
-            <!-- Cycle Controls -->
             <div class="controls-grid">
                 <button class="btn btn-success" onclick="startCycleTimer()">
                     <span>▶</span> Start Cycle
@@ -946,11 +979,11 @@
             </div>
         </div>
 
-        <!-- ===== TOPICS PAGE (THIRD TAB) ===== -->
+        <!-- TOPICS PAGE -->
         <div id="topicsPage" class="page">
             <section class="sr-section">
                 <h2 class="section-title">
-                    <span>➕</span> Add Topic for Spaced Repetition
+                    <span>➕</span> Add Topic
                 </h2>
                 <div class="topic-input-section">
                     <input type="text" id="topicInput" placeholder="Enter topic name (e.g., Physics Unit 3)">
@@ -958,7 +991,7 @@
                         <span>+</span> Add
                     </button>
                 </div>
-                <select id="subjectSelect" style="width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 12px; background: var(--bg-input); color: var(--text-primary); font-size: 16px; margin-bottom: 15px;">
+                <select id="subjectSelect">
                     <option value="maths">Mathematics</option>
                     <option value="physics">Physics</option>
                     <option value="chemistry">Chemistry</option>
@@ -993,7 +1026,7 @@
             </div>
         </div>
 
-        <!-- ===== TASKS PAGE (FOURTH TAB) ===== -->
+        <!-- TASKS PAGE -->
         <div id="tasksPage" class="page">
             <section class="task-input-section">
                 <h2 class="section-title">
@@ -1005,7 +1038,7 @@
                         <span>+</span> Add
                     </button>
                 </div>
-                <select id="taskSubjectSelect" style="width: 100%; padding: 15px; border: 2px solid var(--border); border-radius: 12px; background: var(--bg-input); color: var(--text-primary); font-size: 16px; margin-bottom: 15px;">
+                <select id="taskSubjectSelect">
                     <option value="maths">Mathematics</option>
                     <option value="physics">Physics</option>
                     <option value="chemistry">Chemistry</option>
@@ -1053,9 +1086,9 @@
         let deferredPrompt = null;
         let isStandalone = false;
 
-        // ========== COMPLETE 8-CYCLE TIMETABLE ==========
+        // ========== 8-CYCLE TIMETABLE ==========
         const fullTimetable = [
-            // ========== CYCLE 1 ==========
+            // CYCLE 1
             { time: "5:30-6:05", task: "Study Session", type: "study", cycle: 1, done: false },
             { time: "6:05-6:10", task: "Short Break", type: "break", cycle: 1, done: false },
             { time: "6:10-6:45", task: "Study Session", type: "study", cycle: 1, done: false },
@@ -1063,7 +1096,7 @@
             { time: "6:50-7:25", task: "Study Session", type: "study", cycle: 1, done: false },
             { time: "7:25-7:45", task: "Long Break (20min)", type: "long_break", cycle: 1, done: false },
             
-            // ========== CYCLE 2 ==========
+            // CYCLE 2
             { time: "7:45-8:20", task: "Study Session", type: "study", cycle: 2, done: false },
             { time: "8:20-8:25", task: "Short Break", type: "break", cycle: 2, done: false },
             { time: "8:25-9:00", task: "Study Session", type: "study", cycle: 2, done: false },
@@ -1071,7 +1104,7 @@
             { time: "9:05-9:40", task: "Study Session", type: "study", cycle: 2, done: false },
             { time: "9:40-10:00", task: "Long Break (20min)", type: "long_break", cycle: 2, done: false },
             
-            // ========== CYCLE 3 ==========
+            // CYCLE 3
             { time: "10:00-10:35", task: "Study Session", type: "study", cycle: 3, done: false },
             { time: "10:35-10:40", task: "Short Break", type: "break", cycle: 3, done: false },
             { time: "10:40-11:15", task: "Study Session", type: "study", cycle: 3, done: false },
@@ -1079,7 +1112,7 @@
             { time: "11:20-11:55", task: "Study Session", type: "study", cycle: 3, done: false },
             { time: "11:55-12:35", task: "Free Session (40min)", type: "long_break", cycle: 3, done: false },
             
-            // ========== CYCLE 4 ==========
+            // CYCLE 4
             { time: "12:35-1:10", task: "Study Session", type: "study", cycle: 4, done: false },
             { time: "1:10-1:15", task: "Short Break", type: "break", cycle: 4, done: false },
             { time: "1:15-1:50", task: "Study Session", type: "study", cycle: 4, done: false },
@@ -1087,7 +1120,7 @@
             { time: "1:55-2:30", task: "Study Session", type: "study", cycle: 4, done: false },
             { time: "2:30-2:50", task: "Lunch Break (20min)", type: "long_break", cycle: 4, done: false },
             
-            // ========== CYCLE 5 ==========
+            // CYCLE 5
             { time: "2:50-3:25", task: "Study Session", type: "study", cycle: 5, done: false },
             { time: "3:25-3:30", task: "Short Break", type: "break", cycle: 5, done: false },
             { time: "3:30-4:05", task: "Study Session", type: "study", cycle: 5, done: false },
@@ -1095,7 +1128,7 @@
             { time: "4:10-4:45", task: "Study Session", type: "study", cycle: 5, done: false },
             { time: "4:45-5:05", task: "Short Break (20min)", type: "long_break", cycle: 5, done: false },
             
-            // ========== CYCLE 6 ==========
+            // CYCLE 6
             { time: "5:05-5:40", task: "Study Session", type: "study", cycle: 6, done: false },
             { time: "5:40-5:45", task: "Short Break", type: "break", cycle: 6, done: false },
             { time: "5:45-6:20", task: "Study Session", type: "study", cycle: 6, done: false },
@@ -1103,7 +1136,7 @@
             { time: "6:25-7:00", task: "Study Session", type: "study", cycle: 6, done: false },
             { time: "7:00-7:25", task: "Free Session (25min)", type: "long_break", cycle: 6, done: false },
             
-            // ========== CYCLE 7 ==========
+            // CYCLE 7
             { time: "7:25-8:00", task: "Study Session", type: "study", cycle: 7, done: false },
             { time: "8:00-8:05", task: "Short Break", type: "break", cycle: 7, done: false },
             { time: "8:05-8:40", task: "Study Session", type: "study", cycle: 7, done: false },
@@ -1111,7 +1144,7 @@
             { time: "8:45-9:20", task: "Study Session", type: "study", cycle: 7, done: false },
             { time: "9:20-9:40", task: "Dinner Break (20min)", type: "long_break", cycle: 7, done: false },
             
-            // ========== CYCLE 8 ==========
+            // CYCLE 8
             { time: "9:40-10:15", task: "Study Session", type: "study", cycle: 8, done: false },
             { time: "10:15-10:20", task: "Short Break", type: "break", cycle: 8, done: false },
             { time: "10:20-10:55", task: "Study Session", type: "study", cycle: 8, done: false },
@@ -1122,27 +1155,20 @@
 
         // ========== APP INSTALLATION ==========
         function checkInstallation() {
-            // Check if already running as standalone app
             isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                          window.navigator.standalone || 
-                          document.referrer.includes('android-app://');
+                          window.navigator.standalone;
             
             if (isStandalone) {
                 console.log('Running as standalone app');
-                document.body.classList.add('standalone');
                 hideAllInstallPrompts();
                 return;
             }
             
-            // Check for PWA install prompt (Android)
+            // Check for PWA install prompt
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredPrompt = e;
-                
-                // Show install banner after 3 seconds
                 setTimeout(showInstallBanner, 3000);
-                
-                // Show bottom prompt after 10 seconds if not dismissed
                 setTimeout(() => {
                     if (!localStorage.getItem('installPromptDismissed')) {
                         showInstallPrompt();
@@ -1150,15 +1176,14 @@
                 }, 10000);
             });
             
-            // Check for iOS
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            // iOS detection
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             
             if (isIOS && isSafari) {
-                // Show iOS install instructions after 5 seconds
                 setTimeout(() => {
                     if (!localStorage.getItem('iosInstallShown')) {
-                        showNotification('Tap Share → "Add to Home Screen" to install as app! 📱');
+                        showNotification('Tap Share → "Add to Home Screen" to install!');
                         showInstallBanner();
                         localStorage.setItem('iosInstallShown', 'true');
                     }
@@ -1196,84 +1221,60 @@
 
         function installApp() {
             if (deferredPrompt) {
-                // Android/Chrome PWA install
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                        showNotification('App installed successfully! 🎉');
+                        showNotification('App installed! 🎉');
                         hideAllInstallPrompts();
-                    } else {
-                        console.log('User dismissed the install prompt');
-                        showInstallHelp();
                     }
                     deferredPrompt = null;
                 });
             } else {
-                // iOS or other browsers
                 showInstallHelp();
             }
         }
 
         function showInstallHelp() {
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-            const isAndroid = /Android/.test(navigator.userAgent);
-            
             let message = '';
-            let icon = '📱';
             
             if (isIOS) {
-                message = '1. Tap the Share button\n2. Scroll down\n3. Tap "Add to Home Screen"\n4. Tap "Add"';
-                icon = '📱';
-            } else if (isAndroid) {
-                message = '1. Tap the menu (⋮)\n2. Tap "Install app" or "Add to Home screen"\n3. Tap "Install"';
-                icon = '🤖';
+                message = '1. Tap Share button\n2. Scroll down\n3. Tap "Add to Home Screen"\n4. Tap "Add"';
             } else {
-                message = 'Look for the install icon (📱) in your browser\'s address bar or menu';
-                icon = '💻';
+                message = '1. Tap menu (⋮)\n2. Tap "Install app" or "Add to Home screen"\n3. Tap "Install"';
             }
             
-            showNotification('Install instructions: ' + icon);
-            
-            // Show install section in pomodoro page
+            showNotification('📱 Install instructions');
             document.getElementById('installSection').style.display = 'block';
             showPage('pomodoro');
             
-            // Create a more detailed help modal
             setTimeout(() => {
-                alert(`📱 How to Install StudyMaster as an App:\n\n${message}\n\nOnce installed, it will open like a native app with its own icon!`);
+                alert(`📱 How to Install StudyMaster:\n\n${message}\n\nOnce installed, it will open like a native app!`);
             }, 500);
         }
 
         // ========== PAGE NAVIGATION ==========
         function showPage(pageId, clickedElement = null) {
-            // Hide all pages
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
             });
             
-            // Remove active class from all tabs
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Show selected page
             document.getElementById(pageId + 'Page').classList.add('active');
             
-            // Activate selected tab (fix: check if clickedElement exists)
             if (clickedElement) {
                 clickedElement.classList.add('active');
             } else {
-                // Find the corresponding tab button and activate it
-                const tabButtons = document.querySelectorAll('.nav-tab');
-                tabButtons.forEach(tab => {
+                document.querySelectorAll('.nav-tab').forEach(tab => {
                     if (tab.getAttribute('onclick')?.includes(pageId)) {
                         tab.classList.add('active');
                     }
                 });
             }
             
-            // Load data for specific pages
             if (pageId === 'pomodoro') {
                 updateQuickStatus();
             } else if (pageId === 'cycle') {
@@ -1290,7 +1291,6 @@
             currentCycle = parseInt(localStorage.getItem('currentCycle')) || 1;
             document.getElementById('currentCycleDisplay').textContent = currentCycle;
             
-            // Load saved progress
             const savedProgress = JSON.parse(localStorage.getItem('cycleProgress') || '{}');
             fullTimetable.forEach(task => {
                 const key = `${task.cycle}-${task.time}`;
@@ -1307,7 +1307,6 @@
             const container = document.getElementById('cycleSchedule');
             container.innerHTML = '';
             
-            // Filter tasks for current cycle
             const cycleTasks = fullTimetable.filter(task => task.cycle === currentCycle);
             
             const cycleTitle = document.createElement('div');
@@ -1346,7 +1345,6 @@
             if (task) {
                 task.done = !task.done;
                 
-                // Save progress
                 const savedProgress = JSON.parse(localStorage.getItem('cycleProgress') || '{}');
                 const key = `${task.cycle}-${task.time}`;
                 savedProgress[key] = task.done;
@@ -1405,12 +1403,10 @@
         }
 
         function startCycleTimer() {
-            // Find first incomplete task in current cycle
             const cycleTasks = fullTimetable.filter(task => task.cycle === currentCycle);
             const incompleteTasks = cycleTasks.filter(task => !task.done);
             if (incompleteTasks.length > 0) {
                 showNotification(`Starting ${incompleteTasks[0].task} from Cycle ${currentCycle}`);
-                // Switch to pomodoro tab to start timer
                 showPage('pomodoro');
                 startTimer();
             } else {
@@ -1422,7 +1418,6 @@
             if (confirm('Reset all tasks in current cycle?')) {
                 const cycleTasks = fullTimetable.filter(task => task.cycle === currentCycle);
                 
-                // Remove from saved progress
                 const savedProgress = JSON.parse(localStorage.getItem('cycleProgress') || '{}');
                 cycleTasks.forEach(task => {
                     task.done = false;
@@ -1541,7 +1536,6 @@
                     'other': 'Other'
                 };
                 
-                // Create dates array with proper keys
                 const dates = [
                     { label: 'Day 1', key: 'day1', date: new Date(topic.spacedDates.day1), completed: topic.completed.day1 },
                     { label: 'Day 3', key: 'day3', date: new Date(topic.spacedDates.day3), completed: topic.completed.day3 },
@@ -1588,7 +1582,6 @@
         function toggleTopicDate(topicId, dayKey) {
             const topic = topics.find(t => t.id === topicId);
             if (topic) {
-                // Toggle the completion status for the specific day
                 topic.completed[dayKey] = !topic.completed[dayKey];
                 saveTopics();
                 renderTopics();
@@ -1725,7 +1718,6 @@
                 return;
             }
             
-            // Sort tasks: incomplete first, then by date
             const sortedTasks = [...tasks].sort((a, b) => {
                 if (a.completed !== b.completed) {
                     return a.completed ? 1 : -1;
@@ -1805,7 +1797,7 @@
             }
         }
 
-        // ========== POMODORO TIMER FUNCTIONS ==========
+        // ========== POMODORO TIMER ==========
         function startTimer() {
             if (!isRunning) {
                 isRunning = true;
@@ -1849,7 +1841,6 @@
                 if (currentTaskIndex < fullTimetable.length) {
                     fullTimetable[currentTaskIndex].done = true;
                     
-                    // Play bell when timer ends
                     if (soundEnabled) testBell();
                     
                     currentTaskIndex++;
@@ -1884,7 +1875,6 @@
             try {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 
-                // Create silent sound to unlock audio
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
                 
@@ -1901,7 +1891,7 @@
                 document.getElementById('soundBtn').innerHTML = '<span>✅</span> Sound Enabled';
                 document.getElementById('soundBtn').classList.add('btn-success');
                 document.getElementById('soundBtn').classList.remove('btn-info');
-                showNotification('Sound enabled successfully! 🔊');
+                showNotification('Sound enabled! 🔊');
                 
             } catch (error) {
                 showNotification('Tap "Test Bell" to enable sound');
@@ -1938,7 +1928,6 @@
                 osc1.stop(context.currentTime + 0.8);
                 osc2.stop(context.currentTime + 0.8);
                 
-                // Visual feedback
                 document.getElementById('timer').classList.add('ringing');
                 setTimeout(() => document.getElementById('timer').classList.remove('ringing'), 1000);
                 
@@ -1976,7 +1965,6 @@
             const timeUntilReminder = reminderTime.getTime() - now.getTime();
             
             if (timeUntilReminder > 0) {
-                // Store reminder in localStorage for persistence
                 const reminders = JSON.parse(localStorage.getItem('scheduledReminders') || '[]');
                 reminders.push({
                     time: reminderTime.getTime(),
@@ -1987,7 +1975,6 @@
                 setTimeout(() => {
                     showNotification(message);
                     
-                    // Also show browser notification if permission granted
                     if (Notification.permission === "granted") {
                         new Notification("StudyMaster Reminder", {
                             body: message,
@@ -1995,7 +1982,6 @@
                         });
                     }
                     
-                    // Remove from stored reminders
                     const updatedReminders = reminders.filter(r => r.time !== reminderTime.getTime());
                     localStorage.setItem('scheduledReminders', JSON.stringify(updatedReminders));
                 }, timeUntilReminder);
@@ -2030,29 +2016,48 @@
             });
         }
 
+        // ========== iOS INPUT FIX ==========
+        function fixIOSInput() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            
+            if (isIOS) {
+                document.addEventListener('touchstart', function(e) {
+                    const target = e.target;
+                    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT') {
+                        setTimeout(() => {
+                            target.focus();
+                        }, 100);
+                    }
+                });
+                
+                document.addEventListener('focusin', function(e) {
+                    const target = e.target;
+                    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+                        setTimeout(() => {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 300);
+                    }
+                });
+            }
+        }
+
         // ========== INITIALIZATION ==========
         function init() {
-            // Load theme
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.body.setAttribute('data-theme', savedTheme);
             document.getElementById('themeBtn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
             
-            // Load all data
             loadCycle();
             loadTopics();
             loadTasks();
             
-            // Initial display
             updateDisplay();
             updateQuickStatus();
             
-            // Restore scheduled reminders
             restoreScheduledReminders();
-            
-            // Check for app installation
             checkInstallation();
+            fixIOSInput();
             
-            // Auto-enable sound on first interaction
             document.addEventListener('click', function initSound() {
                 if (!soundEnabled) {
                     setTimeout(enableSound, 100);
@@ -2060,17 +2065,9 @@
                 document.removeEventListener('click', initSound);
             });
             
-            // Fix for iOS standalone mode
-            if (window.navigator.standalone) {
-                document.body.style.paddingTop = 'calc(20px + env(safe-area-inset-top))';
-                document.body.style.paddingBottom = 'env(safe-area-inset-bottom)';
-            }
-            
-            // Initial tab setup
             showPage('pomodoro');
         }
 
-        // Start the app
         init();
     </script>
 </body>
