@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <!-- ===== APP ICONS ===== -->
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='30' fill='%234361ee'/><text x='90' y='125' font-size='80' text-anchor='middle' fill='white'>📚</text></svg>">
-<link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%234361ee'/><text x='32' y='45' font-size='32' text-anchor='middle' fill='white'>📚</text></svg>">
-<!-- ===== SIMPLE EMOJI ICONS ===== -->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
-<meta charset="UTF-8">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='30' fill='%234361ee'/><text x='90' y='125' font-size='80' text-anchor='middle' fill='white'>📚</text></svg>">
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%234361ee'/><text x='32' y='45' font-size='32' text-anchor='middle' fill='white'>📚</text></svg>">
+    <!-- ===== SIMPLE EMOJI ICONS ===== -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>StudyMaster Pro</title>
     
@@ -150,7 +150,7 @@
             position: relative;
         }
 
-        /* ===== HEADER ===== */
+        /* ===== HEADER - SCROLL HIDING ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -161,6 +161,14 @@
             top: 0;
             background: var(--bg-primary);
             z-index: 100;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .header.hidden {
+            transform: translateY(-100%);
+            opacity: 0;
         }
 
         .logo {
@@ -186,12 +194,14 @@
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 4px;
+            opacity: 0.95;
         }
 
         .logo-text p {
             font-size: 14px;
             color: var(--text-muted);
             font-weight: 500;
+            opacity: 0.8;
         }
 
         .header-actions {
@@ -213,6 +223,7 @@
             color: var(--text-primary);
             transition: var(--transition);
             -webkit-tap-highlight-color: transparent;
+            opacity: 0.9;
         }
 
         .icon-button:active {
@@ -233,6 +244,7 @@
             outline: none;
             width: 100%;
             transition: var(--transition);
+            opacity: 0.9;
         }
 
         textarea {
@@ -309,12 +321,14 @@
             border-radius: 10px;
             -webkit-tap-highlight-color: transparent;
             min-width: 80px;
+            opacity: 0.8;
         }
 
         .nav-tab.active {
             background: var(--primary);
             color: white;
             box-shadow: var(--shadow);
+            opacity: 1;
         }
 
         .nav-tab:active {
@@ -355,6 +369,7 @@
             margin: 20px 0;
             line-height: 1;
             letter-spacing: 2px;
+            opacity: 0.95;
         }
 
         .progress-container {
@@ -424,7 +439,7 @@
             transform: scale(0.98);
         }
 
-        /* ===== CYCLE PAGE ===== */
+        /* ===== CYCLE PAGE - STUDY TIME TRACKING ===== */
         .cycle-section {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -441,6 +456,7 @@
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 20px;
+            opacity: 0.9;
         }
 
         .cycle-header {
@@ -453,6 +469,7 @@
             text-align: center;
             font-size: 16px;
             border-left: 4px solid var(--primary);
+            opacity: 0.9;
         }
 
         .cycle-nav {
@@ -476,6 +493,7 @@
             font-weight: bold;
             font-size: 18px;
             transition: var(--transition);
+            opacity: 0.9;
         }
 
         .nav-cycle-btn:active {
@@ -491,6 +509,7 @@
             padding: 10px 20px;
             background: var(--bg-input);
             border-radius: 12px;
+            opacity: 0.9;
         }
 
         .cycle-progress {
@@ -517,6 +536,46 @@
             line-height: 1.5;
         }
 
+        /* ===== STUDY TIME STATS ===== */
+        .study-time-stats {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .time-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .time-stat:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .time-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .time-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .time-value.highlight {
+            color: var(--primary);
+        }
+
         /* ===== TOPICS PAGE ===== */
         .sr-section {
             background: var(--bg-card);
@@ -540,6 +599,7 @@
             border-left: 4px solid var(--primary);
             transition: var(--transition);
             position: relative;
+            opacity: 0.9;
         }
 
         .topic-item:active {
@@ -557,6 +617,7 @@
             font-weight: 600;
             font-size: 18px;
             color: var(--text-primary);
+            opacity: 0.9;
         }
 
         .topic-date {
@@ -565,6 +626,7 @@
             background: var(--bg-card);
             padding: 4px 10px;
             border-radius: 20px;
+            opacity: 0.8;
         }
 
         .spaced-dates {
@@ -582,6 +644,7 @@
             transition: var(--transition);
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
+            opacity: 0.9;
         }
 
         .spaced-date:active {
@@ -591,16 +654,19 @@
         .spaced-date.completed {
             background: var(--success);
             color: white;
+            opacity: 1;
         }
 
         .spaced-date.upcoming {
             background: var(--warning);
             color: white;
+            opacity: 1;
         }
 
         .spaced-date.missed {
             background: var(--danger);
             color: white;
+            opacity: 1;
         }
 
         .date-label {
@@ -646,6 +712,7 @@
             justify-content: space-between;
             transition: var(--transition);
             border: 1px solid transparent;
+            opacity: 0.9;
         }
 
         .task-item:active {
@@ -688,11 +755,13 @@
             font-weight: 500;
             color: var(--text-primary);
             font-size: 16px;
+            opacity: 0.9;
         }
 
         .task-text.completed {
             text-decoration: line-through;
             color: var(--text-muted);
+            opacity: 0.7;
         }
 
         .task-date {
@@ -701,6 +770,7 @@
             background: var(--bg-card);
             padding: 4px 10px;
             border-radius: 20px;
+            opacity: 0.8;
         }
 
         /* ===== THOUGHTS PAGE ===== */
@@ -712,6 +782,7 @@
             border-left: 4px solid var(--thoughts);
             transition: var(--transition);
             position: relative;
+            opacity: 0.9;
         }
 
         .thought-item:active {
@@ -729,6 +800,7 @@
             font-weight: 600;
             font-size: 18px;
             color: var(--text-primary);
+            opacity: 0.9;
         }
 
         .thought-content {
@@ -737,6 +809,7 @@
             margin-bottom: 15px;
             white-space: pre-wrap;
             word-wrap: break-word;
+            opacity: 0.85;
         }
 
         .thought-tags {
@@ -753,6 +826,7 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 500;
+            opacity: 0.8;
         }
 
         /* ===== NOTES PAGE ===== */
@@ -764,6 +838,7 @@
             border-left: 4px solid var(--notes);
             transition: var(--transition);
             position: relative;
+            opacity: 0.9;
         }
 
         .note-item:active {
@@ -781,6 +856,7 @@
             font-weight: 600;
             font-size: 18px;
             color: var(--text-primary);
+            opacity: 0.9;
         }
 
         .note-content {
@@ -789,6 +865,7 @@
             margin-bottom: 15px;
             white-space: pre-wrap;
             word-wrap: break-word;
+            opacity: 0.85;
         }
 
         .note-tags {
@@ -805,6 +882,7 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 500;
+            opacity: 0.8;
         }
 
         /* ===== NOTIFICATION ===== */
@@ -823,6 +901,7 @@
             font-weight: 600;
             animation: slideIn 0.3s ease;
             text-align: center;
+            opacity: 0.95;
         }
 
         @keyframes slideIn {
@@ -998,6 +1077,7 @@
             font-size: 14px;
             margin: 15px 0;
             text-align: center;
+            opacity: 0.9;
         }
 
         /* Screen On Status */
@@ -1014,6 +1094,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            opacity: 0.9;
         }
 
         .screen-on-status.inactive {
@@ -1031,6 +1112,7 @@
             align-items: center;
             justify-content: center;
             gap: 5px;
+            opacity: 0.8;
         }
 
         .battery-good {
@@ -1108,6 +1190,7 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            opacity: 0.9;
         }
 
         .tag-remove {
@@ -1129,6 +1212,7 @@
             text-align: center;
             padding: 40px 20px;
             color: var(--text-muted);
+            opacity: 0.8;
         }
 
         .empty-state-icon {
@@ -1152,6 +1236,7 @@
             border-radius: 20px;
             cursor: pointer;
             transition: var(--transition);
+            opacity: 0.9;
         }
 
         .mood-btn.active {
@@ -1174,6 +1259,7 @@
             border-radius: 20px;
             cursor: pointer;
             transition: var(--transition);
+            opacity: 0.9;
         }
 
         .priority-btn.active {
@@ -1216,7 +1302,7 @@
 
     <div class="container">
         <!-- Header -->
-        <header class="header">
+        <header class="header" id="mainHeader">
             <div class="logo">
                 <div class="logo-icon">📚</div>
                 <div class="logo-text">
@@ -1350,6 +1436,25 @@
                     No cycles completed yet. Start with Cycle 1!
                 </div>
             </div>
+
+            <!-- Study Time Statistics -->
+            <section class="study-time-stats">
+                <h2 class="section-title">
+                    <span>⏱️</span> Study Time Statistics
+                </h2>
+                <div class="time-stat">
+                    <div class="time-label">Current Cycle Study Time:</div>
+                    <div class="time-value" id="currentCycleTime">0 hours 0 minutes</div>
+                </div>
+                <div class="time-stat">
+                    <div class="time-label">Today's Total Study Time:</div>
+                    <div class="time-value highlight" id="todayTotalTime">0 hours 0 minutes</div>
+                </div>
+                <div class="time-stat">
+                    <div class="time-label">All-Time Study Time:</div>
+                    <div class="time-value highlight" id="allTimeTotal">0 hours 0 minutes</div>
+                </div>
+            </section>
 
             <section class="cycle-section">
                 <h2 class="section-title">
@@ -1641,6 +1746,123 @@
         let thoughtTags = [];
         let noteTags = [];
 
+        // ========== STUDY TIME TRACKING ==========
+        let studyTimeData = {
+            currentCycleTime: 0, // in seconds
+            todayTotalTime: 0,   // in seconds
+            allTimeTotal: 0,     // in seconds
+            lastUpdate: null,
+            todayDate: new Date().toDateString()
+        };
+
+        // ========== SCROLL HIDE HEADER ==========
+        let lastScrollTop = 0;
+        const header = document.getElementById('mainHeader');
+        const scrollThreshold = 50; // pixels
+
+        function initScrollHeader() {
+            const container = document.querySelector('.container');
+            container.addEventListener('scroll', handleScroll);
+        }
+
+        function handleScroll() {
+            const scrollTop = document.querySelector('.container').scrollTop;
+            
+            if (scrollTop > scrollThreshold) {
+                if (scrollTop > lastScrollTop) {
+                    // Scrolling down - hide header
+                    header.classList.add('hidden');
+                } else {
+                    // Scrolling up - show header
+                    header.classList.remove('hidden');
+                }
+            } else {
+                // Near top - always show header
+                header.classList.remove('hidden');
+            }
+            
+            lastScrollTop = scrollTop;
+        }
+
+        // ========== STUDY TIME FUNCTIONS ==========
+        function loadStudyTime() {
+            const savedData = localStorage.getItem('studyTimeData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                const today = new Date().toDateString();
+                
+                if (data.todayDate === today) {
+                    studyTimeData = data;
+                } else {
+                    // New day, reset today's time but keep all-time total
+                    studyTimeData.todayTotalTime = 0;
+                    studyTimeData.currentCycleTime = 0;
+                    studyTimeData.todayDate = today;
+                    studyTimeData.allTimeTotal = data.allTimeTotal || 0;
+                }
+            }
+            updateStudyTimeDisplay();
+        }
+
+        function saveStudyTime() {
+            studyTimeData.lastUpdate = Date.now();
+            localStorage.setItem('studyTimeData', JSON.stringify(studyTimeData));
+        }
+
+        function startStudyTimeTracking() {
+            if (!isRunning) return;
+            
+            // Update study time every minute
+            const updateInterval = setInterval(() => {
+                if (isRunning && !isBreak) {
+                    // Add 60 seconds for each minute of study
+                    studyTimeData.currentCycleTime += 60;
+                    studyTimeData.todayTotalTime += 60;
+                    studyTimeData.allTimeTotal += 60;
+                    
+                    updateStudyTimeDisplay();
+                    saveStudyTime();
+                }
+                
+                if (!isRunning) {
+                    clearInterval(updateInterval);
+                }
+            }, 60000); // Update every minute
+        }
+
+        function updateStudyTimeDisplay() {
+            function formatTime(seconds) {
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                
+                if (hours > 0) {
+                    return `${hours} hour${hours !== 1 ? 's' : ''} ${minutes} minute${minutes !== 1 ? 's' : ''}`;
+                }
+                return `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+            }
+            
+            document.getElementById('currentCycleTime').textContent = 
+                formatTime(studyTimeData.currentCycleTime);
+            document.getElementById('todayTotalTime').textContent = 
+                formatTime(studyTimeData.todayTotalTime);
+            document.getElementById('allTimeTotal').textContent = 
+                formatTime(studyTimeData.allTimeTotal);
+        }
+
+        function resetCycleStudyTime() {
+            studyTimeData.currentCycleTime = 0;
+            updateStudyTimeDisplay();
+            saveStudyTime();
+        }
+
+        function resetTodayStudyTime() {
+            studyTimeData.todayTotalTime = 0;
+            studyTimeData.currentCycleTime = 0;
+            studyTimeData.todayDate = new Date().toDateString();
+            updateStudyTimeDisplay();
+            saveStudyTime();
+        }
+
         // ========== 8-CYCLE TIMETABLE ==========
         const fullTimetable = [
             // CYCLE 1
@@ -1714,11 +1936,6 @@
             if (isIOS) {
                 document.getElementById('iosWarning').style.display = 'block';
                 document.getElementById('timerStatus').textContent = 'Use "Keep Screen On" mode';
-                
-                if (navigator.getBattery) {
-                    document.getElementById('batteryStatus').style.display = 'flex';
-                    updateBatteryStatus();
-                }
             }
         }
 
@@ -1830,8 +2047,6 @@
                 
                 window.dispatchEvent(new Event('focus'));
                 lastUserInteraction = Date.now();
-                
-                console.log('Screen keep-alive triggered at', new Date().toLocaleTimeString());
             } catch (e) {
                 // Silent fail
             }
@@ -1872,10 +2087,8 @@
                 status.className = 'screen-on-status';
                 status.style.display = 'block';
                 
-                if (navigator.getBattery) {
-                    updateBatteryStatus();
-                    batteryCheckInterval = setInterval(updateBatteryStatus, 60000);
-                }
+                // Start battery monitoring
+                monitorBattery();
             } else {
                 btn.innerHTML = '<span>⚡</span> Keep Screen On Mode';
                 btn.classList.remove('screen-on-active');
@@ -1885,37 +2098,58 @@
             }
         }
 
-        function updateBatteryStatus() {
+        // ========== BATTERY MONITORING ==========
+        function monitorBattery() {
             if (navigator.getBattery) {
                 navigator.getBattery().then(battery => {
-                    const level = Math.round(battery.level * 100);
-                    const charging = battery.charging;
+                    updateBatteryUI(battery);
                     
-                    let batteryClass = 'battery-good';
-                    let batteryIcon = '🔋';
+                    // Listen for battery changes
+                    battery.addEventListener('levelchange', () => updateBatteryUI(battery));
+                    battery.addEventListener('chargingchange', () => updateBatteryUI(battery));
                     
-                    if (level < 20) {
-                        batteryClass = 'battery-critical';
-                        batteryIcon = '🪫';
-                    } else if (level < 50) {
-                        batteryClass = 'battery-low';
-                        batteryIcon = '🔋';
-                    }
-                    
-                    if (charging) {
-                        batteryIcon = '⚡';
-                        batteryClass = 'battery-good';
-                    }
-                    
-                    document.getElementById('batteryStatus').innerHTML = `
-                        ${batteryIcon} Battery: ${level}% ${charging ? '(Charging)' : ''}
-                    `;
-                    document.getElementById('batteryStatus').className = `battery-status ${batteryClass}`;
-                    
-                    if (screenOnMode && !charging && level < 20) {
-                        showNotification('⚠️ Battery low! Plug in charger to keep screen on.');
-                    }
+                    // Update every minute
+                    batteryCheckInterval = setInterval(() => updateBatteryUI(battery), 60000);
                 });
+            } else {
+                document.getElementById('batteryStatus').innerHTML = `
+                    <span>🔋</span> Battery info not available
+                `;
+                document.getElementById('batteryStatus').style.display = 'flex';
+            }
+        }
+
+        function updateBatteryUI(battery) {
+            const level = Math.round(battery.level * 100);
+            const charging = battery.charging;
+            
+            let batteryClass = 'battery-good';
+            let batteryIcon = '🔋';
+            let statusText = '';
+            
+            if (level < 20) {
+                batteryClass = 'battery-critical';
+                batteryIcon = '🪫';
+                statusText = ' - LOW!';
+            } else if (level < 50) {
+                batteryClass = 'battery-low';
+                batteryIcon = '🔋';
+            }
+            
+            if (charging) {
+                batteryIcon = '⚡';
+                batteryClass = 'battery-good';
+                statusText = ' - Charging';
+            }
+            
+            document.getElementById('batteryStatus').innerHTML = `
+                ${batteryIcon} Battery: ${level}%${statusText}
+            `;
+            document.getElementById('batteryStatus').className = `battery-status ${batteryClass}`;
+            document.getElementById('batteryStatus').style.display = 'flex';
+            
+            if (screenOnMode && !charging && level < 20) {
+                showNotification('⚠️ Battery low! Plug in charger to keep screen on.');
             }
         }
 
@@ -2339,6 +2573,7 @@
                 thoughts: thoughts,
                 notes: notes,
                 cycles: fullTimetable.filter(t => t.done),
+                studyTime: studyTimeData,
                 timestamp: new Date().toISOString()
             };
             
@@ -2470,9 +2705,11 @@
                 showNotification('Timer started! ' + (screenOnMode ? 'Screen staying ON ⚡' : ''));
                 saveTimerState();
                 
-                if (screenOnMode && navigator.getBattery) {
-                    updateBatteryStatus();
-                    batteryCheckInterval = setInterval(updateBatteryStatus, 60000);
+                // Start study time tracking
+                startStudyTimeTracking();
+                
+                if (screenOnMode) {
+                    monitorBattery();
                 }
             }
         }
@@ -2605,6 +2842,7 @@
             
             renderCycle();
             updateCycleStatus();
+            updateStudyTimeDisplay();
         }
 
         function renderCycle() {
@@ -2671,6 +2909,7 @@
                 localStorage.setItem('currentCycle', currentCycle);
                 renderCycle();
                 updateCycleStatus();
+                updateStudyTimeDisplay();
             }
         }
 
@@ -2681,6 +2920,7 @@
                 localStorage.setItem('currentCycle', currentCycle);
                 renderCycle();
                 updateCycleStatus();
+                updateStudyTimeDisplay();
             }
         }
 
@@ -2733,6 +2973,7 @@
                 renderCycle();
                 updateCycleStatus();
                 updateQuickStatus();
+                resetCycleStudyTime();
                 showNotification('Cycle reset successfully');
             }
         }
@@ -2749,6 +2990,7 @@
                 renderCycle();
                 updateCycleStatus();
                 updateQuickStatus();
+                resetTodayStudyTime();
                 showNotification('All cycles reset');
             }
         }
@@ -3294,6 +3536,7 @@
             saveNotes();
             saveTimerState();
             saveScreenOnMode();
+            saveStudyTime();
             showNotification('All data saved successfully! 💾');
         }
 
@@ -3519,6 +3762,7 @@
             
             detectIOS();
             restoreScreenOnMode();
+            loadStudyTime();
             loadCycle();
             loadTopics();
             loadTasks();
@@ -3531,6 +3775,9 @@
             
             restoreScheduledReminders();
             checkInstallation();
+            
+            // Initialize scroll header hiding
+            initScrollHeader();
             
             if (!("Notification" in window)) {
                 console.log("This browser does not support notifications");
