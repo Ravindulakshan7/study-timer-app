@@ -164,11 +164,13 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
             transform: translateY(0);
             opacity: 1;
+            border-bottom: 1px solid var(--border);
         }
 
         .header.hidden {
             transform: translateY(-100%);
             opacity: 0;
+            pointer-events: none;
         }
 
         .logo {
@@ -307,6 +309,16 @@
             flex-wrap: wrap;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            position: sticky;
+            top: 90px; /* Adjusted for header height */
+            z-index: 99;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-tabs.hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
         }
 
         .nav-tab {
@@ -1518,6 +1530,9 @@
             <button class="btn btn-danger" onclick="resetTimer()">
                 <span>🔄</span> Reset
             </button>
+            <button class="btn btn-accent" onclick="confirmSkipBreak()">
+                <span>⏭</span> Skip Break
+            </button>
         </div>
     </div>
 
@@ -1573,7 +1588,7 @@
         </header>
 
         <!-- Navigation -->
-        <div class="nav-tabs">
+        <div class="nav-tabs" id="navTabs">
             <button class="nav-tab active" onclick="showPage('pomodoro', this)">
                 ⏰ Timer
             </button>
@@ -2093,6 +2108,111 @@
         let noteTags = [];
         let papersProgress = {};
         let modelPapers = [];
+
+        // ========== SCROLL TO HIDE HEADER ==========
+        let lastScrollTop = 0;
+        let scrollTimeout;
+        const header = document.getElementById('mainHeader');
+        const navTabs = document.getElementById('navTabs');
+        let isScrolling = false;
+        let scrollDirection = 'up';
+        let headerVisible = true;
+
+        function initScrollHide() {
+            const container = document.querySelector('.container');
+            
+            // Add scroll event listener to the container
+            container.addEventListener('scroll', handleScroll, { passive: true });
+            
+            // Add touch events for mobile
+            container.addEventListener('touchstart', handleTouchStart, { passive: true });
+            container.addEventListener('touchmove', handleTouchMove, { passive: true });
+            
+            console.log('Scroll hide initialized');
+        }
+
+        function handleScroll() {
+            const container = document.querySelector('.container');
+            const scrollTop = container.scrollTop;
+            const isScrollingDown = scrollTop > lastScrollTop;
+            const scrolledPastThreshold = scrollTop > 50; // Show/hide only after scrolling 50px
+            
+            // Update scroll direction
+            scrollDirection = isScrollingDown ? 'down' : 'up';
+            
+            // Clear any existing timeout
+            if (scrollTimeout) {
+                clearTimeout(scrollTimeout);
+            }
+            
+            if (isScrollingDown && scrolledPastThreshold && headerVisible) {
+                // Scroll down past threshold - hide header and nav tabs
+                hideHeader();
+            } else if (!isScrollingDown && !headerVisible) {
+                // Scroll up - show header and nav tabs
+                showHeader();
+            } else if (scrollTop === 0) {
+                // At the top - always show
+                showHeader();
+            }
+            
+            lastScrollTop = scrollTop;
+            
+            // Set a timeout to handle scroll end
+            scrollTimeout = setTimeout(() => {
+                // After scrolling stops, show header if near top
+                if (scrollTop < 100) {
+                    showHeader();
+                }
+            }, 150);
+        }
+
+        function handleTouchStart(e) {
+            lastScrollTop = document.querySelector('.container').scrollTop;
+        }
+
+        function handleTouchMove(e) {
+            // Touch move is handled by the scroll event
+        }
+
+        function hideHeader() {
+            if (!headerVisible) return;
+            
+            header.classList.add('hidden');
+            navTabs.classList.add('hidden');
+            headerVisible = false;
+            
+            // Add small delay for smooth transition
+            setTimeout(() => {
+                document.querySelector('.container').style.paddingTop = '10px';
+            }, 300);
+        }
+
+        function showHeader() {
+            if (headerVisible) return;
+            
+            header.classList.remove('hidden');
+            navTabs.classList.remove('hidden');
+            headerVisible = true;
+            
+            // Reset padding
+            document.querySelector('.container').style.paddingTop = '20px';
+        }
+
+        // Show header when clicking on tabs or buttons in header
+        document.querySelectorAll('.nav-tab, .icon-button, .logo').forEach(element => {
+            element.addEventListener('click', () => {
+                showHeader();
+            });
+        });
+
+        // Show header when tapping anywhere (optional)
+        document.addEventListener('click', (e) => {
+            // Only show if header is hidden and user tapped outside of timer display
+            if (!headerVisible && !e.target.closest('.timer-display')) {
+                showHeader();
+            }
+        });
 
         // ========== STUDY TIME TRACKING ==========
         let studyTimeData = {
@@ -4240,6 +4360,9 @@
             } else if (pageId === 'papers') {
                 loadPapersProgress();
             }
+            
+            // Show header when switching pages
+            showHeader();
         }
 
         // ========== APP INSTALLATION ==========
@@ -4414,6 +4537,9 @@
             
             restoreScheduledReminders();
             checkInstallation();
+            
+            // Initialize scroll hide
+            initScrollHide();
             
             if (!("Notification" in window)) {
                 console.log("This browser does not support notifications");
