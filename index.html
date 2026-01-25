@@ -305,23 +305,26 @@
             margin-bottom: 25px;
             border: 1px solid var(--border);
             flex-wrap: wrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .nav-tab {
             flex: 1;
-            padding: 15px 8px;
+            padding: 12px 5px;
             text-align: center;
             border: none;
             background: transparent;
             color: var(--text-muted);
             font-weight: 600;
-            font-size: 14px;
+            font-size: 12px;
             cursor: pointer;
             transition: var(--transition);
             border-radius: 10px;
             -webkit-tap-highlight-color: transparent;
-            min-width: 80px;
+            min-width: 70px;
             opacity: 0.8;
+            white-space: nowrap;
         }
 
         .nav-tab.active {
@@ -350,6 +353,61 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ===== FULLSCREEN TIMER ===== */
+        .fullscreen-timer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-primary);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .fullscreen-timer.active {
+            display: flex;
+        }
+
+        .fullscreen-timer-display {
+            font-size: 120px;
+            font-weight: 800;
+            font-family: 'SF Mono', 'Monaco', monospace;
+            color: var(--text-primary);
+            margin: 40px 0;
+            line-height: 1;
+            letter-spacing: 2px;
+            opacity: 0.95;
+        }
+
+        .fullscreen-controls {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .fullscreen-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--danger);
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         /* ===== POMODORO PAGE ===== */
         .timer-section {
             background: var(--bg-card);
@@ -359,6 +417,7 @@
             box-shadow: var(--shadow);
             text-align: center;
             border: 1px solid var(--border);
+            position: relative;
         }
 
         .timer-display {
@@ -370,6 +429,12 @@
             line-height: 1;
             letter-spacing: 2px;
             opacity: 0.95;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .timer-display:hover {
+            opacity: 0.8;
         }
 
         .progress-container {
@@ -576,13 +641,42 @@
             color: var(--primary);
         }
 
-        /* ===== TOPICS PAGE ===== */
+        /* ===== TOPICS & TASKS PAGE ===== */
         .sr-section {
             background: var(--bg-card);
             border-radius: var(--radius);
             padding: 25px;
             margin-bottom: 25px;
             border: 1px solid var(--border);
+        }
+
+        .sub-tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 3px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .sub-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 8px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .sub-tab.active {
+            background: var(--primary);
+            color: white;
         }
 
         .topic-input-section {
@@ -680,7 +774,7 @@
             font-weight: 600;
         }
 
-        /* ===== TASKS PAGE ===== */
+        /* ===== TASKS SECTION ===== */
         .task-input-section {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -773,7 +867,7 @@
             opacity: 0.8;
         }
 
-        /* ===== THOUGHTS PAGE ===== */
+        /* ===== THOUGHTS & NOTES PAGE ===== */
         .thought-item {
             background: var(--bg-input);
             border-radius: 12px;
@@ -829,7 +923,7 @@
             opacity: 0.8;
         }
 
-        /* ===== NOTES PAGE ===== */
+        /* ===== NOTES SECTION ===== */
         .note-item {
             background: var(--bg-input);
             border-radius: 12px;
@@ -883,6 +977,139 @@
             font-size: 12px;
             font-weight: 500;
             opacity: 0.8;
+        }
+
+        /* ===== PAPERS PAGE ===== */
+        .papers-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .paper-table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 25px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .paper-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .paper-table th {
+            background: var(--bg-secondary);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .paper-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .paper-table tr:hover {
+            background: var(--bg-input);
+        }
+
+        .paper-year {
+            font-weight: 600;
+            color: var(--primary);
+            min-width: 80px;
+        }
+
+        .paper-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .paper-checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .paper-type-cell {
+            display: flex;
+            gap: 10px;
+        }
+
+        .paper-type {
+            flex: 1;
+            text-align: center;
+            padding: 8px 5px;
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* ===== MODEL PAPERS ===== */
+        .model-papers-section {
+            margin-top: 30px;
+        }
+
+        .model-papers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .model-paper-card {
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .model-paper-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .model-paper-card.checked {
+            background: linear-gradient(135deg, rgba(76, 201, 240, 0.2), rgba(76, 201, 240, 0.1));
+            border-color: var(--success);
+        }
+
+        .model-paper-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .model-paper-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .model-paper-status {
+            font-size: 12px;
+            color: var(--text-muted);
         }
 
         /* ===== NOTIFICATION ===== */
@@ -996,6 +1223,10 @@
                 font-size: 72px;
             }
             
+            .fullscreen-timer-display {
+                font-size: 90px;
+            }
+            
             .controls-grid {
                 grid-template-columns: 1fr;
             }
@@ -1006,8 +1237,8 @@
             
             .nav-tab {
                 padding: 12px 5px;
-                font-size: 13px;
-                min-width: 70px;
+                font-size: 11px;
+                min-width: 60px;
                 flex: 1 0 auto;
             }
             
@@ -1017,6 +1248,10 @@
             
             .nav-tabs {
                 gap: 5px;
+            }
+            
+            .model-papers-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
@@ -1269,6 +1504,23 @@
     </style>
 </head>
 <body data-theme="light">
+    <!-- Fullscreen Timer -->
+    <div id="fullscreenTimer" class="fullscreen-timer">
+        <button class="fullscreen-close" onclick="closeFullscreenTimer()">×</button>
+        <div class="fullscreen-timer-display" id="fullscreenTimerDisplay">35:00</div>
+        <div class="fullscreen-controls">
+            <button class="btn btn-success" onclick="startTimer()">
+                <span>▶</span> Start
+            </button>
+            <button class="btn btn-warning" onclick="pauseTimer()">
+                <span>⏸</span> Pause
+            </button>
+            <button class="btn btn-danger" onclick="resetTimer()">
+                <span>🔄</span> Reset
+            </button>
+        </div>
+    </div>
+
     <!-- Install Banner -->
     <div id="installBanner" class="install-banner">
         <div class="install-banner-content">
@@ -1323,29 +1575,26 @@
         <!-- Navigation -->
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="showPage('pomodoro', this)">
-                ⏰ Pomodoro
+                ⏰ Timer
             </button>
             <button class="nav-tab" onclick="showPage('cycle', this)">
-                🔄 Cycles
+                📊 Cycles
             </button>
             <button class="nav-tab" onclick="showPage('topics', this)">
-                📚 Topics
-            </button>
-            <button class="nav-tab" onclick="showPage('tasks', this)">
-                ✅ Tasks
+                📚 Study
             </button>
             <button class="nav-tab" onclick="showPage('thoughts', this)">
-                💭 Thoughts
+                💡 Journal
             </button>
-            <button class="nav-tab" onclick="showPage('notes', this)">
-                📝 Notes
+            <button class="nav-tab" onclick="showPage('papers', this)">
+                📄 Papers
             </button>
         </div>
 
         <!-- POMODORO PAGE -->
         <div id="pomodoroPage" class="page active">
             <section class="timer-section">
-                <div class="timer-display" id="timer">35:00</div>
+                <div class="timer-display" id="timer" onclick="openFullscreenTimer()">35:00</div>
                 <div class="progress-container">
                     <div class="progress-bar" id="progress"></div>
                 </div>
@@ -1375,10 +1624,10 @@
                 <button class="btn btn-warning" onclick="pauseTimer()">
                     <span>⏸</span> Pause
                 </button>
-                <button class="btn btn-danger" onclick="resetTimer()">
+                <button class="btn btn-danger" onclick="confirmResetTimer()">
                     <span>🔄</span> Reset
                 </button>
-                <button class="btn btn-accent" onclick="skipBreak()">
+                <button class="btn btn-accent" onclick="confirmSkipBreak()">
                     <span>⏭</span> Skip Break
                 </button>
             </div>
@@ -1443,12 +1692,12 @@
                     <span>⏱️</span> Study Time Statistics
                 </h2>
                 <div class="time-stat">
-                    <div class="time-label">Current Cycle Study Time:</div>
-                    <div class="time-value" id="currentCycleTime">0 hours 0 minutes</div>
-                </div>
-                <div class="time-stat">
                     <div class="time-label">Today's Total Study Time:</div>
                     <div class="time-value highlight" id="todayTotalTime">0 hours 0 minutes</div>
+                </div>
+                <div class="time-stat">
+                    <div class="time-label">Weekly Total Study Time:</div>
+                    <div class="time-value highlight" id="weeklyTotalTime">0 hours 0 minutes</div>
                 </div>
                 <div class="time-stat">
                     <div class="time-label">All-Time Study Time:</div>
@@ -1485,233 +1734,330 @@
             </div>
         </div>
 
-        <!-- TOPICS PAGE -->
+        <!-- TOPICS & TASKS PAGE -->
         <div id="topicsPage" class="page">
-            <section class="sr-section">
-                <h2 class="section-title">
-                    <span>➕</span> Add Topic for Spaced Repetition
-                </h2>
-                <div class="topic-input-section">
-                    <input type="text" id="topicInput" placeholder="Enter topic name (e.g., Physics Unit 3)">
-                    <button class="btn btn-primary" onclick="addTopic()">
-                        <span>+</span> Add
-                    </button>
-                </div>
-                <select id="subjectSelect">
-                    <option value="maths">Mathematics</option>
-                    <option value="physics">Physics</option>
-                    <option value="chemistry">Chemistry</option>
-                    <option value="combined">Combined Maths</option>
-                    <option value="english">English</option>
-                    <option value="other">Other</option>
-                </select>
-                <p style="font-size: 14px; color: var(--text-muted); margin-top: 10px;">
-                    Topics will be reviewed on Day 1, 3, 6, 10<br>
-                    <small>✓ Day 10 review auto-deletes topic</small>
-                </p>
-            </section>
-
-            <section class="sr-section">
-                <h2 class="section-title">
-                    <span>📚</span> My Topics
-                </h2>
-                <div id="topicsList">
-                    <!-- Topics will be loaded here -->
-                </div>
-            </section>
-
-            <div class="controls-grid">
-                <button class="btn btn-success" onclick="markAllAsReviewed()">
-                    <span>✅</span> Mark Today as Reviewed
+            <!-- Sub-tabs for Topics & Tasks -->
+            <div class="sub-tabs">
+                <button class="sub-tab active" onclick="showStudyTab('topics')">
+                    📚 Topics
                 </button>
-                <button class="btn btn-warning" onclick="setTopicReminders()">
-                    <span>🔔</span> Set Reminders
-                </button>
-                <button class="btn btn-danger" onclick="clearCompletedTopics()">
-                    <span>🗑️</span> Clear All Completed
-                </button>
-                <button class="btn" onclick="deleteAllTopics()" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
-                    <span>⚠️</span> Delete All
+                <button class="sub-tab" onclick="showStudyTab('tasks')">
+                    ✅ Tasks
                 </button>
             </div>
-        </div>
 
-        <!-- TASKS PAGE -->
-        <div id="tasksPage" class="page">
-            <section class="task-input-section">
-                <h2 class="section-title">
-                    <span>📝</span> Add Study Task
-                </h2>
-                <div class="input-group">
-                    <input type="text" id="taskInput" placeholder="Enter study task...">
-                    <button class="btn btn-primary" onclick="addTask()">
-                        <span>+</span> Add
-                    </button>
-                </div>
-                <select id="taskSubjectSelect">
-                    <option value="maths">Mathematics</option>
-                    <option value="physics">Physics</option>
-                    <option value="chemistry">Chemistry</option>
-                    <option value="combined">Combined Maths</option>
-                    <option value="english">English</option>
-                    <option value="other">Other</option>
-                </select>
-            </section>
-
-            <section class="sr-section">
-                <h2 class="section-title">
-                    <span>✅</span> My Tasks
-                </h2>
-                <div class="tasks-list" id="tasksList">
-                    <!-- Tasks will be added here -->
-                </div>
-            </section>
-
-            <div class="controls-grid">
-                <button class="btn btn-danger" onclick="clearCompletedTasks()">
-                    <span>🗑️</span> Clear Completed
-                </button>
-                <button class="btn btn-info" onclick="saveAllData()">
-                    <span>💾</span> Save All Data
-                </button>
-            </div>
-        </div>
-
-        <!-- THOUGHTS PAGE -->
-        <div id="thoughtsPage" class="page">
-            <section class="sr-section">
-                <h2 class="section-title">
-                    <span>💭</span> Capture Your Thoughts
-                </h2>
-                <div class="input-group">
-                    <input type="text" id="thoughtTitle" placeholder="Title (optional)">
-                </div>
-                <textarea id="thoughtContent" placeholder="What's on your mind? Write your thoughts, feelings, ideas, or reflections here..."></textarea>
-                
-                <div style="margin-top: 15px;">
-                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Mood:</div>
-                    <div class="mood-selector" id="moodSelector">
-                        <button class="mood-btn" data-mood="happy" onclick="selectMood(this)">😊 Happy</button>
-                        <button class="mood-btn" data-mood="neutral" onclick="selectMood(this)">😐 Neutral</button>
-                        <button class="mood-btn" data-mood="sad" onclick="selectMood(this)">😔 Sad</button>
-                        <button class="mood-btn" data-mood="stressed" onclick="selectMood(this)">😫 Stressed</button>
-                        <button class="mood-btn" data-mood="motivated" onclick="selectMood(this)">🚀 Motivated</button>
-                        <button class="mood-btn" data-mood="tired" onclick="selectMood(this)">😴 Tired</button>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 15px;">
-                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Tags (optional):</div>
-                    <div class="input-group">
-                        <input type="text" id="thoughtTagInput" placeholder="Add a tag (press Enter)">
-                        <button class="btn btn-thoughts" onclick="addThoughtTag()">
+            <!-- TOPICS SECTION -->
+            <div id="topicsSection" class="study-section active">
+                <section class="sr-section">
+                    <h2 class="section-title">
+                        <span>➕</span> Add Topic for Spaced Repetition
+                    </h2>
+                    <div class="topic-input-section">
+                        <input type="text" id="topicInput" placeholder="Enter topic name (e.g., Physics Unit 3)">
+                        <button class="btn btn-primary" onclick="addTopic()">
                             <span>+</span> Add
                         </button>
                     </div>
-                    <div class="tag-input" id="thoughtTagsContainer">
-                        <!-- Tags will appear here -->
+                    <select id="subjectSelect">
+                        <option value="maths">Mathematics</option>
+                        <option value="physics">Physics</option>
+                        <option value="chemistry">Chemistry</option>
+                        <option value="combined">Combined Maths</option>
+                        <option value="english">English</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <p style="font-size: 14px; color: var(--text-muted); margin-top: 10px;">
+                        Topics will be reviewed on Day 1, 3, 6, 10<br>
+                        <small>✓ Day 10 review auto-deletes topic</small>
+                    </p>
+                </section>
+
+                <section class="sr-section">
+                    <h2 class="section-title">
+                        <span>📚</span> My Topics
+                    </h2>
+                    <div id="topicsList">
+                        <!-- Topics will be loaded here -->
                     </div>
-                </div>
-                
-                <button class="btn btn-thoughts" onclick="addThought()" style="width: 100%; margin-top: 20px;">
-                    <span>💾</span> Save Thought
-                </button>
-            </section>
+                </section>
 
-            <section class="sr-section">
-                <h2 class="section-title">
-                    <span>📖</span> My Thoughts
-                </h2>
-                <div id="thoughtsList">
-                    <!-- Thoughts will be loaded here -->
+                <div class="controls-grid">
+                    <button class="btn btn-success" onclick="markAllAsReviewed()">
+                        <span>✅</span> Mark Today as Reviewed
+                    </button>
+                    <button class="btn btn-warning" onclick="setTopicReminders()">
+                        <span>🔔</span> Set Reminders
+                    </button>
+                    <button class="btn btn-danger" onclick="clearCompletedTopics()">
+                        <span>🗑️</span> Clear All Completed
+                    </button>
                 </div>
-            </section>
+            </div>
 
-            <div class="controls-grid">
-                <button class="btn btn-danger" onclick="clearAllThoughts()">
-                    <span>🗑️</span> Clear All Thoughts
-                </button>
-                <button class="btn btn-warning" onclick="exportThoughts()">
-                    <span>📤</span> Export Thoughts
-                </button>
+            <!-- TASKS SECTION -->
+            <div id="tasksSection" class="study-section" style="display: none;">
+                <section class="task-input-section">
+                    <h2 class="section-title">
+                        <span>📝</span> Add Study Task
+                    </h2>
+                    <div class="input-group">
+                        <input type="text" id="taskInput" placeholder="Enter study task...">
+                        <button class="btn btn-primary" onclick="addTask()">
+                            <span>+</span> Add
+                        </button>
+                    </div>
+                    <select id="taskSubjectSelect">
+                        <option value="maths">Mathematics</option>
+                        <option value="physics">Physics</option>
+                        <option value="chemistry">Chemistry</option>
+                        <option value="combined">Combined Maths</option>
+                        <option value="english">English</option>
+                        <option value="other">Other</option>
+                    </select>
+                </section>
+
+                <section class="sr-section">
+                    <h2 class="section-title">
+                        <span>✅</span> My Tasks
+                    </h2>
+                    <div class="tasks-list" id="tasksList">
+                        <!-- Tasks will be added here -->
+                    </div>
+                </section>
+
+                <div class="controls-grid">
+                    <button class="btn btn-danger" onclick="clearCompletedTasks()">
+                        <span>🗑️</span> Clear Completed
+                    </button>
+                    <button class="btn btn-info" onclick="saveAllData()">
+                        <span>💾</span> Save All Data
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- NOTES PAGE -->
-        <div id="notesPage" class="page">
+        <!-- THOUGHTS & NOTES PAGE -->
+        <div id="thoughtsPage" class="page">
+            <!-- Sub-tabs for Thoughts & Notes -->
+            <div class="sub-tabs">
+                <button class="sub-tab active" onclick="showJournalTab('thoughts')">
+                    💭 Thoughts
+                </button>
+                <button class="sub-tab" onclick="showJournalTab('notes')">
+                    📝 Notes
+                </button>
+            </div>
+
+            <!-- THOUGHTS SECTION -->
+            <div id="thoughtsSection" class="journal-section active">
+                <section class="sr-section">
+                    <h2 class="section-title">
+                        <span>💭</span> Capture Your Thoughts
+                    </h2>
+                    <div class="input-group">
+                        <input type="text" id="thoughtTitle" placeholder="Title (optional)">
+                    </div>
+                    <textarea id="thoughtContent" placeholder="What's on your mind? Write your thoughts, feelings, ideas, or reflections here..."></textarea>
+                    
+                    <div style="margin-top: 15px;">
+                        <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Mood:</div>
+                        <div class="mood-selector" id="moodSelector">
+                            <button class="mood-btn" data-mood="happy" onclick="selectMood(this)">😊 Happy</button>
+                            <button class="mood-btn" data-mood="neutral" onclick="selectMood(this)">😐 Neutral</button>
+                            <button class="mood-btn" data-mood="sad" onclick="selectMood(this)">😔 Sad</button>
+                            <button class="mood-btn" data-mood="stressed" onclick="selectMood(this)">😫 Stressed</button>
+                            <button class="mood-btn" data-mood="motivated" onclick="selectMood(this)">🚀 Motivated</button>
+                            <button class="mood-btn" data-mood="tired" onclick="selectMood(this)">😴 Tired</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Tags (optional):</div>
+                        <div class="input-group">
+                            <input type="text" id="thoughtTagInput" placeholder="Add a tag (press Enter)">
+                            <button class="btn btn-thoughts" onclick="addThoughtTag()">
+                                <span>+</span> Add
+                            </button>
+                        </div>
+                        <div class="tag-input" id="thoughtTagsContainer">
+                            <!-- Tags will appear here -->
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-thoughts" onclick="addThought()" style="width: 100%; margin-top: 20px;">
+                        <span>💾</span> Save Thought
+                    </button>
+                </section>
+
+                <section class="sr-section">
+                    <h2 class="section-title">
+                        <span>📖</span> My Thoughts
+                    </h2>
+                    <div id="thoughtsList">
+                        <!-- Thoughts will be loaded here -->
+                    </div>
+                </section>
+
+                <div class="controls-grid">
+                    <button class="btn btn-danger" onclick="clearAllThoughts()">
+                        <span>🗑️</span> Clear All Thoughts
+                    </button>
+                    <button class="btn btn-warning" onclick="exportThoughts()">
+                        <span>📤</span> Export Thoughts
+                    </button>
+                </div>
+            </div>
+
+            <!-- NOTES SECTION -->
+            <div id="notesSection" class="journal-section" style="display: none;">
+                <section class="sr-section">
+                    <h2 class="section-title">
+                        <span>📝</span> Create Special Note
+                    </h2>
+                    <div class="input-group">
+                        <input type="text" id="noteTitle" placeholder="Note title (e.g., Important Formula, Exam Tips)">
+                    </div>
+                    <textarea id="noteContent" placeholder="Write your special notes here... This could be important formulas, study tips, reminders, or anything special you want to remember."></textarea>
+                    
+                    <div style="margin-top: 15px;">
+                        <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Priority:</div>
+                        <div class="priority-selector" id="prioritySelector">
+                            <button class="priority-btn" data-priority="low" onclick="selectPriority(this)">📌 Low</button>
+                            <button class="priority-btn" data-priority="medium" onclick="selectPriority(this)">📍 Medium</button>
+                            <button class="priority-btn" data-priority="high" onclick="selectPriority(this)">🔴 High</button>
+                            <button class="priority-btn" data-priority="critical" onclick="selectPriority(this)">🚨 Critical</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Category:</div>
+                        <select id="noteCategory" style="width: 100%;">
+                            <option value="formulas">📐 Formulas</option>
+                            <option value="concepts">🧠 Concepts</option>
+                            <option value="tips">💡 Study Tips</option>
+                            <option value="reminders">🔔 Reminders</option>
+                            <option value="resources">📚 Resources</option>
+                            <option value="personal">⭐ Personal</option>
+                            <option value="other">📝 Other</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Tags (optional):</div>
+                        <div class="input-group">
+                            <input type="text" id="noteTagInput" placeholder="Add a tag (press Enter)">
+                            <button class="btn btn-notes" onclick="addNoteTag()">
+                                <span>+</span> Add
+                            </button>
+                        </div>
+                        <div class="tag-input" id="noteTagsContainer">
+                            <!-- Tags will appear here -->
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-notes" onclick="addNote()" style="width: 100%; margin-top: 20px;">
+                        <span>💾</span> Save Note
+                    </button>
+                </section>
+
+                <section class="sr-section">
+                    <h2 class="section-title">
+                        <span>📋</span> My Notes
+                    </h2>
+                    <div style="margin-bottom: 15px;">
+                        <input type="text" id="searchNotes" placeholder="🔍 Search notes..." style="width: 100%;">
+                    </div>
+                    <div id="notesList">
+                        <!-- Notes will be loaded here -->
+                    </div>
+                </section>
+
+                <div class="controls-grid">
+                    <button class="btn btn-danger" onclick="clearAllNotes()">
+                        <span>🗑️</span> Clear All Notes
+                    </button>
+                    <button class="btn btn-success" onclick="exportNotes()">
+                        <span>📤</span> Export Notes
+                    </button>
+                    <button class="btn btn-info" onclick="backupAllData()">
+                        <span>💾</span> Backup All
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAPERS PAGE -->
+        <div id="papersPage" class="page">
             <section class="sr-section">
                 <h2 class="section-title">
-                    <span>📝</span> Create Special Note
+                    <span>📄</span> Past Papers Progress
                 </h2>
-                <div class="input-group">
-                    <input type="text" id="noteTitle" placeholder="Note title (e.g., Important Formula, Exam Tips)">
-                </div>
-                <textarea id="noteContent" placeholder="Write your special notes here... This could be important formulas, study tips, reminders, or anything special you want to remember."></textarea>
                 
-                <div style="margin-top: 15px;">
-                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Priority:</div>
-                    <div class="priority-selector" id="prioritySelector">
-                        <button class="priority-btn" data-priority="low" onclick="selectPriority(this)">📌 Low</button>
-                        <button class="priority-btn" data-priority="medium" onclick="selectPriority(this)">📍 Medium</button>
-                        <button class="priority-btn" data-priority="high" onclick="selectPriority(this)">🔴 High</button>
-                        <button class="priority-btn" data-priority="critical" onclick="selectPriority(this)">🚨 Critical</button>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 15px;">
-                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Category:</div>
-                    <select id="noteCategory" style="width: 100%;">
-                        <option value="formulas">📐 Formulas</option>
-                        <option value="concepts">🧠 Concepts</option>
-                        <option value="tips">💡 Study Tips</option>
-                        <option value="reminders">🔔 Reminders</option>
-                        <option value="resources">📚 Resources</option>
-                        <option value="personal">⭐ Personal</option>
-                        <option value="other">📝 Other</option>
+                <div class="papers-filter">
+                    <select id="subjectFilter" onchange="filterPapers()" style="flex: 1;">
+                        <option value="all">All Subjects</option>
+                        <option value="physics">Physics</option>
+                        <option value="chemistry">Chemistry</option>
+                        <option value="combined">Combined Maths</option>
+                    </select>
+                    <select id="yearFilter" onchange="filterPapers()" style="flex: 1;">
+                        <option value="all">All Years</option>
+                        <option value="2000-2004">2000-2004</option>
+                        <option value="2005-2009">2005-2009</option>
+                        <option value="2010-2014">2010-2014</option>
+                        <option value="2015-2019">2015-2019</option>
+                        <option value="2020-2025">2020-2025</option>
                     </select>
                 </div>
                 
-                <div style="margin-top: 15px;">
-                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">Tags (optional):</div>
-                    <div class="input-group">
-                        <input type="text" id="noteTagInput" placeholder="Add a tag (press Enter)">
-                        <button class="btn btn-notes" onclick="addNoteTag()">
-                            <span>+</span> Add
-                        </button>
-                    </div>
-                    <div class="tag-input" id="noteTagsContainer">
-                        <!-- Tags will appear here -->
-                    </div>
+                <div class="paper-table-container">
+                    <table class="paper-table" id="papersTable">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Physics</th>
+                                <th>Chemistry</th>
+                                <th>Combined Maths</th>
+                            </tr>
+                        </thead>
+                        <tbody id="papersTableBody">
+                            <!-- Papers will be loaded here -->
+                        </tbody>
+                    </table>
                 </div>
                 
-                <button class="btn btn-notes" onclick="addNote()" style="width: 100%; margin-top: 20px;">
-                    <span>💾</span> Save Note
-                </button>
+                <div class="controls-grid" style="margin-top: 20px;">
+                    <button class="btn btn-success" onclick="markAllPapers()">
+                        <span>✅</span> Mark All
+                    </button>
+                    <button class="btn btn-warning" onclick="unmarkAllPapers()">
+                        <span>❌</span> Unmark All
+                    </button>
+                    <button class="btn btn-info" onclick="savePapersProgress()">
+                        <span>💾</span> Save Progress
+                    </button>
+                </div>
             </section>
 
-            <section class="sr-section">
+            <!-- Model Papers Section -->
+            <section class="model-papers-section">
                 <h2 class="section-title">
-                    <span>📋</span> My Notes
+                    <span>🏆</span> Model Papers Progress
                 </h2>
-                <div style="margin-bottom: 15px;">
-                    <input type="text" id="searchNotes" placeholder="🔍 Search notes..." style="width: 100%;">
+                
+                <div class="model-papers-grid" id="modelPapersGrid">
+                    <!-- Model papers will be loaded here -->
                 </div>
-                <div id="notesList">
-                    <!-- Notes will be loaded here -->
+                
+                <div class="controls-grid" style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="addModelPaper()">
+                        <span>➕</span> Add Model Paper
+                    </button>
+                    <button class="btn btn-danger" onclick="clearModelPapers()">
+                        <span>🗑️</span> Clear All
+                    </button>
                 </div>
             </section>
-
-            <div class="controls-grid">
-                <button class="btn btn-danger" onclick="clearAllNotes()">
-                    <span>🗑️</span> Clear All Notes
-                </button>
-                <button class="btn btn-success" onclick="exportNotes()">
-                    <span>📤</span> Export Notes
-                </button>
-                <button class="btn btn-info" onclick="backupAllData()">
-                    <span>💾</span> Backup All
-                </button>
-            </div>
         </div>
     </div>
 
@@ -1745,60 +2091,64 @@
         let currentPriority = 'medium';
         let thoughtTags = [];
         let noteTags = [];
+        let papersProgress = {};
+        let modelPapers = [];
 
         // ========== STUDY TIME TRACKING ==========
         let studyTimeData = {
-            currentCycleTime: 0, // in seconds
             todayTotalTime: 0,   // in seconds
+            weeklyTotalTime: 0,  // in seconds
             allTimeTotal: 0,     // in seconds
             lastUpdate: null,
-            todayDate: new Date().toDateString()
+            todayDate: new Date().toDateString(),
+            weekStart: getWeekStartDate()
         };
 
-        // ========== SCROLL HIDE HEADER ==========
-        let lastScrollTop = 0;
-        const header = document.getElementById('mainHeader');
-        const scrollThreshold = 50; // pixels
-
-        function initScrollHeader() {
-            const container = document.querySelector('.container');
-            container.addEventListener('scroll', handleScroll);
+        function getWeekStartDate() {
+            const now = new Date();
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday as start
+            const monday = new Date(now.setDate(diff));
+            monday.setHours(0, 0, 0, 0);
+            return monday.toISOString();
         }
 
-        function handleScroll() {
-            const scrollTop = document.querySelector('.container').scrollTop;
-            
-            if (scrollTop > scrollThreshold) {
-                if (scrollTop > lastScrollTop) {
-                    // Scrolling down - hide header
-                    header.classList.add('hidden');
-                } else {
-                    // Scrolling up - show header
-                    header.classList.remove('hidden');
-                }
-            } else {
-                // Near top - always show header
-                header.classList.remove('hidden');
-            }
-            
-            lastScrollTop = scrollTop;
+        function isSameWeek(date) {
+            const testDate = new Date(date);
+            const weekStart = new Date(studyTimeData.weekStart);
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekEnd.getDate() + 7);
+            return testDate >= weekStart && testDate < weekEnd;
         }
 
-        // ========== STUDY TIME FUNCTIONS ==========
         function loadStudyTime() {
             const savedData = localStorage.getItem('studyTimeData');
             if (savedData) {
                 const data = JSON.parse(savedData);
                 const today = new Date().toDateString();
+                const currentWeekStart = getWeekStartDate();
                 
                 if (data.todayDate === today) {
                     studyTimeData = data;
                 } else {
-                    // New day, reset today's time but keep all-time total
+                    // New day, reset today's time
                     studyTimeData.todayTotalTime = 0;
-                    studyTimeData.currentCycleTime = 0;
                     studyTimeData.todayDate = today;
                     studyTimeData.allTimeTotal = data.allTimeTotal || 0;
+                    
+                    // Check if we're in the same week
+                    if (data.weekStart && isSameWeek(new Date(data.weekStart))) {
+                        studyTimeData.weeklyTotalTime = data.weeklyTotalTime || 0;
+                    } else {
+                        studyTimeData.weeklyTotalTime = 0;
+                        studyTimeData.weekStart = currentWeekStart;
+                    }
+                }
+                
+                // Ensure week start is current
+                if (studyTimeData.weekStart !== currentWeekStart) {
+                    studyTimeData.weeklyTotalTime = 0;
+                    studyTimeData.weekStart = currentWeekStart;
                 }
             }
             updateStudyTimeDisplay();
@@ -1816,8 +2166,8 @@
             const updateInterval = setInterval(() => {
                 if (isRunning && !isBreak) {
                     // Add 60 seconds for each minute of study
-                    studyTimeData.currentCycleTime += 60;
                     studyTimeData.todayTotalTime += 60;
+                    studyTimeData.weeklyTotalTime += 60;
                     studyTimeData.allTimeTotal += 60;
                     
                     updateStudyTimeDisplay();
@@ -1841,94 +2191,320 @@
                 return `${minutes} minute${minutes !== 1 ? 's' : ''}`;
             }
             
-            document.getElementById('currentCycleTime').textContent = 
-                formatTime(studyTimeData.currentCycleTime);
             document.getElementById('todayTotalTime').textContent = 
                 formatTime(studyTimeData.todayTotalTime);
+            document.getElementById('weeklyTotalTime').textContent = 
+                formatTime(studyTimeData.weeklyTotalTime);
             document.getElementById('allTimeTotal').textContent = 
                 formatTime(studyTimeData.allTimeTotal);
         }
 
-        function resetCycleStudyTime() {
-            studyTimeData.currentCycleTime = 0;
-            updateStudyTimeDisplay();
-            saveStudyTime();
+        // ========== FULLSCREEN TIMER ==========
+        function openFullscreenTimer() {
+            document.getElementById('fullscreenTimer').classList.add('active');
+            document.getElementById('fullscreenTimerDisplay').textContent = 
+                document.getElementById('timer').textContent;
+            document.body.style.overflow = 'hidden';
         }
 
-        function resetTodayStudyTime() {
-            studyTimeData.todayTotalTime = 0;
-            studyTimeData.currentCycleTime = 0;
-            studyTimeData.todayDate = new Date().toDateString();
-            updateStudyTimeDisplay();
-            saveStudyTime();
+        function closeFullscreenTimer() {
+            document.getElementById('fullscreenTimer').classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
 
-        // ========== 8-CYCLE TIMETABLE ==========
-        const fullTimetable = [
-            // CYCLE 1
-            { time: "5:30-6:05", task: "Study Session", type: "study", cycle: 1, done: false },
-            { time: "6:05-6:10", task: "Short Break", type: "break", cycle: 1, done: false },
-            { time: "6:10-6:45", task: "Study Session", type: "study", cycle: 1, done: false },
-            { time: "6:45-6:50", task: "Short Break", type: "break", cycle: 1, done: false },
-            { time: "6:50-7:25", task: "Study Session", type: "study", cycle: 1, done: false },
-            { time: "7:25-7:45", task: "Long Break (20min)", type: "long_break", cycle: 1, done: false },
+        function updateFullscreenTimer() {
+            if (document.getElementById('fullscreenTimer').classList.contains('active')) {
+                document.getElementById('fullscreenTimerDisplay').textContent = 
+                    document.getElementById('timer').textContent;
+            }
+        }
+
+        // ========== CONFIRMATION DIALOGS ==========
+        function confirmResetTimer() {
+            if (confirm('Are you sure you want to reset the timer? This will stop the current session.')) {
+                resetTimer();
+            }
+        }
+
+        function confirmSkipBreak() {
+            if (isBreak && confirm('Skip this break and start next study session?')) {
+                skipBreak();
+            } else if (!isBreak) {
+                showNotification('No break to skip');
+            }
+        }
+
+        // ========== PAPERS MANAGEMENT ==========
+        function loadPapersProgress() {
+            const savedProgress = localStorage.getItem('papersProgress');
+            const savedModelPapers = localStorage.getItem('modelPapers');
             
-            // CYCLE 2
-            { time: "7:45-8:20", task: "Study Session", type: "study", cycle: 2, done: false },
-            { time: "8:20-8:25", task: "Short Break", type: "break", cycle: 2, done: false },
-            { time: "8:25-9:00", task: "Study Session", type: "study", cycle: 2, done: false },
-            { time: "9:00-9:05", task: "Short Break", type: "break", cycle: 2, done: false },
-            { time: "9:05-9:40", task: "Study Session", type: "study", cycle: 2, done: false },
-            { time: "9:40-10:00", task: "Long Break (20min)", type: "long_break", cycle: 2, done: false },
+            if (savedProgress) {
+                papersProgress = JSON.parse(savedProgress);
+            } else {
+                // Initialize papers progress
+                papersProgress = {};
+                for (let year = 2000; year <= 2025; year++) {
+                    papersProgress[year] = {
+                        physics: { mcq: false, essay: false },
+                        chemistry: { mcq: false, essay: false },
+                        combined: { pure: false, applied: false }
+                    };
+                }
+            }
             
-            // CYCLE 3
-            { time: "10:00-10:35", task: "Study Session", type: "study", cycle: 3, done: false },
-            { time: "10:35-10:40", task: "Short Break", type: "break", cycle: 3, done: false },
-            { time: "10:40-11:15", task: "Study Session", type: "study", cycle: 3, done: false },
-            { time: "11:15-11:20", task: "Short Break", type: "break", cycle: 3, done: false },
-            { time: "11:20-11:55", task: "Study Session", type: "study", cycle: 3, done: false },
-            { time: "11:55-12:35", task: "Free Session (40min)", type: "long_break", cycle: 3, done: false },
+            if (savedModelPapers) {
+                modelPapers = JSON.parse(savedModelPapers);
+            }
             
-            // CYCLE 4
-            { time: "12:35-1:10", task: "Study Session", type: "study", cycle: 4, done: false },
-            { time: "1:10-1:15", task: "Short Break", type: "break", cycle: 4, done: false },
-            { time: "1:15-1:50", task: "Study Session", type: "study", cycle: 4, done: false },
-            { time: "1:50-1:55", task: "Short Break", type: "break", cycle: 4, done: false },
-            { time: "1:55-2:30", task: "Study Session", type: "study", cycle: 4, done: false },
-            { time: "2:30-2:50", task: "Lunch Break (20min)", type: "long_break", cycle: 4, done: false },
+            renderPapersTable();
+            renderModelPapers();
+        }
+
+        function savePapersProgress() {
+            localStorage.setItem('papersProgress', JSON.stringify(papersProgress));
+            localStorage.setItem('modelPapers', JSON.stringify(modelPapers));
+            showNotification('Papers progress saved! 💾');
+        }
+
+        function renderPapersTable() {
+            const container = document.getElementById('papersTableBody');
+            container.innerHTML = '';
             
-            // CYCLE 5
-            { time: "2:50-3:25", task: "Study Session", type: "study", cycle: 5, done: false },
-            { time: "3:25-3:30", task: "Short Break", type: "break", cycle: 5, done: false },
-            { time: "3:30-4:05", task: "Study Session", type: "study", cycle: 5, done: false },
-            { time: "4:05-4:10", task: "Short Break", type: "break", cycle: 5, done: false },
-            { time: "4:10-4:45", task: "Study Session", type: "study", cycle: 5, done: false },
-            { time: "4:45-5:05", task: "Short Break (20min)", type: "long_break", cycle: 5, done: false },
+            for (let year = 2000; year <= 2025; year++) {
+                const row = document.createElement('tr');
+                const progress = papersProgress[year] || {
+                    physics: { mcq: false, essay: false },
+                    chemistry: { mcq: false, essay: false },
+                    combined: { pure: false, applied: false }
+                };
+                
+                row.innerHTML = `
+                    <td class="paper-year">${year}</td>
+                    <td>
+                        <div class="paper-type-cell">
+                            <div class="paper-type" onclick="togglePaper(${year}, 'physics', 'mcq')">
+                                <div class="paper-checkbox ${progress.physics.mcq ? 'checked' : ''}">${progress.physics.mcq ? '✓' : ''}</div>
+                                <div style="margin-top: 5px; font-size: 11px;">MCQ</div>
+                            </div>
+                            <div class="paper-type" onclick="togglePaper(${year}, 'physics', 'essay')">
+                                <div class="paper-checkbox ${progress.physics.essay ? 'checked' : ''}">${progress.physics.essay ? '✓' : ''}</div>
+                                <div style="margin-top: 5px; font-size: 11px;">Essay</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="paper-type-cell">
+                            <div class="paper-type" onclick="togglePaper(${year}, 'chemistry', 'mcq')">
+                                <div class="paper-checkbox ${progress.chemistry.mcq ? 'checked' : ''}">${progress.chemistry.mcq ? '✓' : ''}</div>
+                                <div style="margin-top: 5px; font-size: 11px;">MCQ</div>
+                            </div>
+                            <div class="paper-type" onclick="togglePaper(${year}, 'chemistry', 'essay')">
+                                <div class="paper-checkbox ${progress.chemistry.essay ? 'checked' : ''}">${progress.chemistry.essay ? '✓' : ''}</div>
+                                <div style="margin-top: 5px; font-size: 11px;">Essay</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="paper-type-cell">
+                            <div class="paper-type" onclick="togglePaper(${year}, 'combined', 'pure')">
+                                <div class="paper-checkbox ${progress.combined.pure ? 'checked' : ''}">${progress.combined.pure ? '✓' : ''}</div>
+                                <div style="margin-top: 5px; font-size: 11px;">Pure</div>
+                            </div>
+                            <div class="paper-type" onclick="togglePaper(${year}, 'combined', 'applied')">
+                                <div class="paper-checkbox ${progress.combined.applied ? 'checked' : ''}">${progress.combined.applied ? '✓' : ''}</div>
+                                <div style="margin-top: 5px; font-size: 11px;">Applied</div>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                
+                container.appendChild(row);
+            }
+        }
+
+        function togglePaper(year, subject, type) {
+            if (!papersProgress[year]) {
+                papersProgress[year] = {
+                    physics: { mcq: false, essay: false },
+                    chemistry: { mcq: false, essay: false },
+                    combined: { pure: false, applied: false }
+                };
+            }
             
-            // CYCLE 6
-            { time: "5:05-5:40", task: "Study Session", type: "study", cycle: 6, done: false },
-            { time: "5:40-5:45", task: "Short Break", type: "break", cycle: 6, done: false },
-            { time: "5:45-6:20", task: "Study Session", type: "study", cycle: 6, done: false },
-            { time: "6:20-6:25", task: "Short Break", type: "break", cycle: 6, done: false },
-            { time: "6:25-7:00", task: "Study Session", type: "study", cycle: 6, done: false },
-            { time: "7:00-7:25", task: "Free Session (25min)", type: "long_break", cycle: 6, done: false },
+            papersProgress[year][subject][type] = !papersProgress[year][subject][type];
+            savePapersProgress();
+            renderPapersTable();
+        }
+
+        function markAllPapers() {
+            if (confirm('Mark all papers as completed?')) {
+                for (let year = 2000; year <= 2025; year++) {
+                    if (!papersProgress[year]) {
+                        papersProgress[year] = {
+                            physics: { mcq: true, essay: true },
+                            chemistry: { mcq: true, essay: true },
+                            combined: { pure: true, applied: true }
+                        };
+                    } else {
+                        papersProgress[year].physics = { mcq: true, essay: true };
+                        papersProgress[year].chemistry = { mcq: true, essay: true };
+                        papersProgress[year].combined = { pure: true, applied: true };
+                    }
+                }
+                savePapersProgress();
+                renderPapersTable();
+                showNotification('All papers marked as completed! ✅');
+            }
+        }
+
+        function unmarkAllPapers() {
+            if (confirm('Unmark all papers?')) {
+                for (let year = 2000; year <= 2025; year++) {
+                    if (!papersProgress[year]) {
+                        papersProgress[year] = {
+                            physics: { mcq: false, essay: false },
+                            chemistry: { mcq: false, essay: false },
+                            combined: { pure: false, applied: false }
+                        };
+                    } else {
+                        papersProgress[year].physics = { mcq: false, essay: false };
+                        papersProgress[year].chemistry = { mcq: false, essay: false };
+                        papersProgress[year].combined = { pure: false, applied: false };
+                    }
+                }
+                savePapersProgress();
+                renderPapersTable();
+                showNotification('All papers unmarked! ❌');
+            }
+        }
+
+        function filterPapers() {
+            const subjectFilter = document.getElementById('subjectFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
+            const rows = document.querySelectorAll('#papersTableBody tr');
             
-            // CYCLE 7
-            { time: "7:25-8:00", task: "Study Session", type: "study", cycle: 7, done: false },
-            { time: "8:00-8:05", task: "Short Break", type: "break", cycle: 7, done: false },
-            { time: "8:05-8:40", task: "Study Session", type: "study", cycle: 7, done: false },
-            { time: "8:40-8:45", task: "Short Break", type: "break", cycle: 7, done: false },
-            { time: "8:45-9:20", task: "Study Session", type: "study", cycle: 7, done: false },
-            { time: "9:20-9:40", task: "Dinner Break (20min)", type: "long_break", cycle: 7, done: false },
+            rows.forEach(row => {
+                const year = parseInt(row.querySelector('.paper-year').textContent);
+                let showRow = true;
+                
+                // Filter by year range
+                if (yearFilter !== 'all') {
+                    const [start, end] = yearFilter.split('-').map(Number);
+                    showRow = year >= start && year <= end;
+                }
+                
+                // Filter by subject completion
+                if (showRow && subjectFilter !== 'all' && papersProgress[year]) {
+                    const subjectData = papersProgress[year][subjectFilter];
+                    if (subjectData) {
+                        // Only show if not all are completed
+                        const allCompleted = Object.values(subjectData).every(val => val);
+                        if (allCompleted) {
+                            showRow = false;
+                        }
+                    }
+                }
+                
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+
+        // ========== MODEL PAPERS ==========
+        function renderModelPapers() {
+            const container = document.getElementById('modelPapersGrid');
+            container.innerHTML = '';
             
-            // CYCLE 8
-            { time: "9:40-10:15", task: "Study Session", type: "study", cycle: 8, done: false },
-            { time: "10:15-10:20", task: "Short Break", type: "break", cycle: 8, done: false },
-            { time: "10:20-10:55", task: "Study Session", type: "study", cycle: 8, done: false },
-            { time: "10:55-11:00", task: "Short Break", type: "break", cycle: 8, done: false },
-            { time: "11:00-11:25", task: "Study Session", type: "study", cycle: 8, done: false },
-            { time: "11:25-11:30", task: "Wind Down", type: "long_break", cycle: 8, done: false }
-        ];
+            if (modelPapers.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <div class="empty-state-icon">📄</div>
+                        <h3>No model papers yet</h3>
+                        <p>Add your first model paper!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            modelPapers.forEach((paper, index) => {
+                const card = document.createElement('div');
+                card.className = `model-paper-card ${paper.completed ? 'checked' : ''}`;
+                card.onclick = () => toggleModelPaper(index);
+                
+                card.innerHTML = `
+                    <div class="model-paper-icon">${paper.icon || '📄'}</div>
+                    <div class="model-paper-name">${paper.name}</div>
+                    <div class="model-paper-status">${paper.completed ? '✅ Completed' : '⏳ Pending'}</div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        function toggleModelPaper(index) {
+            modelPapers[index].completed = !modelPapers[index].completed;
+            savePapersProgress();
+            renderModelPapers();
+        }
+
+        function addModelPaper() {
+            const name = prompt('Enter model paper name:');
+            if (name) {
+                modelPapers.push({
+                    id: Date.now(),
+                    name: name,
+                    icon: '📄',
+                    completed: false,
+                    date: new Date().toISOString()
+                });
+                savePapersProgress();
+                renderModelPapers();
+                showNotification('Model paper added!');
+            }
+        }
+
+        function clearModelPapers() {
+            if (modelPapers.length === 0) {
+                showNotification('No model papers to clear');
+                return;
+            }
+            
+            if (confirm('Delete all model papers?')) {
+                modelPapers = [];
+                savePapersProgress();
+                renderModelPapers();
+                showNotification('All model papers cleared');
+            }
+        }
+
+        // ========== TAB SWITCHING ==========
+        function showStudyTab(tab) {
+            document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.study-section').forEach(s => s.style.display = 'none');
+            
+            document.querySelector(`.sub-tab[onclick*="${tab}"]`).classList.add('active');
+            document.getElementById(`${tab}Section`).style.display = 'block';
+            
+            if (tab === 'topics') {
+                loadTopics();
+            } else if (tab === 'tasks') {
+                loadTasks();
+            }
+        }
+
+        function showJournalTab(tab) {
+            document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.journal-section').forEach(s => s.style.display = 'none');
+            
+            document.querySelector(`.sub-tab[onclick*="${tab}"]`).classList.add('active');
+            document.getElementById(`${tab}Section`).style.display = 'block';
+            
+            if (tab === 'thoughts') {
+                loadThoughts();
+            } else if (tab === 'notes') {
+                loadNotes();
+            }
+        }
 
         // ========== KEEP SCREEN ON FUNCTIONS ==========
         function detectIOS() {
@@ -2572,6 +3148,8 @@
                 tasks: tasks,
                 thoughts: thoughts,
                 notes: notes,
+                papers: papersProgress,
+                modelPapers: modelPapers,
                 cycles: fullTimetable.filter(t => t.done),
                 studyTime: studyTimeData,
                 timestamp: new Date().toISOString()
@@ -2616,6 +3194,73 @@
                 }
             });
         });
+
+        // ========== 8-CYCLE TIMETABLE ==========
+        const fullTimetable = [
+            // CYCLE 1
+            { time: "5:30-6:05", task: "Study Session", type: "study", cycle: 1, done: false },
+            { time: "6:05-6:10", task: "Short Break", type: "break", cycle: 1, done: false },
+            { time: "6:10-6:45", task: "Study Session", type: "study", cycle: 1, done: false },
+            { time: "6:45-6:50", task: "Short Break", type: "break", cycle: 1, done: false },
+            { time: "6:50-7:25", task: "Study Session", type: "study", cycle: 1, done: false },
+            { time: "7:25-7:45", task: "Long Break (20min)", type: "long_break", cycle: 1, done: false },
+            
+            // CYCLE 2
+            { time: "7:45-8:20", task: "Study Session", type: "study", cycle: 2, done: false },
+            { time: "8:20-8:25", task: "Short Break", type: "break", cycle: 2, done: false },
+            { time: "8:25-9:00", task: "Study Session", type: "study", cycle: 2, done: false },
+            { time: "9:00-9:05", task: "Short Break", type: "break", cycle: 2, done: false },
+            { time: "9:05-9:40", task: "Study Session", type: "study", cycle: 2, done: false },
+            { time: "9:40-10:00", task: "Long Break (20min)", type: "long_break", cycle: 2, done: false },
+            
+            // CYCLE 3
+            { time: "10:00-10:35", task: "Study Session", type: "study", cycle: 3, done: false },
+            { time: "10:35-10:40", task: "Short Break", type: "break", cycle: 3, done: false },
+            { time: "10:40-11:15", task: "Study Session", type: "study", cycle: 3, done: false },
+            { time: "11:15-11:20", task: "Short Break", type: "break", cycle: 3, done: false },
+            { time: "11:20-11:55", task: "Study Session", type: "study", cycle: 3, done: false },
+            { time: "11:55-12:35", task: "Free Session (40min)", type: "long_break", cycle: 3, done: false },
+            
+            // CYCLE 4
+            { time: "12:35-1:10", task: "Study Session", type: "study", cycle: 4, done: false },
+            { time: "1:10-1:15", task: "Short Break", type: "break", cycle: 4, done: false },
+            { time: "1:15-1:50", task: "Study Session", type: "study", cycle: 4, done: false },
+            { time: "1:50-1:55", task: "Short Break", type: "break", cycle: 4, done: false },
+            { time: "1:55-2:30", task: "Study Session", type: "study", cycle: 4, done: false },
+            { time: "2:30-2:50", task: "Lunch Break (20min)", type: "long_break", cycle: 4, done: false },
+            
+            // CYCLE 5
+            { time: "2:50-3:25", task: "Study Session", type: "study", cycle: 5, done: false },
+            { time: "3:25-3:30", task: "Short Break", type: "break", cycle: 5, done: false },
+            { time: "3:30-4:05", task: "Study Session", type: "study", cycle: 5, done: false },
+            { time: "4:05-4:10", task: "Short Break", type: "break", cycle: 5, done: false },
+            { time: "4:10-4:45", task: "Study Session", type: "study", cycle: 5, done: false },
+            { time: "4:45-5:05", task: "Short Break (20min)", type: "long_break", cycle: 5, done: false },
+            
+            // CYCLE 6
+            { time: "5:05-5:40", task: "Study Session", type: "study", cycle: 6, done: false },
+            { time: "5:40-5:45", task: "Short Break", type: "break", cycle: 6, done: false },
+            { time: "5:45-6:20", task: "Study Session", type: "study", cycle: 6, done: false },
+            { time: "6:20-6:25", task: "Short Break", type: "break", cycle: 6, done: false },
+            { time: "6:25-7:00", task: "Study Session", type: "study", cycle: 6, done: false },
+            { time: "7:00-7:25", task: "Free Session (25min)", type: "long_break", cycle: 6, done: false },
+            
+            // CYCLE 7
+            { time: "7:25-8:00", task: "Study Session", type: "study", cycle: 7, done: false },
+            { time: "8:00-8:05", task: "Short Break", type: "break", cycle: 7, done: false },
+            { time: "8:05-8:40", task: "Study Session", type: "study", cycle: 7, done: false },
+            { time: "8:40-8:45", task: "Short Break", type: "break", cycle: 7, done: false },
+            { time: "8:45-9:20", task: "Study Session", type: "study", cycle: 7, done: false },
+            { time: "9:20-9:40", task: "Dinner Break (20min)", type: "long_break", cycle: 7, done: false },
+            
+            // CYCLE 8
+            { time: "9:40-10:15", task: "Study Session", type: "study", cycle: 8, done: false },
+            { time: "10:15-10:20", task: "Short Break", type: "break", cycle: 8, done: false },
+            { time: "10:20-10:55", task: "Study Session", type: "study", cycle: 8, done: false },
+            { time: "10:55-11:00", task: "Short Break", type: "break", cycle: 8, done: false },
+            { time: "11:00-11:25", task: "Study Session", type: "study", cycle: 8, done: false },
+            { time: "11:25-11:30", task: "Wind Down", type: "long_break", cycle: 8, done: false }
+        ];
 
         // ========== TIMER FUNCTIONS ==========
         function saveTimerState() {
@@ -2746,6 +3391,7 @@
         function updateTimer() {
             timeLeft--;
             updateDisplay();
+            updateFullscreenTimer();
             
             if (timeLeft <= 0) {
                 timerComplete();
@@ -2755,8 +3401,8 @@
         function updateDisplay() {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
-            document.getElementById('timer').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            const displayText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timer').textContent = displayText;
             
             const totalTime = isBreak ? 5 * 60 : 35 * 60;
             const progressPercent = 100 - ((timeLeft / totalTime) * 100);
@@ -2973,7 +3619,6 @@
                 renderCycle();
                 updateCycleStatus();
                 updateQuickStatus();
-                resetCycleStudyTime();
                 showNotification('Cycle reset successfully');
             }
         }
@@ -2990,7 +3635,6 @@
                 renderCycle();
                 updateCycleStatus();
                 updateQuickStatus();
-                resetTodayStudyTime();
                 showNotification('All cycles reset');
             }
         }
@@ -3537,6 +4181,7 @@
             saveTimerState();
             saveScreenOnMode();
             saveStudyTime();
+            savePapersProgress();
             showNotification('All data saved successfully! 💾');
         }
 
@@ -3589,17 +4234,11 @@
             } else if (pageId === 'cycle') {
                 loadCycle();
             } else if (pageId === 'topics') {
-                loadTopics();
-            } else if (pageId === 'tasks') {
-                loadTasks();
+                showStudyTab('topics');
             } else if (pageId === 'thoughts') {
-                loadThoughts();
-                // Set default mood button as active
-                document.querySelector('.mood-btn[data-mood="neutral"]').classList.add('active');
-            } else if (pageId === 'notes') {
-                loadNotes();
-                // Set default priority button as active
-                document.querySelector('.priority-btn[data-priority="medium"]').classList.add('active');
+                showJournalTab('thoughts');
+            } else if (pageId === 'papers') {
+                loadPapersProgress();
             }
         }
 
@@ -3775,9 +4414,6 @@
             
             restoreScheduledReminders();
             checkInstallation();
-            
-            // Initialize scroll header hiding
-            initScrollHeader();
             
             if (!("Notification" in window)) {
                 console.log("This browser does not support notifications");
