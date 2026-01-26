@@ -991,7 +991,7 @@
             opacity: 0.8;
         }
 
-        /* ===== ENHANCED PAPERS SECTION ===== */
+        /* ===== PAPERS PAGE STYLES ===== */
         .papers-tabs {
             display: flex;
             background: var(--bg-secondary);
@@ -1025,33 +1025,29 @@
             color: white;
         }
 
-        .paper-table-section {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .paper-table-section.active {
-            display: block;
-        }
-
-        .paper-subject-header {
-            text-align: center;
+        .paper-year-selector {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
-            padding: 15px;
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
+            flex-wrap: wrap;
         }
 
-        .paper-subject-header h3 {
-            font-size: 20px;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-
-        .paper-subject-header p {
-            color: var(--text-muted);
+        .year-btn {
+            padding: 8px 15px;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition);
             font-size: 14px;
+            font-weight: 500;
+        }
+
+        .year-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
         }
 
         .paper-year-header {
@@ -1062,60 +1058,113 @@
             font-weight: 600;
             color: var(--text-primary);
             border-left: 4px solid var(--primary);
-        }
-
-        .paper-attempts-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .paper-attempt-card {
-            background: var(--bg-input);
-            border-radius: 10px;
-            padding: 15px;
             text-align: center;
-            transition: var(--transition);
-            border: 2px solid var(--border);
-            cursor: pointer;
-            opacity: 0.9;
         }
 
-        .paper-attempt-card:hover {
-            transform: translateY(-2px);
+        .paper-year-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        /* ===== PAPER TABLE STYLES ===== */
+        .paper-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: var(--bg-card);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .paper-table th {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .paper-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .paper-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .section-checkbox {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 2px solid;
+            background: transparent;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .section-checkbox.checked {
             border-color: var(--primary);
         }
 
-        .paper-attempt-card.attempted {
-            background: linear-gradient(135deg, rgba(76, 201, 240, 0.2), rgba(76, 201, 240, 0.1));
-            border-color: var(--success);
-            opacity: 1;
+        .section-checkbox.mcq {
+            border-color: var(--primary);
         }
 
-        .paper-attempt-card.missed {
-            background: linear-gradient(135deg, rgba(248, 150, 30, 0.2), rgba(248, 150, 30, 0.1));
+        .section-checkbox.mcq.checked {
+            background: var(--primary);
+        }
+
+        .section-checkbox.essay {
+            border-color: var(--accent);
+        }
+
+        .section-checkbox.essay.checked {
+            background: var(--accent);
+        }
+
+        .section-checkbox.pure {
             border-color: var(--warning);
-            opacity: 1;
         }
 
-        .attempt-number {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 5px;
+        .section-checkbox.pure.checked {
+            background: var(--warning);
         }
 
-        .attempt-status {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 500;
+        .section-checkbox.applied {
+            border-color: var(--success);
         }
 
-        .attempt-date {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 5px;
+        .section-checkbox.applied.checked {
+            background: var(--success);
+        }
+
+        .attempt-checkbox {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid var(--success);
+            background: transparent;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .attempt-checkbox.checked {
+            background: var(--success);
         }
 
         .paper-progress-container {
@@ -1201,44 +1250,50 @@
             background: var(--warning);
         }
 
-        .paper-year-container {
+        /* ===== MODEL PAPERS SECTION ===== */
+        .model-papers-section {
             background: var(--bg-card);
             border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 25px;
+            margin-top: 25px;
             border: 1px solid var(--border);
         }
 
-        .paper-year-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+        .model-papers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
         }
 
-        .year-btn {
-            padding: 8px 15px;
+        .model-paper-card {
             background: var(--bg-input);
-            border: 2px solid var(--border);
-            border-radius: 20px;
-            color: var(--text-primary);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
             cursor: pointer;
             transition: var(--transition);
-            font-size: 14px;
-            font-weight: 500;
+            border: 2px solid var(--border);
         }
 
-        .year-btn.active {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
+        .model-paper-card.checked {
+            background: linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(76, 201, 240, 0.05));
+            border-color: var(--success);
         }
 
-        .paper-year-range {
-            font-size: 14px;
+        .model-paper-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .model-paper-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .model-paper-status {
+            font-size: 12px;
             color: var(--text-muted);
-            text-align: center;
-            margin-bottom: 15px;
         }
 
         /* ===== NOTIFICATION ===== */
@@ -1379,10 +1434,6 @@
                 gap: 5px;
             }
             
-            .paper-attempts-grid {
-                grid-template-columns: 1fr;
-            }
-            
             .paper-progress-stats {
                 grid-template-columns: 1fr;
             }
@@ -1390,6 +1441,19 @@
             .paper-tab {
                 font-size: 12px;
                 padding: 10px 5px;
+            }
+            
+            .paper-table {
+                font-size: 14px;
+            }
+            
+            .paper-table th,
+            .paper-table td {
+                padding: 8px;
+            }
+            
+            .model-papers-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -2178,6 +2242,14 @@
                             <div class="paper-stat-value" id="completionRate">0%</div>
                             <div class="paper-stat-label">Completion Rate</div>
                         </div>
+                        <div class="paper-stat">
+                            <div class="paper-stat-value" id="sectionsCompleted">0</div>
+                            <div class="paper-stat-label">Sections Done</div>
+                        </div>
+                        <div class="paper-stat">
+                            <div class="paper-stat-value" id="totalSections">0</div>
+                            <div class="paper-stat-label">Total Sections</div>
+                        </div>
                     </div>
                 </div>
                 
@@ -2251,7 +2323,7 @@
         let currentPaperSubject = 'physics';
         let currentPaperYear = '2000-2025';
 
-        // ========== NEW PAPERS SYSTEM ==========
+        // ========== PAPER TABLE SYSTEM ==========
         function loadPapersProgress() {
             const savedProgress = localStorage.getItem('papersProgressNew');
             const savedModelPapers = localStorage.getItem('modelPapers');
@@ -2276,21 +2348,30 @@
                                     completed: false, 
                                     score: null,
                                     notes: '',
-                                    timeSpent: null
+                                    timeSpent: null,
+                                    sections: subject === 'combined' ? 
+                                        { pure: false, applied: false } : 
+                                        { mcq: false, essay: false }
                                 },
                                 { 
                                     date: null, 
                                     completed: false, 
                                     score: null,
                                     notes: '',
-                                    timeSpent: null
+                                    timeSpent: null,
+                                    sections: subject === 'combined' ? 
+                                        { pure: false, applied: false } : 
+                                        { mcq: false, essay: false }
                                 },
                                 { 
                                     date: null, 
                                     completed: false, 
                                     score: null,
                                     notes: '',
-                                    timeSpent: null
+                                    timeSpent: null,
+                                    sections: subject === 'combined' ? 
+                                        { pure: false, applied: false } : 
+                                        { mcq: false, essay: false }
                                 }
                             ]
                         };
@@ -2386,12 +2467,16 @@
             // Render each year in the selected range
             for (let year = startYear; year <= endYear; year++) {
                 if (!papersProgress[subject] || !papersProgress[subject][year]) {
+                    // Initialize if not exists
                     papersProgress[subject] = papersProgress[subject] || {};
                     papersProgress[subject][year] = {
                         attempts: [
-                            { date: null, completed: false, score: null, notes: '', timeSpent: null },
-                            { date: null, completed: false, score: null, notes: '', timeSpent: null },
-                            { date: null, completed: false, score: null, notes: '', timeSpent: null }
+                            { date: null, completed: false, score: null, notes: '', timeSpent: null, 
+                              sections: subject === 'combined' ? { pure: false, applied: false } : { mcq: false, essay: false } },
+                            { date: null, completed: false, score: null, notes: '', timeSpent: null, 
+                              sections: subject === 'combined' ? { pure: false, applied: false } : { mcq: false, essay: false } },
+                            { date: null, completed: false, score: null, notes: '', timeSpent: null, 
+                              sections: subject === 'combined' ? { pure: false, applied: false } : { mcq: false, essay: false } }
                         ]
                     };
                 }
@@ -2406,70 +2491,188 @@
                 yearHeader.textContent = `Year ${year}`;
                 yearContainer.appendChild(yearHeader);
                 
-                // Attempts grid
-                const attemptsGrid = document.createElement('div');
-                attemptsGrid.className = 'paper-attempts-grid';
+                // Create table for attempts
+                const table = document.createElement('table');
+                table.className = 'paper-table';
+                
+                // Table header
+                const thead = document.createElement('thead');
+                thead.innerHTML = `
+                    <tr>
+                        <th>Attempt</th>
+                        <th style="text-align: center;">${subject === 'combined' ? 'Pure' : 'MCQ'}</th>
+                        <th style="text-align: center;">${subject === 'combined' ? 'Applied' : 'Essay'}</th>
+                        <th style="text-align: center;">Complete</th>
+                        <th style="text-align: center;">Date</th>
+                    </tr>
+                `;
+                table.appendChild(thead);
+                
+                // Table body
+                const tbody = document.createElement('tbody');
                 
                 yearData.attempts.forEach((attempt, index) => {
-                    const attemptCard = document.createElement('div');
-                    attemptCard.className = `paper-attempt-card ${attempt.completed ? 'attempted' : 'missed'}`;
-                    attemptCard.onclick = () => togglePaperAttempt(subject, year, index);
+                    const row = document.createElement('tr');
                     
-                    const attemptNumber = document.createElement('div');
-                    attemptNumber.className = 'attempt-number';
-                    attemptNumber.textContent = index + 1;
+                    // Determine if row should have completed background
+                    const isCompleted = attempt.completed;
+                    const isBothSectionsComplete = attempt.sections && 
+                        ((subject === 'combined' && attempt.sections.pure && attempt.sections.applied) ||
+                         (subject !== 'combined' && attempt.sections.mcq && attempt.sections.essay));
                     
-                    const attemptStatus = document.createElement('div');
-                    attemptStatus.className = 'attempt-status';
-                    attemptStatus.textContent = attempt.completed ? 'Completed' : 'Not Attempted';
-                    
-                    const attemptDate = document.createElement('div');
-                    attemptDate.className = 'attempt-date';
-                    
-                    if (attempt.completed && attempt.date) {
-                        const date = new Date(attempt.date);
-                        attemptDate.textContent = date.toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric'
-                        });
-                    } else {
-                        attemptDate.textContent = 'Click to mark';
+                    if (isBothSectionsComplete) {
+                        row.style.background = 'linear-gradient(135deg, rgba(76, 201, 240, 0.1), rgba(76, 201, 240, 0.05))';
                     }
                     
-                    attemptCard.appendChild(attemptNumber);
-                    attemptCard.appendChild(attemptStatus);
-                    attemptCard.appendChild(attemptDate);
-                    attemptsGrid.appendChild(attemptCard);
+                    const date = attempt.date ? new Date(attempt.date) : null;
+                    const dateStr = date ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '-';
+                    
+                    row.innerHTML = `
+                        <td style="font-weight: 600;">Attempt ${index + 1}</td>
+                        <td style="text-align: center;">
+                            <button class="section-checkbox ${subject === 'combined' ? 'pure' : 'mcq'} ${attempt.sections && attempt.sections[subject === 'combined' ? 'pure' : 'mcq'] ? 'checked' : ''}" 
+                                    onclick="togglePaperSection('${subject}', ${year}, ${index}, '${subject === 'combined' ? 'pure' : 'mcq'}')">
+                                ${attempt.sections && attempt.sections[subject === 'combined' ? 'pure' : 'mcq'] ? '✓' : ''}
+                            </button>
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="section-checkbox ${subject === 'combined' ? 'applied' : 'essay'} ${attempt.sections && attempt.sections[subject === 'combined' ? 'applied' : 'essay'] ? 'checked' : ''}" 
+                                    onclick="togglePaperSection('${subject}', ${year}, ${index}, '${subject === 'combined' ? 'applied' : 'essay'}')">
+                                ${attempt.sections && attempt.sections[subject === 'combined' ? 'applied' : 'essay'] ? '✓' : ''}
+                            </button>
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="attempt-checkbox ${attempt.completed ? 'checked' : ''}" 
+                                    onclick="togglePaperAttempt('${subject}', ${year}, ${index})">
+                                ${attempt.completed ? '✓' : ''}
+                            </button>
+                        </td>
+                        <td style="text-align: center; font-size: 14px; color: var(--text-muted);">
+                            ${dateStr}
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
                 });
                 
-                yearContainer.appendChild(attemptsGrid);
+                table.appendChild(tbody);
+                yearContainer.appendChild(table);
                 
-                // Action buttons
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'paper-actions';
+                // Add quick action buttons below the table
+                const quickActions = document.createElement('div');
+                quickActions.className = 'paper-actions';
                 
-                const markAllBtn = document.createElement('button');
-                markAllBtn.className = 'paper-mark-btn complete';
-                markAllBtn.innerHTML = '<span>✅</span> Mark All';
-                markAllBtn.onclick = () => markAllAttemptsForYear(subject, year);
+                // Mark All Sections button
+                const markAllSectionsBtn = document.createElement('button');
+                markAllSectionsBtn.className = 'paper-mark-btn complete';
+                markAllSectionsBtn.innerHTML = '<span>📋</span> Mark All Sections';
+                markAllSectionsBtn.onclick = () => markAllSectionsForYear(subject, year);
+                markAllSectionsBtn.style.flex = '1';
                 
-                const unmarkAllBtn = document.createElement('button');
-                unmarkAllBtn.className = 'paper-mark-btn incomplete';
-                unmarkAllBtn.innerHTML = '<span>❌</span> Unmark All';
-                unmarkAllBtn.onclick = () => unmarkAllAttemptsForYear(subject, year);
-                
+                // Notes button
                 const notesBtn = document.createElement('button');
                 notesBtn.className = 'paper-mark-btn';
                 notesBtn.innerHTML = '<span>📝</span> Add Notes';
                 notesBtn.onclick = () => addPaperNotes(subject, year);
+                notesBtn.style.flex = '1';
                 
-                actionsDiv.appendChild(markAllBtn);
-                actionsDiv.appendChild(unmarkAllBtn);
-                actionsDiv.appendChild(notesBtn);
-                yearContainer.appendChild(actionsDiv);
+                quickActions.appendChild(markAllSectionsBtn);
+                quickActions.appendChild(notesBtn);
                 
+                yearContainer.appendChild(quickActions);
                 container.appendChild(yearContainer);
             }
+        }
+
+        function togglePaperSection(subject, year, attemptIndex, section) {
+            if (!papersProgress[subject]) papersProgress[subject] = {};
+            if (!papersProgress[subject][year]) {
+                papersProgress[subject][year] = {
+                    attempts: [
+                        { date: null, completed: false, score: null, notes: '', timeSpent: null, 
+                          sections: subject === 'combined' ? { pure: false, applied: false } : { mcq: false, essay: false } },
+                        { date: null, completed: false, score: null, notes: '', timeSpent: null, 
+                          sections: subject === 'combined' ? { pure: false, applied: false } : { mcq: false, essay: false } },
+                        { date: null, completed: false, score: null, notes: '', timeSpent: null, 
+                          sections: subject === 'combined' ? { pure: false, applied: false } : { mcq: false, essay: false } }
+                    ]
+                };
+            }
+            
+            const attempt = papersProgress[subject][year].attempts[attemptIndex];
+            
+            // Initialize sections if not exists
+            if (!attempt.sections) {
+                attempt.sections = subject === 'combined' ? 
+                    { pure: false, applied: false } : 
+                    { mcq: false, essay: false };
+            }
+            
+            // Toggle the specific section
+            attempt.sections[section] = !attempt.sections[section];
+            
+            // Check if both sections are complete
+            const allSectionsComplete = subject === 'combined' ? 
+                (attempt.sections.pure && attempt.sections.applied) :
+                (attempt.sections.mcq && attempt.sections.essay);
+            
+            // Auto-mark as completed if all sections are done
+            if (allSectionsComplete && !attempt.completed) {
+                const confirmComplete = confirm('Both sections completed! Mark this attempt as fully completed?');
+                if (confirmComplete) {
+                    attempt.completed = true;
+                    attempt.date = new Date().toISOString();
+                    showNotification(`Attempt ${attemptIndex + 1} for ${subject} ${year} marked as completed!`);
+                }
+            } else if (!allSectionsComplete && attempt.completed) {
+                // If sections are incomplete but attempt was marked complete, unmark it
+                attempt.completed = false;
+                attempt.date = null;
+            }
+            
+            savePapersProgress();
+            renderPapersProgress();
+            updatePapersStats();
+            
+            const sectionNames = {
+                'pure': 'Pure',
+                'applied': 'Applied',
+                'mcq': 'MCQ',
+                'essay': 'Essay'
+            };
+            
+            showNotification(`${sectionNames[section]} ${attempt.sections[section] ? '✓' : '✗'} for ${subject} ${year}`);
+        }
+
+        function markAllSectionsForYear(subject, year) {
+            if (!papersProgress[subject] || !papersProgress[subject][year]) return;
+            
+            const sections = subject === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay'];
+            
+            const confirmed = confirm(`Mark ALL sections for ${subject} ${year} as completed?`);
+            if (!confirmed) return;
+            
+            papersProgress[subject][year].attempts.forEach((attempt, index) => {
+                sections.forEach(section => {
+                    if (!attempt.sections) {
+                        attempt.sections = subject === 'combined' ? 
+                            { pure: false, applied: false } : 
+                            { mcq: false, essay: false };
+                    }
+                    attempt.sections[section] = true;
+                });
+                
+                // Also mark attempt as completed
+                if (!attempt.completed) {
+                    attempt.completed = true;
+                    attempt.date = new Date().toISOString();
+                }
+            });
+            
+            savePapersProgress();
+            renderPapersProgress();
+            updatePapersStats();
+            showNotification(`All sections marked for ${subject} ${year}!`);
         }
 
         function togglePaperAttempt(subject, year, attemptIndex) {
@@ -2477,9 +2680,12 @@
             if (!papersProgress[subject][year]) {
                 papersProgress[subject][year] = {
                     attempts: [
-                        { date: null, completed: false, score: null, notes: '', timeSpent: null },
-                        { date: null, completed: false, score: null, notes: '', timeSpent: null },
-                        { date: null, completed: false, score: null, notes: '', timeSpent: null }
+                        { date: null, completed: false, score: null, notes: '', timeSpent: null, 
+                          sections: subject === 'combined' ? { pure: false, applied: false } : { mcq: false, essay: false } },
+                        { date: null, completed: false, score: null, notes: '', timeSpent: null, 
+                          sections: subject === 'combined' ? { pure: false, applied: false } : { mcq: false, essay: false } },
+                        { date: null, completed: false, score: null, notes: '', timeSpent: null, 
+                          sections: subject === 'combined' ? { pure: false, applied: false } : { mcq: false, essay: false } }
                     ]
                 };
             }
@@ -2487,12 +2693,23 @@
             const attempt = papersProgress[subject][year].attempts[attemptIndex];
             
             if (attempt.completed) {
+                // Unmark the attempt
                 attempt.completed = false;
                 attempt.date = null;
                 attempt.score = null;
+                
+                // Also unmark all sections
+                if (attempt.sections) {
+                    const sections = subject === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay'];
+                    sections.forEach(section => {
+                        attempt.sections[section] = false;
+                    });
+                }
+                
                 showNotification(`Unmarked attempt ${attemptIndex + 1} for ${subject} ${year}`);
             } else {
-                const score = prompt(`Enter score for attempt ${attemptIndex + 1} (optional):`);
+                // Mark the attempt as complete
+                const score = prompt(`Enter overall score for attempt ${attemptIndex + 1} (optional):`);
                 const timeSpent = prompt(`Enter time spent in minutes (optional):`);
                 
                 attempt.completed = true;
@@ -2500,52 +2717,24 @@
                 attempt.score = score || null;
                 attempt.timeSpent = timeSpent ? parseInt(timeSpent) : null;
                 
+                // Also mark all sections as complete
+                if (!attempt.sections) {
+                    attempt.sections = subject === 'combined' ? 
+                        { pure: false, applied: false } : 
+                        { mcq: false, essay: false };
+                }
+                
+                const sections = subject === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay'];
+                sections.forEach(section => {
+                    attempt.sections[section] = true;
+                });
+                
                 showNotification(`Marked attempt ${attemptIndex + 1} for ${subject} ${year} as completed!`);
             }
             
             savePapersProgress();
             renderPapersProgress();
             updatePapersStats();
-        }
-
-        function markAllAttemptsForYear(subject, year) {
-            if (!papersProgress[subject] || !papersProgress[subject][year]) return;
-            
-            const confirmed = confirm(`Mark all 3 attempts for ${subject} ${year} as completed?`);
-            if (!confirmed) return;
-            
-            papersProgress[subject][year].attempts.forEach((attempt, index) => {
-                if (!attempt.completed) {
-                    attempt.completed = true;
-                    attempt.date = new Date().toISOString();
-                    attempt.score = null;
-                    attempt.timeSpent = null;
-                }
-            });
-            
-            savePapersProgress();
-            renderPapersProgress();
-            updatePapersStats();
-            showNotification(`All attempts marked for ${subject} ${year}!`);
-        }
-
-        function unmarkAllAttemptsForYear(subject, year) {
-            if (!papersProgress[subject] || !papersProgress[subject][year]) return;
-            
-            const confirmed = confirm(`Unmark all attempts for ${subject} ${year}?`);
-            if (!confirmed) return;
-            
-            papersProgress[subject][year].attempts.forEach(attempt => {
-                attempt.completed = false;
-                attempt.date = null;
-                attempt.score = null;
-                attempt.timeSpent = null;
-            });
-            
-            savePapersProgress();
-            renderPapersProgress();
-            updatePapersStats();
-            showNotification(`All attempts unmarked for ${subject} ${year}`);
         }
 
         function markAllAttemptsForCurrentSubject() {
@@ -2565,9 +2754,12 @@
                 if (!papersProgress[subject][year]) {
                     papersProgress[subject][year] = {
                         attempts: [
-                            { date: null, completed: false, score: null, notes: '', timeSpent: null },
-                            { date: null, completed: false, score: null, notes: '', timeSpent: null },
-                            { date: null, completed: false, score: null, notes: '', timeSpent: null }
+                            { date: null, completed: false, score: null, notes: '', timeSpent: null, 
+                              sections: subject === 'combined' ? { pure: false, applied: false } : { mcq: false, essay: false } },
+                            { date: null, completed: false, score: null, notes: '', timeSpent: null, 
+                              sections: subject === 'combined' ? { pure: false, applied: false } : { mcq: false, essay: false } },
+                            { date: null, completed: false, score: null, notes: '', timeSpent: null, 
+                              sections: subject === 'combined' ? { pure: false, applied: false } : { mcq: false, essay: false } }
                         ]
                     };
                 }
@@ -2578,6 +2770,18 @@
                         attempt.date = new Date().toISOString();
                         attempt.score = null;
                         attempt.timeSpent = null;
+                        
+                        // Also mark all sections
+                        if (!attempt.sections) {
+                            attempt.sections = subject === 'combined' ? 
+                                { pure: false, applied: false } : 
+                                { mcq: false, essay: false };
+                        }
+                        
+                        const sections = subject === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay'];
+                        sections.forEach(section => {
+                            attempt.sections[section] = true;
+                        });
                     }
                 });
             }
@@ -2607,6 +2811,14 @@
                             attempt.date = null;
                             attempt.score = null;
                             attempt.timeSpent = null;
+                            
+                            // Also unmark all sections
+                            if (attempt.sections) {
+                                const sections = subject === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay'];
+                                sections.forEach(section => {
+                                    attempt.sections[section] = false;
+                                });
+                            }
                         });
                     }
                 }
@@ -2656,6 +2868,8 @@
             let completedPapers = 0;
             let totalAttempts = 0;
             let completedAttempts = 0;
+            let totalSections = 0;
+            let completedSections = 0;
             
             const subjects = ['physics', 'chemistry', 'combined'];
             
@@ -2672,9 +2886,20 @@
                                 completedPapers++;
                             }
                             
-                            // Count attempts
-                            totalAttempts += 3;
-                            completedAttempts += yearData.attempts.filter(a => a.completed).length;
+                            // Count attempts and sections
+                            yearData.attempts.forEach(attempt => {
+                                totalAttempts++;
+                                if (attempt.completed) {
+                                    completedAttempts++;
+                                }
+                                
+                                // Count sections
+                                if (attempt.sections) {
+                                    const sections = Object.keys(attempt.sections);
+                                    totalSections += sections.length;
+                                    completedSections += sections.filter(s => attempt.sections[s]).length;
+                                }
+                            });
                         }
                     }
                 }
@@ -2684,11 +2909,14 @@
             if (totalPapers === 0) {
                 totalPapers = 26 * 3; // 26 years * 3 subjects
                 totalAttempts = 26 * 3 * 3; // 26 years * 3 subjects * 3 attempts
+                totalSections = 26 * 3 * 3 * 2; // 26 years * 3 subjects * 3 attempts * 2 sections
             }
             
             document.getElementById('papersCompleted').textContent = completedPapers;
             document.getElementById('attemptsCompleted').textContent = completedAttempts;
             document.getElementById('totalPossible').textContent = totalAttempts;
+            document.getElementById('sectionsCompleted').textContent = completedSections;
+            document.getElementById('totalSections').textContent = totalSections;
             
             const completionRate = totalAttempts > 0 ? Math.round((completedAttempts / totalAttempts) * 100) : 0;
             document.getElementById('completionRate').textContent = `${completionRate}%`;
