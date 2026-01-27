@@ -2323,6 +2323,163 @@
         let currentPaperSubject = 'physics';
         let currentPaperYear = '2000-2025';
 
+        // ========== STUDY TIME TRACKING - FIXED VERSION ==========
+        let studyTimeData = {
+            todayTotalTime: 0,   // in seconds
+            weeklyTotalTime: 0,  // in seconds
+            allTimeTotal: 0,     // in seconds
+            lastUpdate: null,
+            todayDate: new Date().toDateString(),
+            weekStart: getWeekStartDate(),
+            sessionHistory: []  // Store each study session duration
+        };
+
+        // Track current session
+        let currentSessionStart = null;
+        let currentSessionType = null; // 'study' or 'break'
+        let timeTrackingInterval = null;
+
+        function getWeekStartDate() {
+            const now = new Date();
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday as start
+            const monday = new Date(now.setDate(diff));
+            monday.setHours(0, 0, 0, 0);
+            return monday.toISOString();
+        }
+
+        function isSameWeek(date) {
+            const testDate = new Date(date);
+            const weekStart = new Date(studyTimeData.weekStart);
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekEnd.getDate() + 7);
+            return testDate >= weekStart && testDate < weekEnd;
+        }
+
+        function loadStudyTime() {
+            const savedData = localStorage.getItem('studyTimeData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                const today = new Date().toDateString();
+                const currentWeekStart = getWeekStartDate();
+                
+                if (data.todayDate === today) {
+                    studyTimeData = data;
+                } else {
+                    // New day, reset today's time
+                    studyTimeData.todayTotalTime = 0;
+                    studyTimeData.todayDate = today;
+                    studyTimeData.allTimeTotal = data.allTimeTotal || 0;
+                    studyTimeData.sessionHistory = [];
+                    
+                    // Check if we're in the same week
+                    if (data.weekStart && isSameWeek(new Date(data.weekStart))) {
+                        studyTimeData.weeklyTotalTime = data.weeklyTotalTime || 0;
+                    } else {
+                        studyTimeData.weeklyTotalTime = 0;
+                        studyTimeData.weekStart = currentWeekStart;
+                    }
+                }
+                
+                // Ensure week start is current
+                if (studyTimeData.weekStart !== currentWeekStart) {
+                    studyTimeData.weeklyTotalTime = 0;
+                    studyTimeData.weekStart = currentWeekStart;
+                }
+            }
+            updateStudyTimeDisplay();
+        }
+
+        function saveStudyTime() {
+            studyTimeData.lastUpdate = Date.now();
+            localStorage.setItem('studyTimeData', JSON.stringify(studyTimeData));
+        }
+
+        function startStudyTimeTracking() {
+            if (!isRunning) return;
+            
+            // Start tracking current session
+            currentSessionStart = Date.now();
+            currentSessionType = isBreak ? 'break' : 'study';
+            
+            console.log(`Study time tracking started: ${currentSessionType}`);
+            
+            // Clear any existing interval
+            if (timeTrackingInterval) {
+                clearInterval(timeTrackingInterval);
+            }
+            
+            // Update time tracking every second
+            timeTrackingInterval = setInterval(() => {
+                if (!isRunning) {
+                    clearInterval(timeTrackingInterval);
+                    timeTrackingInterval = null;
+                    recordSessionTime();
+                    return;
+                }
+                
+                if (currentSessionStart && currentSessionType === 'study') {
+                    const now = Date.now();
+                    const timePassedSeconds = Math.floor((now - currentSessionStart) / 1000);
+                    
+                    // Update current session tracking
+                    currentSessionStart = now;
+                    
+                    // Add the elapsed time to totals
+                    studyTimeData.todayTotalTime += 1; // Add 1 second for each interval
+                    studyTimeData.weeklyTotalTime += 1;
+                    studyTimeData.allTimeTotal += 1;
+                    
+                    updateStudyTimeDisplay();
+                }
+                
+            }, 1000); // Update every second for accuracy
+        }
+
+        function recordSessionTime() {
+            if (currentSessionStart && currentSessionType === 'study') {
+                const now = Date.now();
+                const timePassedSeconds = Math.floor((now - currentSessionStart) / 1000);
+                
+                // Add to session history
+                studyTimeData.sessionHistory.push({
+                    start: currentSessionStart,
+                    end: now,
+                    duration: timePassedSeconds,
+                    type: 'study',
+                    cycle: currentCycle
+                });
+                
+                console.log(`Recorded study session: ${timePassedSeconds} seconds`);
+                
+                // Reset session tracking
+                currentSessionStart = null;
+                currentSessionType = null;
+                
+                saveStudyTime();
+                updateStudyTimeDisplay();
+            }
+        }
+
+        function updateStudyTimeDisplay() {
+            function formatTime(seconds) {
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                
+                if (hours > 0) {
+                    return `${hours} hour${hours !== 1 ? 's' : ''} ${minutes} minute${minutes !== 1 ? 's' : ''}`;
+                }
+                return `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+            }
+            
+            document.getElementById('todayTotalTime').textContent = 
+                formatTime(studyTimeData.todayTotalTime);
+            document.getElementById('weeklyTotalTime').textContent = 
+                formatTime(studyTimeData.weeklyTotalTime);
+            document.getElementById('allTimeTotal').textContent = 
+                formatTime(studyTimeData.allTimeTotal);
+        }
+
         // ========== PAPER TABLE SYSTEM ==========
         function loadPapersProgress() {
             const savedProgress = localStorage.getItem('papersProgressNew');
@@ -3093,111 +3250,6 @@
                 showHeader();
             }
         });
-
-        // ========== STUDY TIME TRACKING ==========
-        let studyTimeData = {
-            todayTotalTime: 0,   // in seconds
-            weeklyTotalTime: 0,  // in seconds
-            allTimeTotal: 0,     // in seconds
-            lastUpdate: null,
-            todayDate: new Date().toDateString(),
-            weekStart: getWeekStartDate()
-        };
-
-        function getWeekStartDate() {
-            const now = new Date();
-            const day = now.getDay();
-            const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday as start
-            const monday = new Date(now.setDate(diff));
-            monday.setHours(0, 0, 0, 0);
-            return monday.toISOString();
-        }
-
-        function isSameWeek(date) {
-            const testDate = new Date(date);
-            const weekStart = new Date(studyTimeData.weekStart);
-            const weekEnd = new Date(weekStart);
-            weekEnd.setDate(weekEnd.getDate() + 7);
-            return testDate >= weekStart && testDate < weekEnd;
-        }
-
-        function loadStudyTime() {
-            const savedData = localStorage.getItem('studyTimeData');
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                const today = new Date().toDateString();
-                const currentWeekStart = getWeekStartDate();
-                
-                if (data.todayDate === today) {
-                    studyTimeData = data;
-                } else {
-                    // New day, reset today's time
-                    studyTimeData.todayTotalTime = 0;
-                    studyTimeData.todayDate = today;
-                    studyTimeData.allTimeTotal = data.allTimeTotal || 0;
-                    
-                    // Check if we're in the same week
-                    if (data.weekStart && isSameWeek(new Date(data.weekStart))) {
-                        studyTimeData.weeklyTotalTime = data.weeklyTotalTime || 0;
-                    } else {
-                        studyTimeData.weeklyTotalTime = 0;
-                        studyTimeData.weekStart = currentWeekStart;
-                    }
-                }
-                
-                // Ensure week start is current
-                if (studyTimeData.weekStart !== currentWeekStart) {
-                    studyTimeData.weeklyTotalTime = 0;
-                    studyTimeData.weekStart = currentWeekStart;
-                }
-            }
-            updateStudyTimeDisplay();
-        }
-
-        function saveStudyTime() {
-            studyTimeData.lastUpdate = Date.now();
-            localStorage.setItem('studyTimeData', JSON.stringify(studyTimeData));
-        }
-
-        function startStudyTimeTracking() {
-            if (!isRunning) return;
-            
-            // Update study time every minute
-            const updateInterval = setInterval(() => {
-                if (isRunning && !isBreak) {
-                    // Add 60 seconds for each minute of study
-                    studyTimeData.todayTotalTime += 60;
-                    studyTimeData.weeklyTotalTime += 60;
-                    studyTimeData.allTimeTotal += 60;
-                    
-                    updateStudyTimeDisplay();
-                    saveStudyTime();
-                }
-                
-                if (!isRunning) {
-                    clearInterval(updateInterval);
-                }
-            }, 60000); // Update every minute
-        }
-
-        function updateStudyTimeDisplay() {
-            function formatTime(seconds) {
-                const hours = Math.floor(seconds / 3600);
-                const minutes = Math.floor((seconds % 3600) / 60);
-                
-                if (hours > 0) {
-                    return `${hours} hour${hours !== 1 ? 's' : ''} ${minutes} minute${minutes !== 1 ? 's' : ''}`;
-                }
-                return `${minutes} minute${minutes !== 1 ? 's' : ''}`;
-            }
-            
-            document.getElementById('todayTotalTime').textContent = 
-                formatTime(studyTimeData.todayTotalTime);
-            document.getElementById('weeklyTotalTime').textContent = 
-                formatTime(studyTimeData.weeklyTotalTime);
-            document.getElementById('allTimeTotal').textContent = 
-                formatTime(studyTimeData.allTimeTotal);
-        }
 
         // ========== FULLSCREEN TIMER ==========
         function openFullscreenTimer() {
@@ -4119,6 +4171,14 @@
         function pauseTimer() {
             isRunning = false;
             clearInterval(timerId);
+            
+            // Stop time tracking
+            if (timeTrackingInterval) {
+                clearInterval(timeTrackingInterval);
+                timeTrackingInterval = null;
+                recordSessionTime();
+            }
+            
             document.getElementById('timerStatus').textContent = 'Timer paused';
             showNotification('Timer paused');
             saveTimerState();
@@ -4127,6 +4187,13 @@
         function resetTimer() {
             isRunning = false;
             clearInterval(timerId);
+            
+            // Stop time tracking
+            if (timeTrackingInterval) {
+                clearInterval(timeTrackingInterval);
+                timeTrackingInterval = null;
+            }
+            
             timeLeft = isBreak ? 5 * 60 : 35 * 60;
             document.getElementById('timerStatus').textContent = 'Ready to start';
             updateDisplay();
@@ -4169,6 +4236,13 @@
         function timerComplete() {
             isRunning = false;
             clearInterval(timerId);
+            
+            // Record final session time
+            if (timeTrackingInterval) {
+                clearInterval(timeTrackingInterval);
+                timeTrackingInterval = null;
+                recordSessionTime();
+            }
             
             if (screenOnMode) {
                 stopScreenKeepAlive();
