@@ -4007,68 +4007,67 @@
         // ========== 8-CYCLE TIMETABLE ==========
         const fullTimetable = [
             // CYCLE 1
-            { time: "5:30-6:05", task: "Study Session", type: "study", cycle: 1, done: false },
-            { time: "6:05-6:10", task: "Short Break", type: "break", cycle: 1, done: false },
-            { time: "6:10-6:45", task: "Study Session", type: "study", cycle: 1, done: false },
-            { time: "6:45-6:50", task: "Short Break", type: "break", cycle: 1, done: false },
-            { time: "6:50-7:25", task: "Study Session", type: "study", cycle: 1, done: false },
-            { time: "7:25-7:45", task: "Long Break (20min)", type: "long_break", cycle: 1, done: false },
+            { time: "6:30-7:05", task: "Study Session", type: "study", cycle: 1, done: false },
+            { time: "7:05-7:10", task: "Short Break", type: "break", cycle: 1, done: false },
+            { time: "7:10-7:45", task: "Study Session", type: "study", cycle: 1, done: false },
+            { time: "7:45-7:50", task: "Short Break", type: "break", cycle: 1, done: false },
+            { time: "7:50-8:25", task: "Study Session", type: "study", cycle: 1, done: false },
+            { time: "8:25-8:45", task: "Long Break (20min)", type: "long_break", cycle: 1, done: false },
             
             // CYCLE 2
-            { time: "7:45-8:20", task: "Study Session", type: "study", cycle: 2, done: false },
-            { time: "8:20-8:25", task: "Short Break", type: "break", cycle: 2, done: false },
-            { time: "8:25-9:00", task: "Study Session", type: "study", cycle: 2, done: false },
-            { time: "9:00-9:05", task: "Short Break", type: "break", cycle: 2, done: false },
-            { time: "9:05-9:40", task: "Study Session", type: "study", cycle: 2, done: false },
-            { time: "9:40-10:00", task: "Long Break (20min)", type: "long_break", cycle: 2, done: false },
+            { time: "8:45-9:20", task: "Study Session", type: "study", cycle: 2, done: false },
+            { time: "9:20-9:25", task: "Short Break", type: "break", cycle: 2, done: false },
+            { time: "9:25-10:00", task: "Study Session", type: "study", cycle: 2, done: false },
+            { time: "10:00-10:05", task: "Short Break", type: "break", cycle: 2, done: false },
+            { time: "10:05-10:40", task: "Study Session", type: "study", cycle: 2, done: false },
+            { time: "10:40-11:00", task: "Long Break (20min)", type: "long_break", cycle: 2, done: false },
             
             // CYCLE 3
-            { time: "10:00-10:35", task: "Study Session", type: "study", cycle: 3, done: false },
-            { time: "10:35-10:40", task: "Short Break", type: "break", cycle: 3, done: false },
-            { time: "10:40-11:15", task: "Study Session", type: "study", cycle: 3, done: false },
-            { time: "11:15-11:20", task: "Short Break", type: "break", cycle: 3, done: false },
-            { time: "11:20-11:55", task: "Study Session", type: "study", cycle: 3, done: false },
-            { time: "11:55-12:35", task: "Free Session (40min)", type: "long_break", cycle: 3, done: false },
+            { time: "11:00-11:35", task: "Study Session", type: "study", cycle: 3, done: false },
+            { time: "11:35-11:40", task: "Short Break", type: "break", cycle: 3, done: false },
+            { time: "11:40-12:15", task: "Study Session", type: "study", cycle: 3, done: false },
+            { time: "12:15-12:20", task: "Short Break", type: "break", cycle: 3, done: false },
+            { time: "12:20-12:55", task: "Study Session", type: "study", cycle: 3, done: false },
+            { time: "12:55-1:35", task: "Free Session (40min)", type: "long_break", cycle: 3, done: false },
             
             // CYCLE 4
-            { time: "12:35-1:10", task: "Study Session", type: "study", cycle: 4, done: false },
-            { time: "1:10-1:15", task: "Short Break", type: "break", cycle: 4, done: false },
-            { time: "1:15-1:50", task: "Study Session", type: "study", cycle: 4, done: false },
-            { time: "1:50-1:55", task: "Short Break", type: "break", cycle: 4, done: false },
-            { time: "1:55-2:30", task: "Study Session", type: "study", cycle: 4, done: false },
-            { time: "2:30-2:50", task: "Lunch Break (20min)", type: "long_break", cycle: 4, done: false },
+            { time: "1:35-2:10", task: "Study Session", type: "study", cycle: 4, done: false },
+            { time: "2:10-2:15", task: "Short Break", type: "break", cycle: 4, done: false },
+            { time: "2:15-2:50", task: "Study Session", type: "study", cycle: 4, done: false },
+            { time: "2:50-2:55", task: "Short Break", type: "break", cycle: 4, done: false },
+            { time: "2:55-3:30", task: "Study Session", type: "study", cycle: 4, done: false },
+            { time: "3:30-3:50", task: "Lunch Break (20min)", type: "long_break", cycle: 4, done: false },
             
             // CYCLE 5
-            { time: "2:50-3:25", task: "Study Session", type: "study", cycle: 5, done: false },
-            { time: "3:25-3:30", task: "Short Break", type: "break", cycle: 5, done: false },
-            { time: "3:30-4:05", task: "Study Session", type: "study", cycle: 5, done: false },
-            { time: "4:05-4:10", task: "Short Break", type: "break", cycle: 5, done: false },
-            { time: "4:10-4:45", task: "Study Session", type: "study", cycle: 5, done: false },
-            { time: "4:45-5:05", task: "Short Break (20min)", type: "long_break", cycle: 5, done: false },
+            { time: "3:50-4:25", task: "Study Session", type: "study", cycle: 5, done: false },
+            { time: "4:25-4:30", task: "Short Break", type: "break", cycle: 5, done: false },
+            { time: "4:30-5:05", task: "Study Session", type: "study", cycle: 5, done: false },
+            { time: "5:05-5:10", task: "Short Break", type: "break", cycle: 5, done: false },
+            { time: "5:10-5:45", task: "Study Session", type: "study", cycle: 5, done: false },
+            { time: "5:45-6:05", task: "Short Break (20min)", type: "long_break", cycle: 5, done: false },
             
             // CYCLE 6
-            { time: "5:05-5:40", task: "Study Session", type: "study", cycle: 6, done: false },
-            { time: "5:40-5:45", task: "Short Break", type: "break", cycle: 6, done: false },
-            { time: "5:45-6:20", task: "Study Session", type: "study", cycle: 6, done: false },
-            { time: "6:20-6:25", task: "Short Break", type: "break", cycle: 6, done: false },
-            { time: "6:25-7:00", task: "Study Session", type: "study", cycle: 6, done: false },
-            { time: "7:00-7:25", task: "Free Session (25min)", type: "long_break", cycle: 6, done: false },
+            { time: "6:05-6:40", task: "Study Session", type: "study", cycle: 6, done: false },
+            { time: "6:40-6:45", task: "Short Break", type: "break", cycle: 6, done: false },
+            { time: "6:45-7:20", task: "Study Session", type: "study", cycle: 6, done: false },
+            { time: "7:20-7:25", task: "Short Break", type: "break", cycle: 6, done: false },
+            { time: "7:25-8:00", task: "Study Session", type: "study", cycle: 6, done: false },
+            { time: "8:00-8:25", task: "Free Session (25min)", type: "long_break", cycle: 6, done: false },
             
             // CYCLE 7
-            { time: "7:25-8:00", task: "Study Session", type: "study", cycle: 7, done: false },
-            { time: "8:00-8:05", task: "Short Break", type: "break", cycle: 7, done: false },
-            { time: "8:05-8:40", task: "Study Session", type: "study", cycle: 7, done: false },
-            { time: "8:40-8:45", task: "Short Break", type: "break", cycle: 7, done: false },
-            { time: "8:45-9:20", task: "Study Session", type: "study", cycle: 7, done: false },
-            { time: "9:20-9:40", task: "Dinner Break (20min)", type: "long_break", cycle: 7, done: false },
+            { time: "8:25-9:00", task: "Study Session", type: "study", cycle: 7, done: false },
+            { time: "9:00-9:05", task: "Short Break", type: "break", cycle: 7, done: false },
+            { time: "9:05-9:40", task: "Study Session", type: "study", cycle: 7, done: false },
+            { time: "9:40-9:45", task: "Short Break", type: "break", cycle: 7, done: false },
+            { time: "9:45-10:20", task: "Study Session", type: "study", cycle: 7, done: false },
+            { time: "10:20-10:40", task: "Dinner Break (20min)", type: "long_break", cycle: 7, done: false },
             
             // CYCLE 8
-            { time: "9:40-10:15", task: "Study Session", type: "study", cycle: 8, done: false },
-            { time: "10:15-10:20", task: "Short Break", type: "break", cycle: 8, done: false },
-            { time: "10:20-10:55", task: "Study Session", type: "study", cycle: 8, done: false },
-            { time: "10:55-11:00", task: "Short Break", type: "break", cycle: 8, done: false },
-            { time: "11:00-11:25", task: "Study Session", type: "study", cycle: 8, done: false },
-            { time: "11:25-11:30", task: "Wind Down", type: "long_break", cycle: 8, done: false }
+            { time: "10:40-11:15", task: "Study Session", type: "study", cycle: 8, done: false },
+            { time: "11:15-11:20", task: "Short Break", type: "break", cycle: 8, done: false },
+            { time: "11:20-11:55", task: "Study Session", type: "study", cycle: 8, done: false },
+            { time: "11:55-12:30", task: "Wind Down & meditation", type: "break", cycle: 8, done: false },
+       
         ];
 
         // ========== TIMER FUNCTIONS ==========
