@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ===== FIXED APP ICONS FOR iOS ===== -->
-    <!-- iOS Icons using external PNGs -->
-    <link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/color/180/000000/book-stack.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="https://img.icons8.com/color/120/000000/book-stack.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="https://img.icons8.com/color/152/000000/book-stack.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="https://img.icons8.com/color/167/000000/book-stack.png">
-    <link rel="apple-touch-icon" href="https://img.icons8.com/color/192/000000/book-stack.png">
-    
-    <!-- Android/Desktop Icons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/color/32/000000/book-stack.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://img.icons8.com/color/16/000000/book-stack.png">
-    
-    <!-- Fallback SVG -->
+     <!-- ===== APP ICONS ===== -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='30' fill='%234361ee'/><text x='90' y='125' font-size='80' text-anchor='middle' fill='white'>📚</text></svg>">
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%234361ee'/><text x='32' y='45' font-size='32' text-anchor='middle' fill='white'>📚</text></svg>">
+    <!-- ===== SIMPLE EMOJI ICONS ===== -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
-    
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>StudyMaster Pro</title>
+    
+    <!-- ===== APP ICONS ===== -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='30' fill='%234361ee'/><text x='90' y='125' font-size='80' text-anchor='middle' fill='white'>📚</text></svg>">
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%234361ee'/><text x='32' y='45' font-size='32' text-anchor='middle' fill='white'>📚</text></svg>">
     
     <!-- ===== APP METADATA ===== -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -28,9 +23,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="description" content="Study Timer with Pomodoro & Spaced Repetition">
     
-    <!-- PWA Manifest - SIMPLIFIED -->
-    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22StudyMaster%20Pro%22%2C%22short_name%22%3A%22StudyMaster%22%2C%22description%22%3A%22Study%20Timer%20with%20Pomodoro%20%26%20Spaced%20Repetition%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait%22%2C%22theme_color%22%3A%22%234361ee%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22categories%22%3A%5B%22education%22%2C%22productivity%22%5D%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fimg.icons8.com%2Fcolor%2F192%2F000000%2Fbook-stack.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Fimg.icons8.com%2Fcolor%2F512%2F000000%2Fbook-stack.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
-    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22StudyMaster%20Pro%22%2C%22short_name%22%3A%22StudyMaster%22%2C%22description%22%3A%22Study%20Timer%20with%20Pomodoro%20%26%20Spaced%20Repetition%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait%22%2C%22theme_color%22%3A%22%234361ee%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22categories%22%3A%5B%22education%22%2C%22productivity%22%5D%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2522http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%2522%2520viewBox%253D%25220%25200%2520192%2520192%2522%253E%253Crect%2520width%253D%2522192%2522%2520height%253D%2522192%2522%2520rx%253D%252240%2522%2520fill%253D%2522%25234361ee%2522%252F%253E%253Ctext%2520x%253D%252296%2522%2520y%253D%2522128%2522%2520font-size%253D%252296%2522%2520text-anchor%253D%2522middle%2522%2520fill%253D%2522white%2522%253E%25F0%259F%2593%259A%253C%252Ftext%253E%253C%252Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
     <style>
         /* ===== CSS RESET ===== */
         * {
