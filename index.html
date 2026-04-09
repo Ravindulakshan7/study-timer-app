@@ -908,7 +908,7 @@
             <button class="nav-tab" onclick="showPage('analytics', this)">📊 Analytics</button>
         </div>
 
-        <!-- TIMER PAGE -->
+        <!-- TIMER PAGE - FIXED with manual break -->
         <div id="pomodoroPage" class="page active">
             <section class="timer-section">
                 <div class="timer-display" id="timer">35:00</div>
@@ -921,7 +921,7 @@
                 <button class="btn btn-success" onclick="startTimer()">▶ Start Study</button>
                 <button class="btn btn-warning" onclick="pauseTimer()">⏸ Pause</button>
                 <button class="btn btn-danger" onclick="resetTimer()">🔄 Reset</button>
-                <button class="btn btn-accent" onclick="skipBreak()">⏭ Skip Break</button>
+                <button class="btn btn-accent" onclick="startBreakManual()">☕ Start Break</button>
             </div>
             <div class="study-time-stats">
                 <div class="time-stat"><div class="time-label">Today's Study Time:</div><div class="time-value highlight" id="todayTotalTime">0h 0m</div></div>
@@ -1092,7 +1092,7 @@
             </div>
         </div>
 
-        <!-- NEW ANALYTICS PAGE -->
+        <!-- ANALYTICS PAGE -->
         <div id="analyticsPage" class="page">
             <div class="streak-card" id="streakCard">
                 <div class="streak-number" id="currentStreak">0</div>
@@ -1179,8 +1179,9 @@
         let timeLeft = 35 * 60;
         let timerId = null;
         let isRunning = false;
-        let isBreak = false;
+        let isBreakMode = false; // MANUAL BREAK MODE - no auto start
         let currentActiveTask = null;
+        let currentStudyDurationSetting = 35;
         
         let topics = [];
         let tasks = [];
@@ -1201,11 +1202,10 @@
             sessionsPerCycle: 3
         };
         
-        let studyTimeData = { todayTotalTime: 0, weeklyTotalTime: 0, todayDate: new Date().toDateString(), history: {} };
+        let studyTimeData = { todayTotalTime: 0, weeklyTotalTime: 0, allTimeTotal: 0, todayDate: new Date().toDateString(), history: {} };
         let currentMood = 'neutral';
         let currentPriority = 'medium';
         
-        // NEW: Streak and Analytics Data
         let streakData = {
             currentStreak: 0,
             longestStreak: 0,
@@ -1213,8 +1213,261 @@
             streakHistory: {}
         };
         
-        let weeklyGoal = 20; // hours per week
+        let weeklyGoal = 20;
 
+        // ========== FIXED TIMER FUNCTIONS ==========
+        function updateTimerDisplay() {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            document.getElementById('timer').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            
+            let totalSeconds = isBreakMode ? (scheduleSettings.shortBreak * 60) : (currentStudyDurationSetting * 60);
+            if (totalSeconds <= 0) totalSeconds = 35 * 60;
+            const progressPercent = ((totalSeconds - timeLeft) / totalSeconds) * 100;
+            document.getElementById('progress').style.width = `${Math.max(0, Math.min(100, progressPercent))}%`;
+        }
+        
+        function startTimer() {
+            if (timerId) clearInterval(timerId);
+            isRunning = true;
+            timerId = setInterval(() => {
+                if (timeLeft <= 0) {
+                    // Timer completes
+                    clearInterval(timerId);
+                    timerId = null;
+                    isRunning = false;
+                    playBell();
+                    
+                    if (!isBreakMode) {
+                        // STUDY session completed - add time!
+                        const minutesStudied = currentStudyDurationSetting;
+                        addStudyMinutes(minutesStudied);
+                        showNotification(`✅ Study complete! +${minutesStudied} minutes added to your study time!`);
+                        // Reset timer to study duration (stay in study mode)
+                        timeLeft = currentStudyDurationSetting * 60;
+                        updateTimerDisplay();
+                        document.getElementById('timerStatus').textContent = 'Study session complete! Ready for next.';
+                    } else {
+                        // Break completed - go back to study mode
+                        showNotification(`☕ Break finished! Ready to study.`);
+                        isBreakMode = false;
+                        timeLeft = currentStudyDurationSetting * 60;
+                        updateTimerDisplay();
+                        document.getElementById('timerStatus').textContent = 'Ready to study';
+                    }
+                } else {
+                    timeLeft--;
+                    updateTimerDisplay();
+                }
+            }, 1000);
+            document.getElementById('timerStatus').textContent = isBreakMode ? 'Break in progress...' : 'Studying...';
+        }
+        
+        function pauseTimer() {
+            if (timerId) {
+                clearInterval(timerId);
+                timerId = null;
+                isRunning = false;
+                document.getElementById('timerStatus').textContent = 'Paused';
+            }
+        }
+        
+        function resetTimer() {
+            pauseTimer();
+            isBreakMode = false;
+            timeLeft = currentStudyDurationSetting * 60;
+            updateTimerDisplay();
+            document.getElementById('timerStatus').textContent = 'Ready to start';
+        }
+        
+        function startBreakManual() {
+            pauseTimer();
+            isBreakMode = true;
+            const breakDuration = parseInt(document.getElementById('shortBreak').value) || 5;
+            timeLeft = breakDuration * 60;
+            updateTimerDisplay();
+            document.getElementById('timerStatus').textContent = `Break set (${breakDuration} min). Click Start when ready.`;
+            showNotification(`Break timer set to ${breakDuration} minutes. Press Start to begin break.`);
+        }
+        
+        function skipBreak() {
+            if (isBreakMode) {
+                pauseTimer();
+                isBreakMode = false;
+                timeLeft = currentStudyDurationSetting * 60;
+                updateTimerDisplay();
+                document.getElementById('timerStatus').textContent = 'Ready to study';
+                showNotification('Break skipped! Back to study mode.');
+            } else {
+                showNotification('No active break to skip');
+            }
+        }
+        
+        function addStudyMinutes(minutes) {
+            const todayKey = new Date().toDateString();
+            
+            // Reset daily if new day
+            if (studyTimeData.todayDate !== todayKey) {
+                studyTimeData.todayTotalTime = 0;
+                studyTimeData.todayDate = todayKey;
+            }
+            
+            studyTimeData.todayTotalTime += minutes;
+            studyTimeData.weeklyTotalTime += minutes;
+            studyTimeData.allTimeTotal = (studyTimeData.allTimeTotal || 0) + minutes;
+            
+            if (!studyTimeData.history) studyTimeData.history = {};
+            studyTimeData.history[todayKey] = (studyTimeData.history[todayKey] || 0) + minutes;
+            
+            // Update streak
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+            if (streakData.lastStudyDate !== todayKey) {
+                if (streakData.lastStudyDate === yesterday) {
+                    streakData.currentStreak++;
+                } else {
+                    streakData.currentStreak = 1;
+                }
+                streakData.lastStudyDate = todayKey;
+                if (streakData.currentStreak > streakData.longestStreak) {
+                    streakData.longestStreak = streakData.currentStreak;
+                }
+                if (streakData.currentStreak === 7) showNotification("🎉 7-day streak! You're on fire! 🔥");
+                else if (streakData.currentStreak === 30) showNotification("🏆 AMAZING! 30-day streak!");
+                else if (streakData.currentStreak % 10 === 0 && streakData.currentStreak > 0) 
+                    showNotification(`🔥 ${streakData.currentStreak} day streak! Keep going!`);
+            }
+            
+            saveStudyData();
+            updateStudyTimeDisplay();
+            updateAnalytics();
+        }
+        
+        function saveStudyData() {
+            localStorage.setItem('studyTimeData', JSON.stringify(studyTimeData));
+            localStorage.setItem('studyStreak', JSON.stringify(streakData));
+        }
+        
+        function loadStudyData() {
+            const saved = localStorage.getItem('studyTimeData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                const todayKey = new Date().toDateString();
+                if (data.todayDate === todayKey) {
+                    studyTimeData = data;
+                } else {
+                    studyTimeData = {
+                        todayTotalTime: 0,
+                        weeklyTotalTime: data.weeklyTotalTime || 0,
+                        allTimeTotal: data.allTimeTotal || 0,
+                        todayDate: todayKey,
+                        history: data.history || {}
+                    };
+                }
+            }
+            const streak = localStorage.getItem('studyStreak');
+            if (streak) streakData = JSON.parse(streak);
+            updateStudyTimeDisplay();
+        }
+        
+        function updateStudyTimeDisplay() {
+            document.getElementById('todayTotalTime').textContent = `${Math.floor(studyTimeData.todayTotalTime/60)}h ${studyTimeData.todayTotalTime%60}m`;
+            document.getElementById('weeklyTotalTime').textContent = `${Math.floor(studyTimeData.weeklyTotalTime/60)}h ${studyTimeData.weeklyTotalTime%60}m`;
+        }
+        
+        function updateQuickStatus() {
+            const completed = studyTimetable.filter(t => t.done).length;
+            document.getElementById('quickStatus').textContent = `${completed}/${studyTimetable.length} tasks`;
+        }
+        
+        function playBell() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const o = ctx.createOscillator();
+                o.frequency.value = 800;
+                o.connect(ctx.destination);
+                o.start();
+                o.stop(ctx.currentTime + 0.5);
+            } catch(e) {}
+        }
+        
+        // ========== ANALYTICS ==========
+        function updateAnalytics() {
+            document.getElementById('currentStreak').textContent = streakData.currentStreak;
+            document.getElementById('longestStreak').textContent = `Longest: ${streakData.longestStreak} days`;
+            
+            let totalMinutes = (studyTimeData.allTimeTotal || 0) + studyTimeData.todayTotalTime;
+            document.getElementById('totalStudyHours').textContent = Math.floor(totalMinutes / 60);
+            
+            let last7Total = 0;
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(Date.now() - i * 86400000).toDateString();
+                if (studyTimeData.history && studyTimeData.history[date]) last7Total += studyTimeData.history[date];
+            }
+            last7Total += studyTimeData.todayTotalTime;
+            document.getElementById('avgDaily').textContent = Math.round(last7Total / 7);
+            
+            const totalTasks = studyTimetable.filter(t => t.done && t.type === 'study').length;
+            document.getElementById('totalTasks').textContent = totalTasks;
+            
+            let reviewedTopics = 0;
+            topics.forEach(topic => {
+                if (topic.completed) reviewedTopics += Object.values(topic.completed).filter(v => v === true).length;
+            });
+            document.getElementById('totalTopics').textContent = reviewedTopics;
+            
+            renderWeekActivity();
+            updateGoalProgress();
+        }
+        
+        function renderWeekActivity() {
+            const container = document.getElementById('weekActivity');
+            if (!container) return;
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const today = new Date();
+            const currentDay = today.getDay();
+            container.innerHTML = '';
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - currentDay + i);
+                const dateStr = date.toDateString();
+                let minutes = (studyTimeData.history && studyTimeData.history[dateStr]) || 0;
+                if (dateStr === new Date().toDateString()) minutes = studyTimeData.todayTotalTime;
+                const hours = Math.floor(minutes / 60);
+                const mins = minutes % 60;
+                const dayDiv = document.createElement('div');
+                dayDiv.className = `week-day ${minutes > 0 ? 'active' : ''}`;
+                dayDiv.innerHTML = `<strong>${days[i]}</strong><br>${hours > 0 ? hours + 'h' : mins + 'm'}`;
+                container.appendChild(dayDiv);
+            }
+        }
+        
+        function updateGoalProgress() {
+            const goalInput = document.getElementById('weeklyGoal');
+            if (goalInput) {
+                weeklyGoal = parseInt(goalInput.value) || 20;
+                localStorage.setItem('weeklyGoal', weeklyGoal);
+            }
+            const goalMinutes = weeklyGoal * 60;
+            const percentage = Math.min(100, Math.round((studyTimeData.weeklyTotalTime / goalMinutes) * 100));
+            const progressBar = document.getElementById('goalProgress');
+            if (progressBar) {
+                progressBar.style.width = percentage + '%';
+                progressBar.textContent = percentage + '%';
+            }
+            const goalStatus = document.getElementById('goalStatus');
+            if (goalStatus) {
+                const remaining = Math.max(0, goalMinutes - studyTimeData.weeklyTotalTime);
+                const remainingHours = Math.floor(remaining / 60);
+                const remainingMins = remaining % 60;
+                if (studyTimeData.weeklyTotalTime >= goalMinutes) {
+                    goalStatus.innerHTML = '🎉 Goal achieved this week! Amazing work! 🎉';
+                    goalStatus.style.color = 'var(--success)';
+                } else {
+                    goalStatus.innerHTML = `${remainingHours}h ${remainingMins}m left to reach ${weeklyGoal}h goal`;
+                }
+            }
+        }
+        
         // ========== SCHEDULE FUNCTIONS ==========
         function generateSchedule() {
             const settings = scheduleSettings;
@@ -1260,17 +1513,17 @@
             saveSchedule();
             return newTimetable;
         }
-
+        
         function formatTime(date) {
             return `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
         }
-
+        
         function saveSchedule() {
             localStorage.setItem('studyTimetable', JSON.stringify(studyTimetable));
             localStorage.setItem('scheduleSettings', JSON.stringify(scheduleSettings));
             localStorage.setItem('currentCycle', currentCycle);
         }
-
+        
         function loadSchedule() {
             const saved = localStorage.getItem('scheduleSettings');
             if (saved) {
@@ -1282,6 +1535,9 @@
                 document.getElementById('shortBreak').value = scheduleSettings.shortBreak;
                 document.getElementById('longBreak').value = scheduleSettings.longBreak;
                 document.getElementById('sessionsPerCycle').value = scheduleSettings.sessionsPerCycle;
+                currentStudyDurationSetting = scheduleSettings.studyDuration;
+                timeLeft = currentStudyDurationSetting * 60;
+                updateTimerDisplay();
             }
             const timetable = localStorage.getItem('studyTimetable');
             if (timetable && JSON.parse(timetable).length > 0) {
@@ -1294,7 +1550,7 @@
             renderCycle();
             updateQuickStatus();
         }
-
+        
         function regenerateSchedule() {
             scheduleSettings = {
                 startTime: document.getElementById('startTime').value,
@@ -1304,6 +1560,9 @@
                 longBreak: parseInt(document.getElementById('longBreak').value),
                 sessionsPerCycle: parseInt(document.getElementById('sessionsPerCycle').value)
             };
+            currentStudyDurationSetting = scheduleSettings.studyDuration;
+            timeLeft = currentStudyDurationSetting * 60;
+            updateTimerDisplay();
             generateSchedule();
             studyTimetable.forEach(t => t.done = false);
             currentCycle = 1;
@@ -1313,7 +1572,7 @@
             updateQuickStatus();
             showNotification(`Schedule generated! ${scheduleSettings.cycleCount} cycles created.`);
         }
-
+        
         function renderCycle() {
             const container = document.getElementById('cycleSchedule');
             if (!container) return;
@@ -1340,351 +1599,27 @@
             stats.innerHTML = `Progress: ${completed}/${cycleTasks.length} (${pct}%)<div style="height:4px; background:var(--border); margin-top:8px;"><div style="height:100%; width:${pct}%; background:var(--success); border-radius:2px;"></div></div>`;
             container.appendChild(stats);
         }
-
+        
         function toggleTask(id) {
             const task = studyTimetable.find(t => t.id === id);
             if (task) { task.done = !task.done; saveSchedule(); renderCycle(); updateQuickStatus(); }
         }
-
+        
         function nextCycle() { if (currentCycle < scheduleSettings.cycleCount) { currentCycle++; updateCycleDisplay(); } }
         function prevCycle() { if (currentCycle > 1) { currentCycle--; updateCycleDisplay(); } }
         function updateCycleDisplay() { document.getElementById('currentCycleDisplay').textContent = currentCycle; localStorage.setItem('currentCycle', currentCycle); renderCycle(); }
         function resetAllCycles() { if(confirm('Reset all cycles?')){ studyTimetable.forEach(t=>t.done=false); currentCycle=1; updateCycleDisplay(); showNotification('All cycles reset!'); } }
         function startCurrentCycle() { const first = studyTimetable.find(t=>t.cycle===currentCycle && t.type==='study' && !t.done); if(first) startStudySession(first); else showNotification('No pending studies'); }
         
-        function startStudySession(task) { currentActiveTask = task; isBreak = false; timeLeft = task.duration * 60; updateDisplay(); startTimer(); showNotification(`Started: ${task.task}`); showPage('pomodoro'); }
-        function startTimer() { if(!isRunning){ isRunning=true; timerId=setInterval(updateTimer,1000); document.getElementById('timerStatus').textContent='Running'; } }
-        function pauseTimer() { isRunning=false; clearInterval(timerId); document.getElementById('timerStatus').textContent='Paused'; }
-        function resetTimer() { isRunning=false; clearInterval(timerId); if(currentActiveTask) timeLeft=currentActiveTask.duration*60; else timeLeft=scheduleSettings.studyDuration*60; updateDisplay(); }
-        function skipBreak() { if(isBreak && currentActiveTask){ completeCurrentTask(); } else showNotification('No break to skip'); }
-        function updateTimer() { timeLeft--; updateDisplay(); if(timeLeft<=0) timerComplete(); }
-        function updateDisplay() { const m=Math.floor(timeLeft/60), s=timeLeft%60; document.getElementById('timer').textContent=`${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; if(currentActiveTask){ const total=currentActiveTask.duration*60; document.getElementById('progress').style.width=((total-timeLeft)/total*100)+'%'; } }
-        function timerComplete() { isRunning=false; clearInterval(timerId); if(currentActiveTask) completeCurrentTask(); playBell(); showNotification('Task completed!'); }
-        
-        function completeCurrentTask() {
-            if(currentActiveTask && !currentActiveTask.done){
-                currentActiveTask.done=true;
-                if(currentActiveTask.type==='study') {
-                    addStudyTime(currentActiveTask.duration);
-                    updateStudyStreak(); // Update streak when study completed
-                }
-                saveSchedule(); renderCycle(); updateQuickStatus();
-                const idx = studyTimetable.findIndex(t=>t.id===currentActiveTask.id);
-                const next = studyTimetable[idx+1];
-                if(next && next.cycle===currentActiveTask.cycle){
-                    currentActiveTask=next;
-                    isBreak=(next.type!=='study');
-                    timeLeft=next.duration*60;
-                    updateDisplay();
-                    showNotification(isBreak?`Break: ${next.duration}min`:`Next: ${next.task}`);
-                    if(!isBreak) setTimeout(startTimer,1000);
-                } else { currentActiveTask=null; showNotification('Cycle complete!'); }
-            }
-        }
-        
-        function addStudyTime(minutes) { 
-            studyTimeData.todayTotalTime += minutes; 
-            studyTimeData.weeklyTotalTime += minutes;
-            
-            // Store in history
-            const todayKey = new Date().toDateString();
-            if (!studyTimeData.history) studyTimeData.history = {};
-            if (!studyTimeData.history[todayKey]) studyTimeData.history[todayKey] = 0;
-            studyTimeData.history[todayKey] += minutes;
-            
-            updateStudyTimeDisplay(); 
-            saveStudyTime(); 
-            updateAnalytics(); // Refresh analytics
-        }
-        
-        function updateStudyTimeDisplay() { 
-            document.getElementById('todayTotalTime').textContent=`${Math.floor(studyTimeData.todayTotalTime/60)}h ${studyTimeData.todayTotalTime%60}m`; 
-            document.getElementById('weeklyTotalTime').textContent=`${Math.floor(studyTimeData.weeklyTotalTime/60)}h ${studyTimeData.weeklyTotalTime%60}m`; 
-        }
-        
-        function saveStudyTime() { 
-            studyTimeData.todayDate = new Date().toDateString(); 
-            localStorage.setItem('studyTimeData', JSON.stringify(studyTimeData)); 
-        }
-        
-        function loadStudyTime() { 
-            const s = localStorage.getItem('studyTimeData'); 
-            if(s) { 
-                const d = JSON.parse(s); 
-                if(d.todayDate === new Date().toDateString()) {
-                    studyTimeData = d;
-                } else {
-                    // Reset daily but keep weekly
-                    const weeklyTotal = d.weeklyTotalTime || 0;
-                    studyTimeData = {
-                        todayTotalTime: 0,
-                        weeklyTotalTime: weeklyTotal,
-                        todayDate: new Date().toDateString(),
-                        history: d.history || {}
-                    };
-                }
-            }
-            if (!studyTimeData.history) studyTimeData.history = {};
-            updateStudyTimeDisplay(); 
-        }
-        
-        function updateQuickStatus() { 
-            const c = studyTimetable.filter(t=>t.done).length; 
-            document.getElementById('quickStatus').textContent=`${c}/${studyTimetable.length} tasks`; 
-        }
-        
-        function playBell() { 
-            try{ 
-                const ctx = new (window.AudioContext||window.webkitAudioContext)(); 
-                const o = ctx.createOscillator(); 
-                o.frequency.value = 800; 
-                o.connect(ctx.destination); 
-                o.start(); 
-                o.stop(ctx.currentTime+0.5); 
-            } catch(e){} 
-        }
-        
-        // ========== STUDY STREAK SYSTEM ==========
-        function updateStudyStreak() {
-            const today = new Date().toDateString();
-            const yesterday = new Date(Date.now() - 86400000).toDateString();
-            
-            if (streakData.lastStudyDate === today) return;
-            
-            if (streakData.lastStudyDate === yesterday) {
-                streakData.currentStreak++;
-            } else if (streakData.lastStudyDate !== today) {
-                streakData.currentStreak = 1;
-            }
-            
-            if (streakData.currentStreak > streakData.longestStreak) {
-                streakData.longestStreak = streakData.currentStreak;
-            }
-            
-            streakData.lastStudyDate = today;
-            streakData.streakHistory[today] = true;
-            
-            // Motivational messages
-            if (streakData.currentStreak === 7) {
-                showNotification("🎉 7-day streak! You're on fire! 🔥");
-            } else if (streakData.currentStreak === 30) {
-                showNotification("🏆 AMAZING! 30-day streak! You're a study champion!");
-            } else if (streakData.currentStreak % 10 === 0 && streakData.currentStreak > 0) {
-                showNotification(`🔥 ${streakData.currentStreak} day streak! Keep going!`);
-            }
-            
-            saveStreakData();
-            updateAnalytics();
-        }
-        
-        function saveStreakData() {
-            localStorage.setItem('studyStreak', JSON.stringify(streakData));
-        }
-        
-        function loadStreakData() {
-            const saved = localStorage.getItem('studyStreak');
-            if (saved) {
-                streakData = JSON.parse(saved);
-                // Check if streak should be broken
-                const today = new Date().toDateString();
-                const yesterday = new Date(Date.now() - 86400000).toDateString();
-                if (streakData.lastStudyDate !== today && streakData.lastStudyDate !== yesterday) {
-                    streakData.currentStreak = 0;
-                    saveStreakData();
-                }
-            }
-        }
-        
-        // ========== ANALYTICS FUNCTIONS ==========
-        function updateAnalytics() {
-            // Update streak display
-            document.getElementById('currentStreak').textContent = streakData.currentStreak;
-            document.getElementById('longestStreak').textContent = `Longest: ${streakData.longestStreak} days`;
-            
-            // Calculate total study hours
-            let totalMinutes = 0;
-            if (studyTimeData.history) {
-                totalMinutes = Object.values(studyTimeData.history).reduce((a, b) => a + b, 0);
-            }
-            totalMinutes += studyTimeData.todayTotalTime;
-            const totalHours = Math.floor(totalMinutes / 60);
-            document.getElementById('totalStudyHours').textContent = totalHours;
-            
-            // Calculate average daily (last 7 days)
-            let last7DaysTotal = 0;
-            for (let i = 0; i < 7; i++) {
-                const date = new Date(Date.now() - i * 86400000).toDateString();
-                if (studyTimeData.history && studyTimeData.history[date]) {
-                    last7DaysTotal += studyTimeData.history[date];
-                }
-            }
-            last7DaysTotal += studyTimeData.todayTotalTime;
-            const avgDaily = Math.round(last7DaysTotal / 7);
-            document.getElementById('avgDaily').textContent = avgDaily;
-            
-            // Total tasks completed
-            const totalTasks = studyTimetable.filter(t => t.done && t.type === 'study').length;
-            document.getElementById('totalTasks').textContent = totalTasks;
-            
-            // Total topics reviewed
-            let reviewedTopics = 0;
-            topics.forEach(topic => {
-                if (topic.completed) {
-                    reviewedTopics += Object.values(topic.completed).filter(v => v === true).length;
-                }
-            });
-            document.getElementById('totalTopics').textContent = reviewedTopics;
-            
-            // Weekly activity
-            renderWeekActivity();
-            
-            // Goal progress
-            updateGoalProgress();
-        }
-        
-        function renderWeekActivity() {
-            const container = document.getElementById('weekActivity');
-            if (!container) return;
-            
-            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            const today = new Date();
-            const currentDay = today.getDay();
-            
-            container.innerHTML = '';
-            for (let i = 0; i < 7; i++) {
-                const date = new Date(today);
-                date.setDate(today.getDate() - currentDay + i);
-                const dateStr = date.toDateString();
-                const minutes = (studyTimeData.history && studyTimeData.history[dateStr]) || 
-                               (dateStr === new Date().toDateString() ? studyTimeData.todayTotalTime : 0);
-                const hasStudy = minutes > 0;
-                const hours = Math.floor(minutes / 60);
-                const mins = minutes % 60;
-                
-                const dayDiv = document.createElement('div');
-                dayDiv.className = `week-day ${hasStudy ? 'active' : ''}`;
-                dayDiv.innerHTML = `<strong>${days[i]}</strong><br>${hours > 0 ? hours + 'h' : mins + 'm'}`;
-                container.appendChild(dayDiv);
-            }
-        }
-        
-        function updateGoalProgress() {
-            const goalInput = document.getElementById('weeklyGoal');
-            if (goalInput) {
-                weeklyGoal = parseInt(goalInput.value) || 20;
-                localStorage.setItem('weeklyGoal', weeklyGoal);
-            }
-            
-            const weeklyMinutes = studyTimeData.weeklyTotalTime;
-            const goalMinutes = weeklyGoal * 60;
-            const percentage = Math.min(100, Math.round((weeklyMinutes / goalMinutes) * 100));
-            
-            const progressBar = document.getElementById('goalProgress');
-            if (progressBar) {
-                progressBar.style.width = percentage + '%';
-                progressBar.textContent = percentage + '%';
-            }
-            
-            const goalStatus = document.getElementById('goalStatus');
-            if (goalStatus) {
-                const remaining = Math.max(0, goalMinutes - weeklyMinutes);
-                const remainingHours = Math.floor(remaining / 60);
-                const remainingMins = remaining % 60;
-                if (weeklyMinutes >= goalMinutes) {
-                    goalStatus.innerHTML = '🎉 Goal achieved this week! Amazing work! 🎉';
-                    goalStatus.style.color = 'var(--success)';
-                } else {
-                    goalStatus.innerHTML = `${remainingHours}h ${remainingMins}m left to reach ${weeklyGoal}h goal`;
-                    goalStatus.style.color = 'var(--text-muted)';
-                }
-            }
-        }
-        
-        // ========== DATA EXPORT/IMPORT ==========
-        function exportAllData() {
-            const allData = {
-                version: '1.0',
-                exportDate: new Date().toISOString(),
-                scheduleSettings: scheduleSettings,
-                studyTimetable: studyTimetable,
-                topics: topics,
-                tasks: tasks,
-                thoughts: thoughts,
-                notes: notes,
-                papersProgress: papersProgress,
-                modelPapers: modelPapers,
-                studyTimeData: studyTimeData,
-                streakData: streakData
-            };
-            
-            const dataStr = JSON.stringify(allData, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `studymaster_backup_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showNotification('Data exported successfully!');
-        }
-        
-        function importDataPrompt() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'application/json';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    try {
-                        const importedData = JSON.parse(evt.target.result);
-                        if (confirm('Import will replace all current data. Continue?')) {
-                            // Import all data
-                            if (importedData.scheduleSettings) scheduleSettings = importedData.scheduleSettings;
-                            if (importedData.studyTimetable) studyTimetable = importedData.studyTimetable;
-                            if (importedData.topics) topics = importedData.topics;
-                            if (importedData.tasks) tasks = importedData.tasks;
-                            if (importedData.thoughts) thoughts = importedData.thoughts;
-                            if (importedData.notes) notes = importedData.notes;
-                            if (importedData.papersProgress) papersProgress = importedData.papersProgress;
-                            if (importedData.modelPapers) modelPapers = importedData.modelPapers;
-                            if (importedData.studyTimeData) studyTimeData = importedData.studyTimeData;
-                            if (importedData.streakData) streakData = importedData.streakData;
-                            
-                            // Save all to localStorage
-                            localStorage.setItem('scheduleSettings', JSON.stringify(scheduleSettings));
-                            localStorage.setItem('studyTimetable', JSON.stringify(studyTimetable));
-                            localStorage.setItem('spacedTopics', JSON.stringify(topics));
-                            localStorage.setItem('studyTasks', JSON.stringify(tasks));
-                            localStorage.setItem('studyThoughts', JSON.stringify(thoughts));
-                            localStorage.setItem('studyNotes', JSON.stringify(notes));
-                            localStorage.setItem('papersProgressNew', JSON.stringify(papersProgress));
-                            localStorage.setItem('modelPapers', JSON.stringify(modelPapers));
-                            localStorage.setItem('studyTimeData', JSON.stringify(studyTimeData));
-                            localStorage.setItem('studyStreak', JSON.stringify(streakData));
-                            
-                            // Reload UI
-                            location.reload();
-                            showNotification('Data imported successfully!');
-                        }
-                    } catch (err) {
-                        showNotification('Invalid backup file!');
-                    }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        }
-        
-        function resetAllData() {
-            if (confirm('⚠️ WARNING: This will delete ALL your study data! This cannot be undone. Continue?')) {
-                localStorage.clear();
-                location.reload();
-            }
+        function startStudySession(task) {
+            currentActiveTask = task;
+            isBreakMode = false;
+            currentStudyDurationSetting = task.duration;
+            timeLeft = task.duration * 60;
+            updateTimerDisplay();
+            startTimer();
+            showNotification(`Started: ${task.task}`);
+            showPage('pomodoro');
         }
         
         // ========== TOPICS ==========
@@ -1736,7 +1671,7 @@
         function saveNotes(){ localStorage.setItem('studyNotes',JSON.stringify(notes)); }
         function loadNotes(){ const s=localStorage.getItem('studyNotes'); if(s) notes=JSON.parse(s); renderNotes(); }
         
-        // ========== PAPERS SECTION ==========
+        // ========== PAPERS (preserved) ==========
         function loadPapersProgress() {
             const savedProgress = localStorage.getItem('papersProgressNew');
             const savedModelPapers = localStorage.getItem('modelPapers');
@@ -1864,13 +1799,6 @@
                     `;
                     div.appendChild(attemptCard);
                 }
-                
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'paper-actions';
-                actionsDiv.innerHTML = `
-                    <button class="paper-mark-btn" onclick="markAllSectionsForYear('${subject}', ${year})">✅ Mark All Sections</button>
-                `;
-                div.appendChild(actionsDiv);
                 container.appendChild(div); 
             } 
         }
@@ -1880,22 +1808,6 @@
             const attempt = papersProgress[subject][year].attempts[attemptIndex]; 
             if (!attempt.sections) attempt.sections = { mcq: false, essay: false }; 
             attempt.sections[section] = !attempt.sections[section]; 
-            
-            const isCombined = subject === 'combined';
-            const section1 = isCombined ? 'pure' : 'mcq';
-            const section2 = isCombined ? 'applied' : 'essay';
-            const allComplete = (attempt.sections[section1] && attempt.sections[section2]);
-            
-            if (allComplete && !attempt.completed) { 
-                if (confirm('Both sections completed! Mark this attempt as completed?')) { 
-                    attempt.completed = true; 
-                    attempt.date = new Date().toISOString(); 
-                    showNotification(`Attempt ${attemptIndex + 1} marked as completed!`); 
-                } 
-            } else if (!allComplete && attempt.completed) { 
-                attempt.completed = false; 
-                attempt.date = null; 
-            } 
             savePapersProgress(); 
             renderPapersProgress(); 
             updatePapersStats(); 
@@ -1931,7 +1843,6 @@
                 notesDiv.classList.toggle('show');
                 if (!notesDiv.classList.contains('show')) return;
             }
-            
             const attempt = papersProgress[subject][year].attempts[attemptIndex];
             const currentNotes = attempt.notes || '';
             const newNotes = prompt(`Add notes for ${subject.toUpperCase()} ${year} - Attempt ${attemptIndex + 1}:`, currentNotes);
@@ -1950,25 +1861,6 @@
                 renderPapersProgress();
                 showNotification('Notes cleared!');
             }
-        }
-        
-        function markAllSectionsForYear(subject, year) { 
-            if (!papersProgress[subject]?.[year]) return; 
-            const sections = subject === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay']; 
-            if (confirm(`Mark ALL sections for ${subject} ${year} as completed?`)) { 
-                papersProgress[subject][year].attempts.forEach((attempt, i) => { 
-                    if (!attempt.sections) attempt.sections = { mcq: false, essay: false }; 
-                    sections.forEach(s => attempt.sections[s] = true); 
-                    if (!attempt.completed) { 
-                        attempt.completed = true; 
-                        attempt.date = new Date().toISOString(); 
-                    } 
-                }); 
-                savePapersProgress(); 
-                renderPapersProgress(); 
-                updatePapersStats(); 
-                showNotification(`All sections marked for ${subject} ${year}!`); 
-            } 
         }
         
         function markAllAttemptsForCurrentSubject() { 
@@ -2100,6 +1992,7 @@
         // ========== UI FUNCTIONS ==========
         function showStudyTab(tab){ document.getElementById('topicsSection').style.display=tab==='topics'?'block':'none'; document.getElementById('tasksSection').style.display=tab==='tasks'?'block':'none'; document.querySelectorAll('.sub-tab').forEach((t,i)=>{ if((i===0 && tab==='topics')||(i===1 && tab==='tasks')) t.classList.add('active'); else t.classList.remove('active'); }); }
         function showJournalTab(tab){ document.getElementById('thoughtsSection').style.display=tab==='thoughts'?'block':'none'; document.getElementById('notesSection').style.display=tab==='notes'?'block':'none'; document.querySelectorAll('.sub-tab').forEach((t,i)=>{ if((i===0 && tab==='thoughts')||(i===1 && tab==='notes')) t.classList.add('active'); else t.classList.remove('active'); }); }
+        
         function showPage(pageId, el){ 
             document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); 
             document.getElementById(pageId+'Page').classList.add('active'); 
@@ -2109,33 +2002,103 @@
                 updateAnalytics();
             }
         }
+        
         function toggleTheme(){ const cur=document.body.getAttribute('data-theme'); const n=cur==='light'?'dark':'light'; document.body.setAttribute('data-theme',n); document.getElementById('themeBtn').textContent=n==='dark'?'☀️':'🌙'; localStorage.setItem('theme',n); }
         function showNotification(msg){ const n=document.getElementById('notification'); n.textContent=msg; n.style.display='block'; setTimeout(()=>n.style.display='none',3000); }
+        
+        function exportAllData() {
+            const allData = { scheduleSettings, studyTimetable, topics, tasks, thoughts, notes, papersProgress, modelPapers, studyTimeData, streakData };
+            const dataStr = JSON.stringify(allData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `studymaster_backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showNotification('Data exported successfully!');
+        }
+        
+        function importDataPrompt() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    try {
+                        const importedData = JSON.parse(evt.target.result);
+                        if (confirm('Import will replace all current data. Continue?')) {
+                            if (importedData.scheduleSettings) scheduleSettings = importedData.scheduleSettings;
+                            if (importedData.studyTimetable) studyTimetable = importedData.studyTimetable;
+                            if (importedData.topics) topics = importedData.topics;
+                            if (importedData.tasks) tasks = importedData.tasks;
+                            if (importedData.thoughts) thoughts = importedData.thoughts;
+                            if (importedData.notes) notes = importedData.notes;
+                            if (importedData.papersProgress) papersProgress = importedData.papersProgress;
+                            if (importedData.modelPapers) modelPapers = importedData.modelPapers;
+                            if (importedData.studyTimeData) studyTimeData = importedData.studyTimeData;
+                            if (importedData.streakData) streakData = importedData.streakData;
+                            localStorage.setItem('scheduleSettings', JSON.stringify(scheduleSettings));
+                            localStorage.setItem('studyTimetable', JSON.stringify(studyTimetable));
+                            localStorage.setItem('spacedTopics', JSON.stringify(topics));
+                            localStorage.setItem('studyTasks', JSON.stringify(tasks));
+                            localStorage.setItem('studyThoughts', JSON.stringify(thoughts));
+                            localStorage.setItem('studyNotes', JSON.stringify(notes));
+                            localStorage.setItem('papersProgressNew', JSON.stringify(papersProgress));
+                            localStorage.setItem('modelPapers', JSON.stringify(modelPapers));
+                            localStorage.setItem('studyTimeData', JSON.stringify(studyTimeData));
+                            localStorage.setItem('studyStreak', JSON.stringify(streakData));
+                            location.reload();
+                            showNotification('Data imported successfully!');
+                        }
+                    } catch (err) {
+                        showNotification('Invalid backup file!');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+        
+        function resetAllData() {
+            if (confirm('⚠️ WARNING: This will delete ALL your study data! This cannot be undone. Continue?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
         
         function init(){
             const theme=localStorage.getItem('theme')||'light';
             document.body.setAttribute('data-theme',theme);
             document.getElementById('themeBtn').textContent=theme==='dark'?'☀️':'🌙';
             
-            // Load saved weekly goal
             const savedGoal = localStorage.getItem('weeklyGoal');
             if (savedGoal) {
                 weeklyGoal = parseInt(savedGoal);
                 document.getElementById('weeklyGoal').value = weeklyGoal;
             }
             
-            loadStudyTime();
+            loadStudyData();
             loadSchedule();
             loadTopics();
             loadTasks();
             loadThoughts();
             loadNotes();
             loadPapersProgress();
-            loadStreakData();
             
             document.getElementById('cycleCount').addEventListener('input',function(){ document.getElementById('cycleCountValue').textContent=`${this.value} Cycles`; });
-            document.getElementById('weeklyGoal').addEventListener('change', function() { 
-                updateGoalProgress(); 
+            document.getElementById('weeklyGoal').addEventListener('change', function() { updateGoalProgress(); });
+            document.getElementById('studyDuration').addEventListener('change', function() { 
+                currentStudyDurationSetting = parseInt(this.value) || 35;
+                if (!isBreakMode && !isRunning) {
+                    timeLeft = currentStudyDurationSetting * 60;
+                    updateTimerDisplay();
+                }
             });
             
             showPage('pomodoro');
