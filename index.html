@@ -345,6 +345,8 @@
         .btn-info { background: linear-gradient(135deg, var(--info), #7209b7); }
         .btn-thoughts { background: linear-gradient(135deg, var(--thoughts), #ff8787); }
         .btn-notes { background: linear-gradient(135deg, var(--notes), #ffc107); }
+        .btn-paper-mcq { background: linear-gradient(135deg, #2b9348, #007f5f); }
+        .btn-paper-essay { background: linear-gradient(135deg, #9c27b0, #6a1b9a); }
 
         .controls-grid {
             display: grid;
@@ -908,7 +910,7 @@
             <button class="nav-tab" onclick="showPage('analytics', this)">📊 Analytics</button>
         </div>
 
-        <!-- TIMER PAGE - FIXED with manual break -->
+        <!-- TIMER PAGE - ADDED PAST PAPER BUTTONS -->
         <div id="pomodoroPage" class="page active">
             <section class="timer-section">
                 <div class="timer-display" id="timer">35:00</div>
@@ -922,6 +924,11 @@
                 <button class="btn btn-warning" onclick="pauseTimer()">⏸ Pause</button>
                 <button class="btn btn-danger" onclick="resetTimer()">🔄 Reset</button>
                 <button class="btn btn-accent" onclick="startBreakManual()">☕ Start Break</button>
+            </div>
+            <!-- NEW PAST PAPER TIMER BUTTONS -->
+            <div class="controls-grid">
+                <button class="btn btn-paper-mcq" onclick="startPastPaperTimer(105)">📝 MCQ Paper (105 min)</button>
+                <button class="btn btn-paper-essay" onclick="startPastPaperTimer(175)">✍️ Essay Paper (175 min)</button>
             </div>
             <div class="study-time-stats">
                 <div class="time-stat"><div class="time-label">Today's Study Time:</div><div class="time-value highlight" id="todayTotalTime">0h 0m</div></div>
@@ -1290,6 +1297,17 @@
             showNotification(`Break timer set to ${breakDuration} minutes. Press Start to begin break.`);
         }
         
+        // NEW PAST PAPER TIMER FUNCTION
+        function startPastPaperTimer(minutes) {
+            pauseTimer();
+            isBreakMode = false;
+            currentStudyDurationSetting = minutes;
+            timeLeft = minutes * 60;
+            updateTimerDisplay();
+            document.getElementById('timerStatus').textContent = `Past Paper (${minutes} min). Click Start to begin.`;
+            showNotification(`📄 Past paper timer set for ${minutes} minutes. Press Start to begin.`);
+        }
+        
         function skipBreak() {
             if (isBreakMode) {
                 pauseTimer();
@@ -1468,7 +1486,7 @@
             }
         }
         
-        // ========== SCHEDULE FUNCTIONS ==========
+        // ========== SCHEDULE FUNCTIONS (unchanged) ==========
         function generateSchedule() {
             const settings = scheduleSettings;
             const newTimetable = [];
