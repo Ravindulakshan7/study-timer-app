@@ -1437,6 +1437,7 @@
             updateGoalProgress();
         }
         
+        // UPDATED: Weekly Activity now shows BOTH hours AND minutes (not just hours)
         function renderWeekActivity() {
             const container = document.getElementById('weekActivity');
             if (!container) return;
@@ -1452,9 +1453,18 @@
                 if (dateStr === new Date().toDateString()) minutes = studyTimeData.todayTotalTime;
                 const hours = Math.floor(minutes / 60);
                 const mins = minutes % 60;
+                
+                // Format display: show hours and minutes
+                let displayText = '';
+                if (hours > 0) {
+                    displayText = `${hours}h ${mins}m`;
+                } else {
+                    displayText = `${mins}m`;
+                }
+                
                 const dayDiv = document.createElement('div');
                 dayDiv.className = `week-day ${minutes > 0 ? 'active' : ''}`;
-                dayDiv.innerHTML = `<strong>${days[i]}</strong><br>${hours > 0 ? hours + 'h' : mins + 'm'}`;
+                dayDiv.innerHTML = `<strong>${days[i]}</strong><br><span style="font-size: 10px;">${displayText}</span>`;
                 container.appendChild(dayDiv);
             }
         }
