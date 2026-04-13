@@ -46,13 +46,14 @@
         .btn-info { background: #5e548e; }
         .btn-paper-mcq { background: #2c6e49; }
         .btn-paper-essay { background: #6d597a; }
-        .timer-section { background: var(--bg-card); border-radius: var(--radius); padding: 30px 20px; margin-bottom: 25px; box-shadow: var(--shadow); text-align: center; border: 1px solid var(--border); }
+        .timer-section { background: var(--bg-card); border-radius: var(--radius); padding: 30px 20px; margin-bottom: 25px; box-shadow: var(--shadow); text-align: center; border: 1px solid var(--border); cursor: pointer; transition: transform 0.2s; }
+        .timer-section:active { transform: scale(0.98); }
         .timer-display { font-size: 82px; font-weight: 800; font-family: 'SF Mono', monospace; color: var(--text-primary); margin: 15px 0; cursor: pointer; letter-spacing: 2px; }
         .extra-time { font-size: 18px; color: var(--success); font-weight: 600; margin-top: -10px; margin-bottom: 10px; min-height: 32px; }
         .progress-container { height: 6px; background: var(--bg-input); border-radius: 3px; margin: 20px 0; overflow: hidden; }
         .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--success)); width: 0%; transition: width 0.3s linear; }
         .controls-grid { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .settings-section, .study-time-stats, .task-item, .paper-year-container, .analytics-card, .streak-card, .model-paper-card, .graph-card { background: var(--bg-card); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .settings-section, .study-time-stats, .task-item, .paper-year-container, .analytics-card, .streak-card, .model-paper-card, .graph-card, .subject-goal-card { background: var(--bg-card); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
         .section-title { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 600; margin-bottom: 20px; }
         .setting-group { margin-bottom: 20px; }
         .setting-label { display: block; font-size: 14px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
@@ -60,40 +61,34 @@
         .study-time-stats .time-stat { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
         .time-value.highlight { color: var(--primary); font-weight: 600; }
         
+        /* Subject Goal Styles */
+        .subject-goal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px; }
+        .subject-goal-card { text-align: center; padding: 12px; border-radius: 12px; background: var(--bg-secondary); }
+        .subject-goal-card.physics { border-top: 3px solid #3a5795; }
+        .subject-goal-card.chemistry { border-top: 3px solid #5e548e; }
+        .subject-goal-card.maths { border-top: 3px solid #2d6a4f; }
+        .subject-goal-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .subject-goal-time { font-size: 20px; font-weight: 700; }
+        .subject-goal-progress { height: 4px; background: var(--border); border-radius: 2px; margin: 8px 0; overflow: hidden; }
+        .subject-goal-fill { height: 100%; width: 0%; border-radius: 2px; transition: width 0.3s; }
+        .subject-goal-fill.physics { background: #3a5795; }
+        .subject-goal-fill.chemistry { background: #5e548e; }
+        .subject-goal-fill.maths { background: #2d6a4f; }
+        .subject-goal-target { font-size: 10px; color: var(--text-muted); }
+        .subject-selector { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .subject-select-btn { padding: 8px 16px; border-radius: 20px; background: var(--bg-input); border: 2px solid var(--border); cursor: pointer; font-weight: 600; font-size: 13px; }
+        .subject-select-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        
         /* Graph Styles */
         .graph-container { margin-bottom: 25px; cursor: pointer; position: relative; }
         .graph-title { font-size: 16px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .graph-canvas-wrapper { position: relative; height: 180px; margin-bottom: 10px; }
         canvas { max-height: 160px; width: 100%; cursor: pointer; }
         .graph-stats { display: flex; justify-content: space-around; margin-top: 10px; font-size: 12px; }
-        .attempt-badge { display: inline-block; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: bold; margin: 0 3px; }
-        .attempt-complete-badge { background: var(--success); color: white; }
-        .attempt-pending-badge { background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border); }
-        .week-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
-        .week-day { text-align: center; padding: 8px 4px; border-radius: 8px; background: var(--bg-input); font-size: 11px; }
-        .week-day.active { background: var(--success); color: white; }
-        .progress-bar-container { background: var(--bg-input); border-radius: 10px; height: 30px; overflow: hidden; margin: 10px 0; }
-        .progress-bar-fill { background: linear-gradient(90deg, var(--primary), var(--success)); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600; }
-        .sub-tabs { display: flex; background: var(--bg-secondary); border-radius: 10px; padding: 3px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .sub-tab { flex: 1; padding: 10px; text-align: center; border: none; background: transparent; color: var(--text-muted); font-weight: 600; font-size: 13px; cursor: pointer; border-radius: 8px; }
-        .sub-tab.active { background: var(--primary); color: white; }
-        .paper-tab { flex: 1; padding: 12px; text-align: center; background: var(--bg-input); border: 2px solid var(--border); border-radius: 10px; cursor: pointer; font-weight: 600; }
-        .paper-tab.active { background: var(--primary); color: white; }
-        .paper-year-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .year-btn { padding: 8px 15px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 20px; cursor: pointer; }
-        .year-btn.active { background: var(--primary); color: white; }
-        .paper-progress-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; }
-        .paper-stat { background: var(--bg-input); border-radius: 10px; padding: 12px; text-align: center; }
-        .paper-stat-value { font-size: 20px; font-weight: 700; color: var(--primary); }
-        .paper-stat-label { font-size: 10px; color: var(--text-muted); }
-        .model-papers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }
-        .model-paper-card { background: var(--bg-input); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; border: 2px solid var(--border); }
-        .model-paper-card.checked { border-color: var(--success); background: rgba(45, 106, 79, 0.1); }
-        .streak-card { background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; text-align: center; color: white; }
-        .streak-number { font-size: 48px; font-weight: 800; }
-        .analytics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
-        .analytics-card { background: var(--bg-card); border-radius: var(--radius); padding: 15px; text-align: center; border: 1px solid var(--border); }
-        .analytics-value { font-size: 28px; font-weight: 700; color: var(--primary); }
+        
+        /* Past Papers - Fixed scrolling */
+        .papers-scroll-container { max-height: 400px; overflow-y: auto; padding-right: 5px; }
+        .paper-year-container { margin-bottom: 15px; }
         .paper-attempt-card { background: var(--bg-secondary); border-radius: 12px; padding: 15px; margin-bottom: 12px; }
         .sections-row { display: flex; gap: 15px; margin-bottom: 12px; flex-wrap: wrap; }
         .section-item { flex: 1; display: flex; align-items: center; justify-content: space-between; background: var(--bg-card); padding: 8px 12px; border-radius: 10px; }
@@ -104,23 +99,22 @@
         .attempt-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
         .attempt-complete-btn { flex: 1; padding: 10px; border-radius: 40px; font-weight: 600; cursor: pointer; text-align: center; background: var(--primary); color: white; border: none; }
         .attempt-complete-btn.completed { background: var(--success); }
-        .marks-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .marks-table th, .marks-table td { padding: 8px 4px; text-align: center; border-bottom: 1px solid var(--border); }
-        .marks-table th { background: var(--bg-secondary); font-size: 12px; }
-        .marks-table input { width: 60px; padding: 6px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 8px; text-align: center; font-size: 12px; }
-        .subject-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .subject-physics { background: #3a5795; color: white; }
-        .subject-chemistry { background: #5e548e; color: white; }
-        .subject-combined { background: #2d6a4f; color: white; }
-        .cycle-nav { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
-        .nav-cycle-btn { width: 40px; height: 40px; border-radius: 10px; background: var(--bg-input); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .current-cycle { font-size: 20px; font-weight: 700; padding: 10px 20px; background: var(--bg-input); border-radius: 12px; }
-        .duration-row { display: flex; gap: 10px; flex-wrap: wrap; }
-        .duration-input { flex: 1; min-width: 80px; }
-        .duration-input input { width: 100%; padding: 10px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 10px; color: var(--text-primary); }
-        .duration-input label { font-size: 12px; color: var(--text-muted); }
         
-        /* Fullscreen Modal for Graph */
+        .week-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 10px; }
+        .week-day { text-align: center; padding: 8px 4px; border-radius: 8px; background: var(--bg-input); font-size: 11px; }
+        .week-day.active { background: var(--success); color: white; }
+        .progress-bar-container { background: var(--bg-input); border-radius: 10px; height: 30px; overflow: hidden; margin: 10px 0; }
+        .progress-bar-fill { background: linear-gradient(90deg, var(--primary), var(--success)); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600; }
+        
+        .paper-tab, .year-btn { padding: 8px 15px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 20px; cursor: pointer; }
+        .paper-tab.active, .year-btn.active { background: var(--primary); color: white; }
+        .paper-progress-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; }
+        .paper-stat { background: var(--bg-input); border-radius: 10px; padding: 12px; text-align: center; }
+        
+        .streak-card { background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; text-align: center; color: white; }
+        .streak-number { font-size: 48px; font-weight: 800; }
+        
+        /* Fullscreen Modal */
         .fullscreen-modal {
             display: none;
             position: fixed;
@@ -135,14 +129,8 @@
             justify-content: center;
             padding: 20px;
         }
-        .fullscreen-modal.active {
-            display: flex;
-        }
-        .fullscreen-modal canvas {
-            width: 90%;
-            height: auto;
-            max-height: 70vh;
-        }
+        .fullscreen-modal.active { display: flex; }
+        .fullscreen-modal .timer-full { font-size: 120px; font-weight: 800; font-family: 'SF Mono', monospace; text-align: center; }
         .fullscreen-modal .close-btn {
             position: absolute;
             top: 20px;
@@ -158,20 +146,14 @@
             font-size: 24px;
             cursor: pointer;
             border: none;
-            z-index: 2001;
         }
-        .fullscreen-modal .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-align: center;
-        }
+        .fullscreen-modal .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; text-align: center; }
         
         @media (max-width: 480px) {
             .timer-display { font-size: 62px; }
             .btn { padding: 8px 14px; font-size: 12px; }
             .graph-canvas-wrapper { height: 160px; }
-            .marks-table input { width: 50px; padding: 4px; font-size: 10px; }
+            .subject-goal-time { font-size: 16px; }
         }
     </style>
 </head>
@@ -193,12 +175,23 @@
 
         <!-- TIMER PAGE -->
         <div id="pomodoroPage" class="page active">
-            <section class="timer-section">
+            <section class="timer-section" id="timerSection" onclick="openTimerFullscreen()">
                 <div class="timer-display" id="timer">35:00</div>
                 <div class="extra-time" id="extraTimeDisplay"></div>
                 <div class="progress-container"><div class="progress-bar" id="progress"></div></div>
                 <div style="font-size: 14px; color: var(--text-muted);" id="timerStatus">Ready to start</div>
             </section>
+            
+            <!-- Subject Selector for Pomodoro -->
+            <div class="settings-section">
+                <div class="section-title">📚 What are you studying?</div>
+                <div class="subject-selector">
+                    <button class="subject-select-btn physics-btn active" onclick="selectStudySubject('physics')">⚛️ Physics</button>
+                    <button class="subject-select-btn chemistry-btn" onclick="selectStudySubject('chemistry')">🧪 Chemistry</button>
+                    <button class="subject-select-btn maths-btn" onclick="selectStudySubject('maths')">📐 Maths</button>
+                </div>
+            </div>
+            
             <div class="controls-grid">
                 <button class="btn btn-success" onclick="startTimer()">▶ Start</button>
                 <button class="btn btn-warning" onclick="pauseTimer()">⏸ Pause</button>
@@ -210,9 +203,40 @@
                 <button class="btn btn-paper-mcq" onclick="startPastPaperTimer(105)">📝 MCQ Paper (105 min)</button>
                 <button class="btn btn-paper-essay" onclick="startPastPaperTimer(175)">✍️ Essay Paper (175 min)</button>
             </div>
+            
+            <!-- Subject Daily Goals -->
+            <div class="settings-section">
+                <div class="section-title">🎯 Today's Subject Goals</div>
+                <div class="subject-goal-grid">
+                    <div class="subject-goal-card physics">
+                        <div class="subject-goal-title">⚛️ Physics</div>
+                        <div class="subject-goal-time" id="physicsTodayTime">0h 0m</div>
+                        <div class="subject-goal-progress"><div class="subject-goal-fill physics" id="physicsProgressFill" style="width: 0%"></div></div>
+                        <div class="subject-goal-target">Goal: <span id="physicsGoal">2</span>h/day</div>
+                    </div>
+                    <div class="subject-goal-card chemistry">
+                        <div class="subject-goal-title">🧪 Chemistry</div>
+                        <div class="subject-goal-time" id="chemistryTodayTime">0h 0m</div>
+                        <div class="subject-goal-progress"><div class="subject-goal-fill chemistry" id="chemistryProgressFill" style="width: 0%"></div></div>
+                        <div class="subject-goal-target">Goal: <span id="chemistryGoal">2</span>h/day</div>
+                    </div>
+                    <div class="subject-goal-card maths">
+                        <div class="subject-goal-title">📐 Maths</div>
+                        <div class="subject-goal-time" id="mathsTodayTime">0h 0m</div>
+                        <div class="subject-goal-progress"><div class="subject-goal-fill maths" id="mathsProgressFill" style="width: 0%"></div></div>
+                        <div class="subject-goal-target">Goal: <span id="mathsGoal">2</span>h/day</div>
+                    </div>
+                </div>
+                <div class="controls-grid" style="margin-top: 15px;">
+                    <button class="btn btn-info" onclick="editSubjectGoals()">✏️ Edit Daily Goals</button>
+                </div>
+            </div>
+            
             <div class="study-time-stats">
                 <div class="time-stat"><span>Today's Study Time:</span><span class="time-value highlight" id="todayTotalTime">0h 0m</span></div>
                 <div class="time-stat"><span>Weekly Study Time:</span><span class="time-value highlight" id="weeklyTotalTime">0h 0m</span></div>
+                <div class="time-stat"><span>Study Goal Progress:</span><span class="time-value" id="goalProgressText">0%</span></div>
+                <div class="progress-bar-container"><div class="progress-bar-fill" id="goalProgress" style="width: 0%">0%</div></div>
                 <div class="time-stat"><span>Today's Progress:</span><span class="time-value" id="quickStatus">0/0 tasks</span></div>
             </div>
         </div>
@@ -221,61 +245,37 @@
         <div id="cyclesPage" class="page">
             <div class="settings-section">
                 <div class="section-title">⚙️ Cycle Settings</div>
-                <div class="setting-group">
-                    <label class="setting-label">⏰ Start Time</label>
-                    <input type="time" id="startTime" class="time-input" value="06:30">
-                </div>
-                <div class="setting-group">
-                    <label class="setting-label">🔄 Number of Cycles</label>
-                    <input type="range" id="cycleCount" class="cycle-slider" min="1" max="12" value="8">
-                    <div class="cycle-value" id="cycleCountValue">8 Cycles</div>
-                </div>
-                <div class="setting-group">
-                    <label class="setting-label">⏱️ Durations</label>
-                    <div class="duration-row">
-                        <div class="duration-input"><label>Study (min)</label><input type="number" id="studyDuration" value="35" min="10" max="120" step="5"></div>
-                        <div class="duration-input"><label>Short Break</label><input type="number" id="shortBreak" value="5" min="1" max="30"></div>
-                        <div class="duration-input"><label>Long Break</label><input type="number" id="longBreak" value="20" min="5" max="60"></div>
-                    </div>
-                </div>
-                <div class="setting-group">
-                    <label class="setting-label">📋 Studies per Cycle</label>
-                    <input type="number" id="sessionsPerCycle" value="3" min="1" max="5" class="time-input">
-                </div>
+                <div class="setting-group"><label class="setting-label">⏰ Start Time</label><input type="time" id="startTime" class="time-input" value="06:30"></div>
+                <div class="setting-group"><label class="setting-label">🔄 Number of Cycles</label><input type="range" id="cycleCount" class="cycle-slider" min="1" max="12" value="8"><div class="cycle-value" id="cycleCountValue">8 Cycles</div></div>
+                <div class="setting-group"><label class="setting-label">⏱️ Durations</label><div class="duration-row"><div class="duration-input"><label>Study (min)</label><input type="number" id="studyDuration" value="35" min="10" max="120" step="5"></div><div class="duration-input"><label>Short Break</label><input type="number" id="shortBreak" value="5" min="1" max="30"></div><div class="duration-input"><label>Long Break</label><input type="number" id="longBreak" value="20" min="5" max="60"></div></div></div>
+                <div class="setting-group"><label class="setting-label">📋 Studies per Cycle</label><input type="number" id="sessionsPerCycle" value="3" min="1" max="5" class="time-input"></div>
                 <button class="btn btn-primary" onclick="regenerateSchedule()" style="width: 100%;">🔄 Generate Schedule</button>
             </div>
             <div class="settings-section">
                 <div class="section-title">📊 Cycle Progress</div>
-                <div class="cycle-nav">
-                    <button class="nav-cycle-btn" onclick="prevCycle()">←</button>
-                    <div class="current-cycle">Cycle <span id="currentCycleDisplay">1</span></div>
-                    <button class="nav-cycle-btn" onclick="nextCycle()">→</button>
-                </div>
+                <div class="cycle-nav"><button class="nav-cycle-btn" onclick="prevCycle()">←</button><div class="current-cycle">Cycle <span id="currentCycleDisplay">1</span></div><button class="nav-cycle-btn" onclick="nextCycle()">→</button></div>
                 <div id="cycleSchedule"></div>
-                <div class="controls-grid" style="margin-top: 20px;">
-                    <button class="btn btn-success" onclick="startCurrentCycle()">▶ Start This Cycle</button>
-                    <button class="btn btn-danger" onclick="resetAllCycles()">🗑️ Reset All</button>
-                </div>
+                <div class="controls-grid" style="margin-top: 20px;"><button class="btn btn-success" onclick="startCurrentCycle()">▶ Start This Cycle</button><button class="btn btn-danger" onclick="resetAllCycles()">🗑️ Reset All</button></div>
             </div>
         </div>
 
-        <!-- PAST PAPERS PAGE -->
+        <!-- PAST PAPERS PAGE - Fixed scrolling -->
         <div id="papersPage" class="page">
             <div class="settings-section">
                 <div class="section-title">📊 Past Papers Progress (2000-2025)</div>
-                <div class="papers-tabs">
+                <div class="papers-tabs" style="display: flex; gap: 10px; margin-bottom: 20px;">
                     <button class="paper-tab active" onclick="showPaperSubject('physics')">⚛️ Physics</button>
                     <button class="paper-tab" onclick="showPaperSubject('chemistry')">🧪 Chemistry</button>
                     <button class="paper-tab" onclick="showPaperSubject('combined')">🧮 Combined Maths</button>
                 </div>
-                <div class="paper-year-selector" id="yearSelector"></div>
-                <div id="papersProgress"></div>
+                <div class="paper-year-selector" id="yearSelector" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;"></div>
+                <div class="papers-scroll-container" id="papersProgressContainer">
+                    <div id="papersProgress"></div>
+                </div>
                 <div class="paper-progress-stats">
                     <div class="paper-stat"><div class="paper-stat-value" id="papersCompleted">0</div><div class="paper-stat-label">Papers Completed</div></div>
                     <div class="paper-stat"><div class="paper-stat-value" id="attemptsCompleted">0</div><div class="paper-stat-label">Attempts Done</div></div>
                     <div class="paper-stat"><div class="paper-stat-value" id="completionRate">0%</div><div class="paper-stat-label">Completion Rate</div></div>
-                    <div class="paper-stat"><div class="paper-stat-value" id="sectionsCompleted">0</div><div class="paper-stat-label">Sections Done</div></div>
-                    <div class="paper-stat"><div class="paper-stat-value" id="totalSections">0</div><div class="paper-stat-label">Total Sections</div></div>
                 </div>
                 <div class="controls-grid" style="margin-top: 20px;">
                     <button class="btn btn-success" onclick="markAllAttemptsForCurrentSubject()">✅ Mark All Attempts</button>
@@ -285,15 +285,12 @@
             </div>
             <div class="settings-section">
                 <div class="section-title">🏆 Model Papers Progress</div>
-                <div class="model-papers-grid" id="modelPapersGrid"></div>
-                <div class="controls-grid" style="margin-top: 20px;">
-                    <button class="btn btn-primary" onclick="addModelPaper()">➕ Add Model Paper</button>
-                    <button class="btn btn-danger" onclick="clearModelPapers()">🗑️ Clear All</button>
-                </div>
+                <div class="model-papers-grid" id="modelPapersGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;"></div>
+                <div class="controls-grid" style="margin-top: 20px;"><button class="btn btn-primary" onclick="addModelPaper()">➕ Add Model Paper</button><button class="btn btn-danger" onclick="clearModelPapers()">🗑️ Clear All</button></div>
             </div>
         </div>
 
-        <!-- MCQ MARKS PAGE - Max 50 marks -->
+        <!-- MCQ MARKS PAGE -->
         <div id="marksPage" class="page">
             <div class="settings-section">
                 <div class="section-title">📊 MCQ Marks Progress (Year by Year)</div>
@@ -302,45 +299,60 @@
                     <button class="sub-tab" onclick="showMarksSubject('chemistry')">🧪 Chemistry</button>
                     <button class="sub-tab" onclick="showMarksSubject('combined')">🧮 Combined Maths</button>
                 </div>
-                <div id="marksGraphContainer">
-                    <div class="graph-container" id="graphContainerClick">
-                        <div class="graph-title">📈 Marks Trend Over Years (3 Attempts) - Tap to enlarge</div>
-                        <div class="graph-canvas-wrapper"><canvas id="marksTrendGraph"></canvas></div>
-                        <div class="graph-stats" id="marksStats"></div>
-                    </div>
+                <div class="graph-container" id="graphContainerClick" onclick="openMarksFullscreen(currentMarksSubject)">
+                    <div class="graph-title">📈 Marks Trend Over Years (3 Attempts) - Tap to enlarge</div>
+                    <div class="graph-canvas-wrapper"><canvas id="marksTrendGraph"></canvas></div>
+                    <div class="graph-stats" id="marksStats"></div>
                 </div>
             </div>
             <div class="settings-section">
                 <div class="section-title">✏️ Enter Your MCQ Marks (0-50)</div>
                 <div><span class="subject-badge subject-physics" id="currentSubjectLabel">⚛️ Physics</span></div>
                 <div style="overflow-x: auto; margin-top: 15px;">
-                    <table class="marks-table">
+                    <table class="marks-table" style="width: 100%; border-collapse: collapse;">
                         <thead><tr><th>Year</th><th>Attempt 1</th><th>Attempt 2</th><th>Attempt 3</th></tr></thead>
                         <tbody id="marksTableBody"></tbody>
                     </table>
                 </div>
-                <div class="controls-grid" style="margin-top: 20px;">
-                    <button class="btn btn-primary" onclick="saveMarksData()">💾 Save Marks</button>
-                    <button class="btn btn-danger" onclick="resetMarksForSubject()">🔄 Reset All Marks</button>
-                </div>
-                <p style="font-size: 11px; color: var(--text-muted); margin-top: 10px; text-align: center;">Enter your marks (0-50) for each attempt. Track your progress across years!</p>
+                <div class="controls-grid" style="margin-top: 20px;"><button class="btn btn-primary" onclick="saveMarksData()">💾 Save Marks</button><button class="btn btn-danger" onclick="resetMarksForSubject()">🔄 Reset All Marks</button></div>
             </div>
         </div>
 
-        <!-- ANALYTICS PAGE -->
+        <!-- ANALYTICS PAGE with Monthly Graph -->
         <div id="analyticsPage" class="page">
             <div class="streak-card"><div class="streak-number" id="currentStreak">0</div><div class="streak-label">🔥 Current Study Streak</div><div class="streak-sub" id="longestStreak">Longest: 0 days</div></div>
+            
+            <!-- Monthly Study Time Graph -->
+            <div class="settings-section">
+                <div class="section-title">📅 Monthly Study Time</div>
+                <div class="graph-container">
+                    <div class="graph-canvas-wrapper"><canvas id="monthlyGraph"></canvas></div>
+                </div>
+            </div>
+            
             <div class="analytics-grid"><div class="analytics-card"><div class="analytics-value" id="totalStudyHours">0</div><div class="analytics-label">Total Study Hours</div></div><div class="analytics-card"><div class="analytics-value" id="avgDaily">0</div><div class="analytics-label">Avg Daily (mins)</div></div><div class="analytics-card"><div class="analytics-value" id="totalTasks">0</div><div class="analytics-label">Tasks Completed</div></div></div>
             <div class="settings-section"><div class="section-title">📅 Weekly Activity</div><div class="week-days" id="weekActivity"></div></div>
-            <div class="settings-section"><div class="section-title">📈 Study Goal Progress</div><div class="setting-group"><label class="setting-label">Weekly Goal (hours)</label><input type="number" id="weeklyGoal" value="20" min="1" max="100" class="time-input"></div><div class="progress-bar-container"><div class="progress-bar-fill" id="goalProgress" style="width: 0%">0%</div></div><div id="goalStatus" style="text-align: center; margin-top: 10px; color: var(--text-muted);"></div></div>
+            <div class="settings-section"><div class="section-title">📈 Study Goal Progress</div><div class="setting-group"><label class="setting-label">Weekly Goal (hours)</label><input type="number" id="weeklyGoal" value="20" min="1" max="100" class="time-input"></div><div class="progress-bar-container"><div class="progress-bar-fill" id="goalProgressBar" style="width: 0%">0%</div></div><div id="goalStatus" style="text-align: center; margin-top: 10px;"></div></div>
             <div class="settings-section"><div class="section-title">💾 Data Management</div><div class="controls-grid"><button class="btn btn-primary" onclick="exportAllData()">📤 Export All Data</button><button class="btn btn-info" onclick="importDataPrompt()">📥 Import Data</button><button class="btn btn-danger" onclick="resetAllData()">🗑️ Reset All Data</button></div></div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Modal for Timer -->
+    <div id="timerFullscreenModal" class="fullscreen-modal">
+        <button class="close-btn" onclick="closeTimerFullscreen()">✕</button>
+        <div class="modal-title">StudyMaster Timer</div>
+        <div class="timer-full" id="fullscreenTimer">35:00</div>
+        <div class="controls-grid" style="margin-top: 30px;">
+            <button class="btn btn-success" onclick="startTimer(); closeTimerFullscreen()">▶ Start</button>
+            <button class="btn btn-warning" onclick="pauseTimer()">⏸ Pause</button>
+            <button class="btn btn-danger" onclick="stopTimer(); closeTimerFullscreen()">⏹ Stop</button>
         </div>
     </div>
 
     <!-- Fullscreen Modal for Graph -->
     <div id="fullscreenModal" class="fullscreen-modal">
         <button class="close-btn" onclick="closeFullscreen()">✕</button>
-        <div class="modal-title" id="modalTitle">Physics Marks Trend</div>
+        <div class="modal-title" id="modalTitle">Marks Trend</div>
         <canvas id="fullscreenCanvas"></canvas>
     </div>
 
@@ -352,6 +364,11 @@
         let studyTimetable = [], currentCycle = 1, timeLeft = 35 * 60, timerId = null, isRunning = false, isBreakMode = false;
         let currentStudyDurationSetting = 35;
         let modelPapers = [];
+        let currentStudySubject = 'physics';
+        
+        // Subject study time tracking (minutes per subject per day)
+        let subjectStudyTime = { physics: 0, chemistry: 0, maths: 0, todayDate: new Date().toDateString() };
+        let subjectDailyGoals = { physics: 120, chemistry: 120, maths: 120 }; // in minutes (2 hours default)
         
         // Past Papers Progress
         let papersProgress = {};
@@ -363,6 +380,7 @@
         let currentMarksSubject = 'physics';
         let marksChart = null;
         let fullscreenChart = null;
+        let monthlyChart = null;
         
         let scheduleSettings = { startTime: "06:30", cycleCount: 8, studyDuration: 35, shortBreak: 5, longBreak: 20, sessionsPerCycle: 3 };
         let studyTimeData = { todayTotalTime: 0, weeklyTotalTime: 0, allTimeTotal: 0, todayDate: new Date().toDateString(), history: {} };
@@ -384,12 +402,9 @@
             }
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         }
-        
-        if (scrollContainer) {
-            scrollContainer.addEventListener('scroll', handleScrollHideHeader);
-        }
+        if (scrollContainer) scrollContainer.addEventListener('scroll', handleScrollHideHeader);
 
-        // ========== BELL SOUND FUNCTION ==========
+        // ========== BELL SOUND ==========
         function playBellSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -402,7 +417,6 @@
                 oscillator.start();
                 gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 1.5);
                 oscillator.stop(audioCtx.currentTime + 1.5);
-                
                 setTimeout(() => {
                     const osc2 = audioCtx.createOscillator();
                     const gain2 = audioCtx.createGain();
@@ -414,21 +428,97 @@
                     gain2.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 1);
                     osc2.stop(audioCtx.currentTime + 1);
                 }, 200);
-            } catch(e) { console.log("Audio not supported"); }
+            } catch(e) {}
+        }
+
+        // ========== SUBJECT STUDY TRACKING ==========
+        function selectStudySubject(subject) {
+            currentStudySubject = subject;
+            document.querySelectorAll('.subject-select-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.${subject}-btn`).classList.add('active');
+        }
+        
+        function addSubjectStudyMinutes(minutes) {
+            const todayKey = new Date().toDateString();
+            if (subjectStudyTime.todayDate !== todayKey) {
+                subjectStudyTime = { physics: 0, chemistry: 0, maths: 0, todayDate: todayKey };
+            }
+            subjectStudyTime[currentStudySubject] += minutes;
+            updateSubjectDisplay();
+            saveSubjectData();
+        }
+        
+        function updateSubjectDisplay() {
+            const todayKey = new Date().toDateString();
+            if (subjectStudyTime.todayDate !== todayKey) {
+                subjectStudyTime = { physics: 0, chemistry: 0, maths: 0, todayDate: todayKey };
+            }
+            
+            document.getElementById('physicsTodayTime').textContent = `${Math.floor(subjectStudyTime.physics / 60)}h ${subjectStudyTime.physics % 60}m`;
+            document.getElementById('chemistryTodayTime').textContent = `${Math.floor(subjectStudyTime.chemistry / 60)}h ${subjectStudyTime.chemistry % 60}m`;
+            document.getElementById('mathsTodayTime').textContent = `${Math.floor(subjectStudyTime.maths / 60)}h ${subjectStudyTime.maths % 60}m`;
+            
+            const physPct = Math.min(100, (subjectStudyTime.physics / subjectDailyGoals.physics) * 100);
+            const chemPct = Math.min(100, (subjectStudyTime.chemistry / subjectDailyGoals.chemistry) * 100);
+            const mathsPct = Math.min(100, (subjectStudyTime.maths / subjectDailyGoals.maths) * 100);
+            
+            document.getElementById('physicsProgressFill').style.width = physPct + '%';
+            document.getElementById('chemistryProgressFill').style.width = chemPct + '%';
+            document.getElementById('mathsProgressFill').style.width = mathsPct + '%';
+        }
+        
+        function editSubjectGoals() {
+            const newPhys = prompt('Physics daily goal (hours):', subjectDailyGoals.physics / 60);
+            const newChem = prompt('Chemistry daily goal (hours):', subjectDailyGoals.chemistry / 60);
+            const newMaths = prompt('Maths daily goal (hours):', subjectDailyGoals.maths / 60);
+            if (newPhys !== null) subjectDailyGoals.physics = parseFloat(newPhys) * 60;
+            if (newChem !== null) subjectDailyGoals.chemistry = parseFloat(newChem) * 60;
+            if (newMaths !== null) subjectDailyGoals.maths = parseFloat(newMaths) * 60;
+            document.getElementById('physicsGoal').textContent = subjectDailyGoals.physics / 60;
+            document.getElementById('chemistryGoal').textContent = subjectDailyGoals.chemistry / 60;
+            document.getElementById('mathsGoal').textContent = subjectDailyGoals.maths / 60;
+            updateSubjectDisplay();
+            saveSubjectData();
+        }
+        
+        function saveSubjectData() {
+            localStorage.setItem('subjectStudyTime', JSON.stringify(subjectStudyTime));
+            localStorage.setItem('subjectDailyGoals', JSON.stringify(subjectDailyGoals));
+        }
+        
+        function loadSubjectData() {
+            const saved = localStorage.getItem('subjectStudyTime');
+            if (saved) {
+                const data = JSON.parse(saved);
+                const todayKey = new Date().toDateString();
+                if (data.todayDate === todayKey) subjectStudyTime = data;
+            }
+            const savedGoals = localStorage.getItem('subjectDailyGoals');
+            if (savedGoals) subjectDailyGoals = JSON.parse(savedGoals);
+            document.getElementById('physicsGoal').textContent = subjectDailyGoals.physics / 60;
+            document.getElementById('chemistryGoal').textContent = subjectDailyGoals.chemistry / 60;
+            document.getElementById('mathsGoal').textContent = subjectDailyGoals.maths / 60;
+            updateSubjectDisplay();
         }
 
         // ========== TIMER FUNCTIONS ==========
         function updateTimerDisplay() {
+            const timerElem = document.getElementById('timer');
+            const fullTimerElem = document.getElementById('fullscreenTimer');
             if (isExtraMode) {
                 const mins = Math.floor(extraSeconds / 60);
                 const secs = extraSeconds % 60;
-                document.getElementById('timer').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                if (timerElem) timerElem.textContent = timeStr;
+                if (fullTimerElem) fullTimerElem.textContent = timeStr;
                 document.getElementById('extraTimeDisplay').innerHTML = `➕ Extra: +${mins}m ${secs}s`;
                 document.getElementById('progress').style.width = `100%`;
             } else {
                 const mins = Math.floor(timeLeft / 60);
                 const secs = timeLeft % 60;
-                document.getElementById('timer').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                if (timerElem) timerElem.textContent = timeStr;
+                if (fullTimerElem) fullTimerElem.textContent = timeStr;
                 document.getElementById('extraTimeDisplay').innerHTML = '';
                 let totalSeconds = isBreakMode ? (scheduleSettings.shortBreak * 60) : (currentStudyDurationSetting * 60);
                 if (totalSeconds <= 0) totalSeconds = 35 * 60;
@@ -443,12 +533,10 @@
             timerId = setInterval(() => {
                 if (!isExtraMode && timeLeft <= 0) {
                     if (!isBreakMode) {
-                        if (!sessionEndFlag) {
-                            playBellSound();
-                            sessionEndFlag = true;
-                        }
+                        if (!sessionEndFlag) { playBellSound(); sessionEndFlag = true; }
                         addStudyMinutes(currentStudyDurationSetting);
-                        showNotification(`🔔 STUDY COMPLETE! +${currentStudyDurationSetting} min. Extra time mode active!`);
+                        addSubjectStudyMinutes(currentStudyDurationSetting);
+                        showNotification(`🔔 STUDY COMPLETE! +${currentStudyDurationSetting} min to ${currentStudySubject.toUpperCase()}`);
                         isExtraMode = true;
                         extraSeconds = 0;
                         lastAddedMinute = 0;
@@ -456,10 +544,7 @@
                         document.getElementById('timerStatus').textContent = 'EXTRA TIME MODE';
                         return;
                     } else {
-                        if (!sessionEndFlag) {
-                            playBellSound();
-                            sessionEndFlag = true;
-                        }
+                        if (!sessionEndFlag) { playBellSound(); sessionEndFlag = true; }
                         clearInterval(timerId);
                         timerId = null;
                         isRunning = false;
@@ -481,8 +566,9 @@
                     if (currentMinuteFloor > lastAddedMinute) {
                         const newMinutes = currentMinuteFloor - lastAddedMinute;
                         addStudyMinutes(newMinutes);
+                        addSubjectStudyMinutes(newMinutes);
                         lastAddedMinute = currentMinuteFloor;
-                        showNotification(`➕ +${newMinutes} extra min!`);
+                        showNotification(`➕ +${newMinutes} extra min to ${currentStudySubject.toUpperCase()}!`);
                     }
                     updateTimerDisplay();
                 } else {
@@ -490,11 +576,13 @@
                     updateTimerDisplay();
                 }
             }, 1000);
-            document.getElementById('timerStatus').textContent = isBreakMode ? 'Break in progress...' : (isExtraMode ? 'EXTRA TIME MODE' : 'Studying...');
+            document.getElementById('timerStatus').textContent = isBreakMode ? 'Break in progress...' : (isExtraMode ? 'EXTRA TIME MODE' : `Studying ${getSubjectName(currentStudySubject)}...`);
         }
         
+        function getSubjectName(subj) { return { physics: 'Physics', chemistry: 'Chemistry', maths: 'Maths' }[subj] || 'Study'; }
+        
         function pauseTimer() { if (timerId) { clearInterval(timerId); timerId = null; isRunning = false; document.getElementById('timerStatus').textContent = 'Paused'; } }
-        function stopTimer() { pauseTimer(); if (isExtraMode && extraSeconds > 0) { let extraMins = Math.floor(extraSeconds / 60); if (extraMins > 0) addStudyMinutes(extraMins); } isExtraMode = false; isBreakMode = false; extraSeconds = 0; lastAddedMinute = 0; sessionEndFlag = false; timeLeft = currentStudyDurationSetting * 60; updateTimerDisplay(); document.getElementById('timerStatus').textContent = 'Stopped.'; }
+        function stopTimer() { pauseTimer(); if (isExtraMode && extraSeconds > 0) { let extraMins = Math.floor(extraSeconds / 60); if (extraMins > 0) { addStudyMinutes(extraMins); addSubjectStudyMinutes(extraMins); } } isExtraMode = false; isBreakMode = false; extraSeconds = 0; lastAddedMinute = 0; sessionEndFlag = false; timeLeft = currentStudyDurationSetting * 60; updateTimerDisplay(); document.getElementById('timerStatus').textContent = 'Stopped.'; }
         function resetTimer() { pauseTimer(); isExtraMode = false; isBreakMode = false; extraSeconds = 0; lastAddedMinute = 0; sessionEndFlag = false; timeLeft = currentStudyDurationSetting * 60; updateTimerDisplay(); document.getElementById('timerStatus').textContent = 'Reset.'; }
         function startBreakManual() { pauseTimer(); isExtraMode = false; extraSeconds = 0; lastAddedMinute = 0; sessionEndFlag = false; isBreakMode = true; const breakDuration = parseInt(document.getElementById('shortBreak').value) || 5; timeLeft = breakDuration * 60; updateTimerDisplay(); document.getElementById('timerStatus').textContent = `Break set.`; showNotification(`Break timer set to ${breakDuration} minutes.`); }
         function startPastPaperTimer(minutes) { pauseTimer(); isExtraMode = false; isBreakMode = false; extraSeconds = 0; lastAddedMinute = 0; sessionEndFlag = false; currentStudyDurationSetting = minutes; timeLeft = minutes * 60; updateTimerDisplay(); document.getElementById('timerStatus').textContent = `Past Paper (${minutes} min).`; showNotification(`📄 Past paper timer set for ${minutes} minutes.`); }
@@ -507,6 +595,7 @@
             studyTimeData.allTimeTotal = (studyTimeData.allTimeTotal || 0) + minutes;
             if (!studyTimeData.history) studyTimeData.history = {};
             studyTimeData.history[todayKey] = (studyTimeData.history[todayKey] || 0) + minutes;
+            
             const yesterday = new Date(Date.now() - 86400000).toDateString();
             if (streakData.lastStudyDate !== todayKey) {
                 if (streakData.lastStudyDate === yesterday) streakData.currentStreak++;
@@ -517,12 +606,93 @@
             saveStudyData();
             updateStudyTimeDisplay();
             updateAnalytics();
+            updateMonthlyGraph();
         }
+        
+        // ========== WEEKLY RESET (Saturday 11:59 PM) ==========
+        function checkWeeklyReset() {
+            const now = new Date();
+            const day = now.getDay(); // 6 = Saturday
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            
+            if (day === 6 && hours === 23 && minutes >= 59) {
+                const lastReset = localStorage.getItem('lastWeeklyReset');
+                const todayKey = now.toDateString();
+                if (lastReset !== todayKey) {
+                    studyTimeData.weeklyTotalTime = 0;
+                    localStorage.setItem('lastWeeklyReset', todayKey);
+                    saveStudyData();
+                    updateStudyTimeDisplay();
+                    showNotification('📊 Weekly study time has been reset! New week starts now!');
+                }
+            }
+        }
+        setInterval(checkWeeklyReset, 60000);
         
         function saveStudyData() { localStorage.setItem('studyTimeData', JSON.stringify(studyTimeData)); localStorage.setItem('studyStreak', JSON.stringify(streakData)); }
         function loadStudyData() { const saved = localStorage.getItem('studyTimeData'); if(saved) { const data = JSON.parse(saved); const todayKey = new Date().toDateString(); if(data.todayDate === todayKey) studyTimeData = data; else studyTimeData = { todayTotalTime:0, weeklyTotalTime:data.weeklyTotalTime||0, allTimeTotal:data.allTimeTotal||0, todayDate:todayKey, history:data.history||{} }; } const streak=localStorage.getItem('studyStreak'); if(streak) streakData=JSON.parse(streak); updateStudyTimeDisplay(); }
         function updateStudyTimeDisplay() { document.getElementById('todayTotalTime').textContent = `${Math.floor(studyTimeData.todayTotalTime/60)}h ${studyTimeData.todayTotalTime%60}m`; document.getElementById('weeklyTotalTime').textContent = `${Math.floor(studyTimeData.weeklyTotalTime/60)}h ${studyTimeData.weeklyTotalTime%60}m`; }
         function updateQuickStatus() { const completed = studyTimetable.filter(t => t.done).length; document.getElementById('quickStatus').textContent = `${completed}/${studyTimetable.length} tasks`; }
+        
+        // ========== FULLSCREEN FUNCTIONS ==========
+        function openTimerFullscreen() {
+            document.getElementById('timerFullscreenModal').classList.add('active');
+            updateTimerDisplay();
+        }
+        function closeTimerFullscreen() { document.getElementById('timerFullscreenModal').classList.remove('active'); }
+        
+        function openMarksFullscreen(subject) {
+            const modal = document.getElementById('fullscreenModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const subjectNames = { physics: '⚛️ Physics', chemistry: '🧪 Chemistry', combined: '🧮 Combined Maths' };
+            modalTitle.textContent = `${subjectNames[subject]} - Marks Trend (0-50)`;
+            
+            const years = []; for (let y = 2000; y <= 2025; y++) years.push(y);
+            const attempt1Data = [], attempt2Data = [], attempt3Data = [];
+            years.forEach(year => {
+                const marks = marksData[subject][year];
+                attempt1Data.push(marks?.[0] !== null ? marks[0] : null);
+                attempt2Data.push(marks?.[1] !== null ? marks[1] : null);
+                attempt3Data.push(marks?.[2] !== null ? marks[2] : null);
+            });
+            
+            const fullCanvas = document.getElementById('fullscreenCanvas');
+            if (fullscreenChart) fullscreenChart.destroy();
+            fullscreenChart = new Chart(fullCanvas, {
+                type: 'line', data: { labels: years, datasets: [
+                    { label: 'Attempt 1', data: attempt1Data, borderColor: '#3a5795', tension: 0.3, fill: false, pointRadius: 4 },
+                    { label: 'Attempt 2', data: attempt2Data, borderColor: '#5e548e', tension: 0.3, fill: false, pointRadius: 4 },
+                    { label: 'Attempt 3', data: attempt3Data, borderColor: '#2d6a4f', tension: 0.3, fill: false, pointRadius: 4 }
+                ] },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true, max: 50, title: { display: true, text: 'Marks (out of 50)' } }, x: { title: { display: true, text: 'Year' } } } }
+            });
+            modal.classList.add('active');
+        }
+        function closeFullscreen() { document.getElementById('fullscreenModal').classList.remove('active'); if (fullscreenChart) { fullscreenChart.destroy(); fullscreenChart = null; } }
+        
+        // ========== MONTHLY GRAPH ==========
+        function updateMonthlyGraph() {
+            const canvas = document.getElementById('monthlyGraph');
+            if (!canvas) return;
+            
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const monthlyData = new Array(12).fill(0);
+            const currentYear = new Date().getFullYear();
+            
+            for (const [dateStr, mins] of Object.entries(studyTimeData.history || {})) {
+                const date = new Date(dateStr);
+                if (date.getFullYear() === currentYear) {
+                    monthlyData[date.getMonth()] += mins;
+                }
+            }
+            
+            if (monthlyChart) monthlyChart.destroy();
+            monthlyChart = new Chart(canvas, {
+                type: 'bar', data: { labels: months, datasets: [{ label: 'Study Hours', data: monthlyData.map(m => Math.round(m / 60)), backgroundColor: '#3a5795', borderRadius: 8 }] },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top' } }, scales: { y: { title: { display: true, text: 'Hours' } }, x: { title: { display: true, text: 'Month' } } } }
+            });
+        }
         
         // ========== CYCLE FUNCTIONS ==========
         function formatTime(date) { return `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`; }
@@ -601,7 +771,6 @@
             if (cycleTasks.length === 0) { container.innerHTML = '<div class="empty-state">No tasks</div>'; return; }
             cycleTasks.forEach(task => {
                 const div = document.createElement('div');
-                div.className = 'task-item';
                 div.style.display = 'flex'; div.style.justifyContent = 'space-between'; div.style.alignItems = 'center'; div.style.marginBottom = '15px';
                 const icon = task.type === 'study' ? '📚' : (task.type === 'long_break' ? '🍽️' : '☕');
                 div.innerHTML = `<div style="display:flex; align-items:center; gap:12px;"><div class="task-checkbox" onclick="toggleTask(${task.id})" style="width:24px;height:24px;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;">${task.done ? '✓' : ''}</div><div><div style="font-weight:600">${task.time}</div><div style="font-size:13px">${icon} ${task.task}</div></div></div><div>${task.duration}min</div>`;
@@ -638,7 +807,6 @@
             renderPapersProgress();
             updatePapersStats();
         }
-        
         function renderYearSelector() { 
             const container = document.getElementById('yearSelector'); 
             if (!container) return; 
@@ -652,17 +820,11 @@
                 container.appendChild(b); 
             }); 
         }
-        
         function showPaperSubject(subject) { 
             currentPaperSubject = subject; 
-            document.querySelectorAll('.paper-tab').forEach((tab, i) => { 
-                if ((subject === 'physics' && i === 0) || (subject === 'chemistry' && i === 1) || (subject === 'combined' && i === 2)) tab.classList.add('active'); 
-                else tab.classList.remove('active'); 
-            }); 
-            renderPapersProgress(); 
-            updatePapersStats(); 
+            document.querySelectorAll('.paper-tab').forEach((tab, i) => { if ((subject === 'physics' && i === 0) || (subject === 'chemistry' && i === 1) || (subject === 'combined' && i === 2)) tab.classList.add('active'); else tab.classList.remove('active'); }); 
+            renderPapersProgress(); updatePapersStats(); 
         }
-        
         function renderPapersProgress() { 
             const container = document.getElementById('papersProgress'); 
             if (!container) return; 
@@ -683,321 +845,67 @@
                     const section1Label = isCombined ? 'Pure' : 'MCQ';
                     const section2Label = isCombined ? 'Applied' : 'Essay';
                     div.innerHTML += `<div class="paper-attempt-card">
-                        <div class="attempt-header"><span style="font-weight:700;">📝 Attempt ${i + 1}</span><span style="font-size:11px;">${attempt.date ? new Date(attempt.date).toLocaleDateString() : 'Not started'}</span></div>
-                        <div class="sections-row">
-                            <div class="section-item"><span>${section1Label}</span><button class="section-checkbox ${section1} ${attempt.sections?.[section1] ? 'checked' : ''}" onclick="togglePaperSection('${subject}',${year},${i},'${section1}')">${attempt.sections?.[section1] ? '✓' : '○'}</button></div>
-                            <div class="section-item"><span>${section2Label}</span><button class="section-checkbox ${section2} ${attempt.sections?.[section2] ? 'checked' : ''}" onclick="togglePaperSection('${subject}',${year},${i},'${section2}')">${attempt.sections?.[section2] ? '✓' : '○'}</button></div>
+                        <div><span style="font-weight:700;">📝 Attempt ${i + 1}</span><span style="font-size:11px; margin-left:10px;">${attempt.date ? new Date(attempt.date).toLocaleDateString() : 'Not started'}</span></div>
+                        <div class="sections-row" style="display:flex; gap:15px; margin:12px 0;">
+                            <div class="section-item" style="flex:1; display:flex; justify-content:space-between;"><span>${section1Label}</span><button class="section-checkbox ${section1} ${attempt.sections?.[section1] ? 'checked' : ''}" onclick="togglePaperSection('${subject}',${year},${i},'${section1}')">${attempt.sections?.[section1] ? '✓' : '○'}</button></div>
+                            <div class="section-item" style="flex:1; display:flex; justify-content:space-between;"><span>${section2Label}</span><button class="section-checkbox ${section2} ${attempt.sections?.[section2] ? 'checked' : ''}" onclick="togglePaperSection('${subject}',${year},${i},'${section2}')">${attempt.sections?.[section2] ? '✓' : '○'}</button></div>
                         </div>
-                        <div class="attempt-actions">
+                        <div class="attempt-actions" style="display:flex; gap:10px;">
                             <button class="attempt-complete-btn ${attempt.completed ? 'completed' : ''}" onclick="togglePaperAttempt('${subject}',${year},${i})">${attempt.completed ? '✅ Completed' : '⬜ Mark Complete'}</button>
-                            <button class="attempt-notes-btn" onclick="toggleAttemptNotes('${subject}',${year},${i})" style="flex:1;padding:10px;border-radius:40px;background:var(--bg-input);border:1px solid var(--border);cursor:pointer;">📝 ${attempt.notes ? 'Edit Notes' : 'Add Notes'}</button>
+                            <button class="attempt-notes-btn" onclick="toggleAttemptNotes('${subject}',${year},${i})" style="padding:10px; border-radius:40px; background:var(--bg-input); cursor:pointer;">📝 Notes</button>
                         </div>
-                        <div class="attempt-notes" id="notes-${subject}-${year}-${i}" style="margin-top:10px;padding:10px;background:var(--bg-card);border-radius:8px;display:none;"><div>${attempt.notes || 'No notes yet.'}</div></div>
                     </div>`;
                 }
                 container.appendChild(div); 
             } 
         }
-        
-        function togglePaperSection(subject, year, attemptIndex, section) { 
-            if (!papersProgress[subject]?.[year]) return; 
-            const attempt = papersProgress[subject][year].attempts[attemptIndex]; 
-            if (!attempt.sections) attempt.sections = { mcq: false, essay: false }; 
-            attempt.sections[section] = !attempt.sections[section]; 
-            savePapersProgress(); renderPapersProgress(); updatePapersStats(); 
-        }
-        
-        function togglePaperAttempt(subject, year, attemptIndex) { 
-            if (!papersProgress[subject]?.[year]) return; 
-            const attempt = papersProgress[subject][year].attempts[attemptIndex]; 
-            if (attempt.completed) { 
-                attempt.completed = false; attempt.date = null; 
-                if (attempt.sections) { const sections = subject === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay']; sections.forEach(s => attempt.sections[s] = false); } 
-            } else { 
-                attempt.completed = true; attempt.date = new Date().toISOString(); 
-                if (!attempt.sections) attempt.sections = { mcq: false, essay: false }; 
-                const sections = subject === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay']; sections.forEach(s => attempt.sections[s] = true); 
-            } 
-            savePapersProgress(); renderPapersProgress(); updatePapersStats(); 
-        }
-        
-        function toggleAttemptNotes(subject, year, attemptIndex) {
-            const notesDiv = document.getElementById(`notes-${subject}-${year}-${attemptIndex}`);
-            if (notesDiv) notesDiv.style.display = notesDiv.style.display === 'none' ? 'block' : 'none';
-            const attempt = papersProgress[subject][year].attempts[attemptIndex];
-            const newNotes = prompt(`Add notes:`, attempt.notes || '');
-            if (newNotes !== null) { attempt.notes = newNotes.trim(); savePapersProgress(); renderPapersProgress(); }
-        }
-        
-        function markAllAttemptsForCurrentSubject() { 
-            const s = currentPaperSubject; 
-            if (confirm(`Mark ALL attempts for ${s}?`)) { 
-                for (let y = 2000; y <= 2025; y++) { 
-                    if (!papersProgress[s]?.[y]) papersProgress[s][y] = { attempts: Array(3).fill().map(() => ({ completed: false, sections: { mcq: false, essay: false }, date: null, notes: '' })) }; 
-                    papersProgress[s][y].attempts.forEach(a => { a.completed = true; a.date = new Date().toISOString(); if (!a.sections) a.sections = { mcq: false, essay: false }; const secs = s === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay']; secs.forEach(sec => a.sections[sec] = true); }); 
-                } 
-                savePapersProgress(); renderPapersProgress(); updatePapersStats(); showNotification(`All attempts marked for ${s}!`); 
-            } 
-        }
-        
-        function unmarkAllAttemptsForCurrentSubject() { 
-            const s = currentPaperSubject; 
-            if (confirm(`Unmark ALL attempts for ${s}?`)) { 
-                for (let y = 2000; y <= 2025; y++) { 
-                    if (papersProgress[s]?.[y]) papersProgress[s][y].attempts.forEach(a => { a.completed = false; a.date = null; if (a.sections) { const secs = s === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay']; secs.forEach(sec => a.sections[sec] = false); } }); 
-                } 
-                savePapersProgress(); renderPapersProgress(); updatePapersStats(); showNotification(`All attempts unmarked for ${s}`); 
-            } 
-        }
-        
-        function updatePapersStats() { 
-            let ta = 0, ca = 0, ts = 0, cs = 0; 
-            ['physics', 'chemistry', 'combined'].forEach(s => { 
-                for (let y = 2000; y <= 2025; y++) { 
-                    if (papersProgress[s]?.[y]) papersProgress[s][y].attempts.forEach(a => { ta++; if (a.completed) ca++; if (a.sections) { const keys = Object.keys(a.sections); ts += keys.length; cs += keys.filter(k => a.sections[k]).length; } }); 
-                } 
-            }); 
-            document.getElementById('papersCompleted').textContent = Math.floor(ca / 3); 
-            document.getElementById('attemptsCompleted').textContent = ca; 
-            document.getElementById('sectionsCompleted').textContent = cs; 
-            document.getElementById('totalSections').textContent = ts; 
-            document.getElementById('completionRate').textContent = ta ? Math.round(ca / ta * 100) : 0; 
-        }
-        
+        function togglePaperSection(subject, year, attemptIndex, section) { if (!papersProgress[subject]?.[year]) return; const attempt = papersProgress[subject][year].attempts[attemptIndex]; if (!attempt.sections) attempt.sections = { mcq: false, essay: false }; attempt.sections[section] = !attempt.sections[section]; savePapersProgress(); renderPapersProgress(); updatePapersStats(); }
+        function togglePaperAttempt(subject, year, attemptIndex) { if (!papersProgress[subject]?.[year]) return; const attempt = papersProgress[subject][year].attempts[attemptIndex]; if (attempt.completed) { attempt.completed = false; attempt.date = null; if (attempt.sections) { const sections = subject === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay']; sections.forEach(s => attempt.sections[s] = false); } } else { attempt.completed = true; attempt.date = new Date().toISOString(); if (!attempt.sections) attempt.sections = { mcq: false, essay: false }; const sections = subject === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay']; sections.forEach(s => attempt.sections[s] = true); } savePapersProgress(); renderPapersProgress(); updatePapersStats(); }
+        function toggleAttemptNotes(subject, year, attemptIndex) { const attempt = papersProgress[subject][year].attempts[attemptIndex]; const newNotes = prompt('Add notes:', attempt.notes || ''); if (newNotes !== null) { attempt.notes = newNotes.trim(); savePapersProgress(); renderPapersProgress(); } }
+        function markAllAttemptsForCurrentSubject() { const s = currentPaperSubject; if (confirm(`Mark ALL attempts for ${s}?`)) { for (let y = 2000; y <= 2025; y++) { if (!papersProgress[s]?.[y]) papersProgress[s][y] = { attempts: Array(3).fill().map(() => ({ completed: false, sections: { mcq: false, essay: false }, date: null, notes: '' })) }; papersProgress[s][y].attempts.forEach(a => { a.completed = true; a.date = new Date().toISOString(); if (!a.sections) a.sections = { mcq: false, essay: false }; const secs = s === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay']; secs.forEach(sec => a.sections[sec] = true); }); } savePapersProgress(); renderPapersProgress(); updatePapersStats(); showNotification(`All attempts marked for ${s}!`); } }
+        function unmarkAllAttemptsForCurrentSubject() { const s = currentPaperSubject; if (confirm(`Unmark ALL attempts for ${s}?`)) { for (let y = 2000; y <= 2025; y++) { if (papersProgress[s]?.[y]) papersProgress[s][y].attempts.forEach(a => { a.completed = false; a.date = null; if (a.sections) { const secs = s === 'combined' ? ['pure', 'applied'] : ['mcq', 'essay']; secs.forEach(sec => a.sections[sec] = false); } }); } savePapersProgress(); renderPapersProgress(); updatePapersStats(); showNotification(`All attempts unmarked for ${s}`); } }
+        function updatePapersStats() { let ta = 0, ca = 0; ['physics', 'chemistry', 'combined'].forEach(s => { for (let y = 2000; y <= 2025; y++) { if (papersProgress[s]?.[y]) papersProgress[s][y].attempts.forEach(a => { ta++; if (a.completed) ca++; }); } }); document.getElementById('papersCompleted').textContent = Math.floor(ca / 3); document.getElementById('attemptsCompleted').textContent = ca; document.getElementById('completionRate').textContent = ta ? Math.round(ca / ta * 100) : 0; }
         function savePapersProgress() { localStorage.setItem('papersProgressNew', JSON.stringify(papersProgress)); showNotification('Papers progress saved!'); }
         
         // ========== MODEL PAPERS ==========
-        function loadModelPapers() {
-            const saved = localStorage.getItem('modelPapersList');
-            if (saved) modelPapers = JSON.parse(saved);
-            else modelPapers = [];
-            renderModelPapers();
-        }
-        function renderModelPapers() {
-            const container = document.getElementById('modelPapersGrid');
-            if (!container) return;
-            container.innerHTML = '';
-            if (modelPapers.length === 0) { container.innerHTML = '<div class="empty-state">No model papers yet</div>'; return; }
-            modelPapers.forEach((paper, index) => {
-                const card = document.createElement('div');
-                card.className = `model-paper-card ${paper.completed ? 'checked' : ''}`;
-                card.style.padding = '20px'; card.style.textAlign = 'center'; card.style.cursor = 'pointer';
-                card.onclick = () => { paper.completed = !paper.completed; saveModelPapers(); renderModelPapers(); };
-                card.innerHTML = `<div style="font-size:32px;">📄</div><div style="font-weight:600;">${paper.name}</div><div style="font-size:12px;">${paper.completed ? '✅ Completed' : '⏳ Pending'}</div>`;
-                container.appendChild(card);
-            });
-        }
+        function loadModelPapers() { const saved = localStorage.getItem('modelPapersList'); if (saved) modelPapers = JSON.parse(saved); else modelPapers = []; renderModelPapers(); }
+        function renderModelPapers() { const container = document.getElementById('modelPapersGrid'); if (!container) return; container.innerHTML = ''; if (modelPapers.length === 0) { container.innerHTML = '<div class="empty-state">No model papers yet</div>'; return; } modelPapers.forEach((paper, index) => { const card = document.createElement('div'); card.className = `model-paper-card ${paper.completed ? 'checked' : ''}`; card.style.padding = '20px'; card.style.textAlign = 'center'; card.style.cursor = 'pointer'; card.onclick = () => { paper.completed = !paper.completed; saveModelPapers(); renderModelPapers(); }; card.innerHTML = `<div style="font-size:32px;">📄</div><div style="font-weight:600;">${paper.name}</div><div style="font-size:12px;">${paper.completed ? '✅ Completed' : '⏳ Pending'}</div>`; container.appendChild(card); }); }
         function addModelPaper() { const name = prompt('Enter model paper name:'); if (name) { modelPapers.push({ id: Date.now(), name: name, completed: false, date: new Date().toISOString() }); saveModelPapers(); renderModelPapers(); showNotification('Model paper added!'); } }
         function clearModelPapers() { if (confirm('Delete all model papers?')) { modelPapers = []; saveModelPapers(); renderModelPapers(); showNotification('All model papers cleared'); } }
         function saveModelPapers() { localStorage.setItem('modelPapersList', JSON.stringify(modelPapers)); }
         
-        // ========== FULLSCREEN GRAPH FUNCTIONS ==========
-        function openFullscreen(subject) {
-            const modal = document.getElementById('fullscreenModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const subjectNames = { physics: '⚛️ Physics', chemistry: '🧪 Chemistry', combined: '🧮 Combined Maths' };
-            modalTitle.textContent = `${subjectNames[subject]} - Marks Trend (0-50)`;
-            
-            const years = [];
-            for (let y = 2000; y <= 2025; y++) years.push(y);
-            const attempt1Data = [], attempt2Data = [], attempt3Data = [];
-            
-            years.forEach(year => {
-                const marks = marksData[subject][year];
-                attempt1Data.push(marks?.[0] !== null ? marks[0] : null);
-                attempt2Data.push(marks?.[1] !== null ? marks[1] : null);
-                attempt3Data.push(marks?.[2] !== null ? marks[2] : null);
-            });
-            
-            const fullCanvas = document.getElementById('fullscreenCanvas');
-            if (fullscreenChart) fullscreenChart.destroy();
-            
-            fullscreenChart = new Chart(fullCanvas, {
-                type: 'line',
-                data: {
-                    labels: years,
-                    datasets: [
-                        { label: 'Attempt 1', data: attempt1Data, borderColor: '#3a5795', backgroundColor: 'rgba(58, 87, 149, 0.1)', tension: 0.3, fill: false, pointRadius: 4, pointHoverRadius: 8 },
-                        { label: 'Attempt 2', data: attempt2Data, borderColor: '#5e548e', backgroundColor: 'rgba(94, 84, 142, 0.1)', tension: 0.3, fill: false, pointRadius: 4, pointHoverRadius: 8 },
-                        { label: 'Attempt 3', data: attempt3Data, borderColor: '#2d6a4f', backgroundColor: 'rgba(45, 106, 79, 0.1)', tension: 0.3, fill: false, pointRadius: 4, pointHoverRadius: 8 }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { size: 14 } } },
-                        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw !== null ? ctx.raw + '/50' : 'Not entered'}` } }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, max: 50, title: { display: true, text: 'Marks (out of 50)' }, grid: { color: 'var(--border)' } },
-                        x: { title: { display: true, text: 'Year' }, ticks: { maxRotation: 45, minRotation: 45, autoSkip: true, maxTicksLimit: 10 } }
-                    }
-                }
-            });
-            
-            modal.classList.add('active');
-        }
-        
-        function closeFullscreen() {
-            const modal = document.getElementById('fullscreenModal');
-            modal.classList.remove('active');
-            if (fullscreenChart) {
-                fullscreenChart.destroy();
-                fullscreenChart = null;
-            }
-        }
-        
-        // ========== MARKS TRACKING FUNCTIONS (0-50 scale) ==========
+        // ========== MARKS TRACKING FUNCTIONS ==========
         function loadMarksData() {
             const saved = localStorage.getItem('paperMarksData');
             if (saved) { marksData = JSON.parse(saved); }
-            else {
-                for (let y = 2000; y <= 2025; y++) {
-                    marksData.physics[y] = [null, null, null];
-                    marksData.chemistry[y] = [null, null, null];
-                    marksData.combined[y] = [null, null, null];
-                }
-            }
-            renderMarksTable();
-            updateMarksGraph();
+            else { for (let y = 2000; y <= 2025; y++) { marksData.physics[y] = [null, null, null]; marksData.chemistry[y] = [null, null, null]; marksData.combined[y] = [null, null, null]; } }
+            renderMarksTable(); updateMarksGraph();
         }
-        
-        function saveMarksData() {
-            localStorage.setItem('paperMarksData', JSON.stringify(marksData));
-            showNotification('Marks saved!');
-            updateMarksGraph();
-        }
-        
-        function showMarksSubject(subject) {
-            currentMarksSubject = subject;
-            document.querySelectorAll('#marksPage .sub-tab').forEach((tab, i) => {
-                if ((subject === 'physics' && i === 0) || (subject === 'chemistry' && i === 1) || (subject === 'combined' && i === 2))
-                    tab.classList.add('active');
-                else
-                    tab.classList.remove('active');
-            });
-            const labels = { physics: '⚛️ Physics', chemistry: '🧪 Chemistry', combined: '🧮 Combined Maths' };
-            document.getElementById('currentSubjectLabel').textContent = labels[subject];
-            renderMarksTable();
-            updateMarksGraph();
-        }
-        
-        function renderMarksTable() {
-            const tbody = document.getElementById('marksTableBody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-            for (let y = 2000; y <= 2025; y++) {
-                const row = tbody.insertRow();
-                const yearCell = row.insertCell(0);
-                yearCell.textContent = y;
-                yearCell.style.fontWeight = '600';
-                for (let attempt = 0; attempt < 3; attempt++) {
-                    const cell = row.insertCell(attempt + 1);
-                    const value = marksData[currentMarksSubject][y]?.[attempt] || '';
-                    const input = document.createElement('input');
-                    input.type = 'number';
-                    input.min = '0';
-                    input.max = '50';
-                    input.placeholder = '-';
-                    input.value = value || '';
-                    input.onchange = (function(y, a) {
-                        return function(e) {
-                            let val = e.target.value;
-                            if (val === '') { marksData[currentMarksSubject][y][a] = null; }
-                            else { let num = parseInt(val); if (!isNaN(num) && num >= 0 && num <= 50) { marksData[currentMarksSubject][y][a] = num; } else if (num > 50) { marksData[currentMarksSubject][y][a] = 50; e.target.value = 50; } else { marksData[currentMarksSubject][y][a] = null; } }
-                            saveMarksData();
-                        };
-                    })(y, attempt);
-                    cell.appendChild(input);
-                }
-            }
-        }
-        
+        function saveMarksData() { localStorage.setItem('paperMarksData', JSON.stringify(marksData)); showNotification('Marks saved!'); updateMarksGraph(); }
+        function showMarksSubject(subject) { currentMarksSubject = subject; document.querySelectorAll('#marksPage .sub-tab').forEach((tab, i) => { if ((subject === 'physics' && i === 0) || (subject === 'chemistry' && i === 1) || (subject === 'combined' && i === 2)) tab.classList.add('active'); else tab.classList.remove('active'); }); const labels = { physics: '⚛️ Physics', chemistry: '🧪 Chemistry', combined: '🧮 Combined Maths' }; document.getElementById('currentSubjectLabel').textContent = labels[subject]; renderMarksTable(); updateMarksGraph(); }
+        function renderMarksTable() { const tbody = document.getElementById('marksTableBody'); if (!tbody) return; tbody.innerHTML = ''; for (let y = 2000; y <= 2025; y++) { const row = tbody.insertRow(); row.insertCell(0).textContent = y; for (let a = 0; a < 3; a++) { const cell = row.insertCell(a + 1); const val = marksData[currentMarksSubject][y]?.[a] || ''; const input = document.createElement('input'); input.type = 'number'; input.min = '0'; input.max = '50'; input.value = val || ''; input.style.width = '60px'; input.style.padding = '6px'; input.style.background = 'var(--bg-input)'; input.style.borderRadius = '8px'; input.onchange = ((y, a) => (e) => { let num = parseInt(e.target.value); if (isNaN(num)) marksData[currentMarksSubject][y][a] = null; else marksData[currentMarksSubject][y][a] = Math.min(50, Math.max(0, num)); saveMarksData(); })(y, a); cell.appendChild(input); } } }
         function updateMarksGraph() {
-            const canvas = document.getElementById('marksTrendGraph');
-            if (!canvas) return;
-            
+            const canvas = document.getElementById('marksTrendGraph'); if (!canvas) return;
             const years = []; for (let y = 2000; y <= 2025; y++) years.push(y);
-            const attempt1Data = [], attempt2Data = [], attempt3Data = [];
-            
-            years.forEach(year => {
-                const marks = marksData[currentMarksSubject][year];
-                attempt1Data.push(marks?.[0] !== null ? marks[0] : null);
-                attempt2Data.push(marks?.[1] !== null ? marks[1] : null);
-                attempt3Data.push(marks?.[2] !== null ? marks[2] : null);
-            });
-            
-            const valid1 = attempt1Data.filter(v => v !== null);
-            const valid2 = attempt2Data.filter(v => v !== null);
-            const valid3 = attempt3Data.filter(v => v !== null);
-            const avg1 = valid1.length ? Math.round(valid1.reduce((a,b) => a+b, 0) / valid1.length) : 0;
-            const avg2 = valid2.length ? Math.round(valid2.reduce((a,b) => a+b, 0) / valid2.length) : 0;
-            const avg3 = valid3.length ? Math.round(valid3.reduce((a,b) => a+b, 0) / valid3.length) : 0;
-            
-            document.getElementById('marksStats').innerHTML = `
-                <div class="attempt-stat"><div class="attempt-stat-label">Attempt 1 Avg</div><div class="attempt-stat-value" style="color:#3a5795">${avg1}/50</div></div>
-                <div class="attempt-stat"><div class="attempt-stat-label">Attempt 2 Avg</div><div class="attempt-stat-value" style="color:#5e548e">${avg2}/50</div></div>
-                <div class="attempt-stat"><div class="attempt-stat-label">Attempt 3 Avg</div><div class="attempt-stat-value" style="color:#2d6a4f">${avg3}/50</div></div>
-                <div class="attempt-stat"><div class="attempt-stat-label">Papers Done</div><div class="attempt-stat-value">${valid3.length}/26</div></div>
-            `;
-            
+            const a1 = [], a2 = [], a3 = [];
+            years.forEach(y => { const m = marksData[currentMarksSubject][y]; a1.push(m?.[0] !== null ? m[0] : null); a2.push(m?.[1] !== null ? m[1] : null); a3.push(m?.[2] !== null ? m[2] : null); });
+            const v3 = a3.filter(v => v !== null);
+            document.getElementById('marksStats').innerHTML = `<div>Avg1: ${Math.round(a1.filter(v=>v!==null).reduce((s,v)=>s+v,0)/(a1.filter(v=>v!==null).length||1)) || 0}/50</div><div>Avg2: ${Math.round(a2.filter(v=>v!==null).reduce((s,v)=>s+v,0)/(a2.filter(v=>v!==null).length||1)) || 0}/50</div><div>Avg3: ${Math.round(a3.filter(v=>v!==null).reduce((s,v)=>s+v,0)/(v3.length||1)) || 0}/50</div><div>Done: ${v3.length}/26</div>`;
             if (marksChart) marksChart.destroy();
-            
-            marksChart = new Chart(canvas, {
-                type: 'line',
-                data: {
-                    labels: years,
-                    datasets: [
-                        { label: 'Attempt 1', data: attempt1Data, borderColor: '#3a5795', backgroundColor: 'rgba(58, 87, 149, 0.1)', tension: 0.3, fill: false, pointRadius: 3 },
-                        { label: 'Attempt 2', data: attempt2Data, borderColor: '#5e548e', backgroundColor: 'rgba(94, 84, 142, 0.1)', tension: 0.3, fill: false, pointRadius: 3 },
-                        { label: 'Attempt 3', data: attempt3Data, borderColor: '#2d6a4f', backgroundColor: 'rgba(45, 106, 79, 0.1)', tension: 0.3, fill: false, pointRadius: 3 }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { size: 10 } } },
-                        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw !== null ? ctx.raw + '/50' : 'Not entered'}` } }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, max: 50, title: { display: true, text: 'Marks (out of 50)' }, grid: { color: 'var(--border)' } },
-                        x: { title: { display: true, text: 'Year' }, ticks: { maxRotation: 45, minRotation: 45, autoSkip: true, maxTicksLimit: 8 } }
-                    }
-                }
-            });
+            marksChart = new Chart(canvas, { type: 'line', data: { labels: years, datasets: [{ label: 'Attempt 1', data: a1, borderColor: '#3a5795', tension: 0.3, fill: false, pointRadius: 3 }, { label: 'Attempt 2', data: a2, borderColor: '#5e548e', tension: 0.3, fill: false, pointRadius: 3 }, { label: 'Attempt 3', data: a3, borderColor: '#2d6a4f', tension: 0.3, fill: false, pointRadius: 3 }] }, options: { responsive: true, maintainAspectRatio: true, scales: { y: { beginAtZero: true, max: 50, title: { display: true, text: 'Marks' } } } } });
         }
-        
-        function resetMarksForSubject() {
-            if (confirm(`Reset all marks for ${currentMarksSubject.toUpperCase()}?`)) {
-                for (let y = 2000; y <= 2025; y++) { marksData[currentMarksSubject][y] = [null, null, null]; }
-                saveMarksData();
-                renderMarksTable();
-                updateMarksGraph();
-                showNotification(`All marks for ${currentMarksSubject} reset!`);
-            }
-        }
+        function resetMarksForSubject() { if (confirm(`Reset all marks?`)) { for (let y = 2000; y <= 2025; y++) marksData[currentMarksSubject][y] = [null, null, null]; saveMarksData(); renderMarksTable(); updateMarksGraph(); } }
         
         // ========== UI FUNCTIONS ==========
-        function showPage(pageId, el){
+        function showPage(pageId, el) {
             document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
             document.getElementById(pageId+'Page').classList.add('active');
             document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
             if(el) el.classList.add('active');
-            if (pageId === 'analytics') updateAnalytics();
+            if (pageId === 'analytics') { updateAnalytics(); updateMonthlyGraph(); }
             if (pageId === 'marks') setTimeout(() => updateMarksGraph(), 100);
         }
-        
-        function toggleTheme(){ 
-            const cur=document.body.getAttribute('data-theme'); 
-            const n=cur==='light'?'dark':'light'; 
-            document.body.setAttribute('data-theme',n); 
-            document.getElementById('themeBtn').textContent=n==='dark'?'☀️':'🌙'; 
-            localStorage.setItem('theme',n); 
-            setTimeout(() => { if(marksChart) updateMarksGraph(); }, 100); 
-        }
-        
+        function toggleTheme() { const cur=document.body.getAttribute('data-theme'); const n=cur==='light'?'dark':'light'; document.body.setAttribute('data-theme',n); document.getElementById('themeBtn').textContent=n==='dark'?'☀️':'🌙'; localStorage.setItem('theme',n); setTimeout(() => { if(marksChart) updateMarksGraph(); if(monthlyChart) updateMonthlyGraph(); }, 100); }
         function showNotification(msg){ const n=document.getElementById('notification'); n.textContent=msg; n.style.display='block'; setTimeout(()=>n.style.display='none',3000); }
         
         // ========== ANALYTICS ==========
@@ -1015,92 +923,12 @@
             renderWeekActivity();
             updateGoalProgress();
         }
+        function renderWeekActivity() { const c = document.getElementById('weekActivity'); if (!c) return; const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; const today = new Date(); const currentDay = today.getDay(); c.innerHTML = ''; for (let i = 0; i < 7; i++) { const date = new Date(today); date.setDate(today.getDate() - currentDay + i); const ds = date.toDateString(); let mins = (studyTimeData.history && studyTimeData.history[ds]) || 0; if (ds === new Date().toDateString()) mins = studyTimeData.todayTotalTime; const hrs = Math.floor(mins / 60); const rmin = mins % 60; c.innerHTML += `<div class="week-day ${mins > 0 ? 'active' : ''}"><strong>${days[i]}</strong><br><span style="font-size:10px;">${hrs > 0 ? `${hrs}h ${rmin}m` : `${rmin}m`}</span></div>`; } }
+        function updateGoalProgress() { const goalMin = weeklyGoal * 60; const pct = Math.min(100, Math.round((studyTimeData.weeklyTotalTime / goalMin) * 100)); document.getElementById('goalProgress').style.width = pct + '%'; document.getElementById('goalProgress').textContent = pct + '%'; document.getElementById('goalProgressBar').style.width = pct + '%'; document.getElementById('goalProgressBar').textContent = pct + '%'; document.getElementById('goalProgressText').textContent = pct + '%'; const rem = Math.max(0, goalMin - studyTimeData.weeklyTotalTime); document.getElementById('goalStatus').innerHTML = `${Math.floor(rem/60)}h ${rem%60}m left to reach ${weeklyGoal}h goal`; }
         
-        function renderWeekActivity() {
-            const c = document.getElementById('weekActivity');
-            if (!c) return;
-            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            const today = new Date();
-            const currentDay = today.getDay();
-            c.innerHTML = '';
-            for (let i = 0; i < 7; i++) {
-                const date = new Date(today);
-                date.setDate(today.getDate() - currentDay + i);
-                const ds = date.toDateString();
-                let mins = (studyTimeData.history && studyTimeData.history[ds]) || 0;
-                if (ds === new Date().toDateString()) mins = studyTimeData.todayTotalTime;
-                const hrs = Math.floor(mins / 60);
-                const rmin = mins % 60;
-                c.innerHTML += `<div class="week-day ${mins > 0 ? 'active' : ''}"><strong>${days[i]}</strong><br><span style="font-size:10px;">${hrs > 0 ? `${hrs}h ${rmin}m` : `${rmin}m`}</span></div>`;
-            }
-        }
-        
-        function updateGoalProgress() {
-            const goalInput = document.getElementById('weeklyGoal');
-            if (goalInput) { weeklyGoal = parseInt(goalInput.value) || 20; localStorage.setItem('weeklyGoal', weeklyGoal); }
-            const goalMin = weeklyGoal * 60;
-            const pct = Math.min(100, Math.round((studyTimeData.weeklyTotalTime / goalMin) * 100));
-            const pb = document.getElementById('goalProgress');
-            if (pb) { pb.style.width = pct + '%'; pb.textContent = pct + '%'; }
-            const gs = document.getElementById('goalStatus');
-            if (gs) {
-                const rem = Math.max(0, goalMin - studyTimeData.weeklyTotalTime);
-                const rh = Math.floor(rem / 60), rm = rem % 60;
-                if (studyTimeData.weeklyTotalTime >= goalMin) gs.innerHTML = '🎉 Goal achieved! 🎉';
-                else gs.innerHTML = `${rh}h ${rm}m left to reach ${weeklyGoal}h goal`;
-            }
-        }
-        
-        function exportAllData() {
-            const allData = { scheduleSettings, studyTimetable, papersProgress, modelPapers, marksData, studyTimeData, streakData };
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' }));
-            a.download = `studymaster_backup_${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            showNotification('Data exported!');
-        }
-        
-        function importDataPrompt() {
-            const i = document.createElement('input');
-            i.type = 'file';
-            i.accept = 'application/json';
-            i.onchange = e => {
-                const f = e.target.files[0];
-                if (!f) return;
-                const r = new FileReader();
-                r.onload = ev => {
-                    try {
-                        const d = JSON.parse(ev.target.result);
-                        if (confirm('Replace all data?')) {
-                            if (d.scheduleSettings) scheduleSettings = d.scheduleSettings;
-                            if (d.studyTimetable) studyTimetable = d.studyTimetable;
-                            if (d.papersProgress) papersProgress = d.papersProgress;
-                            if (d.modelPapers) modelPapers = d.modelPapers;
-                            if (d.marksData) marksData = d.marksData;
-                            if (d.studyTimeData) studyTimeData = d.studyTimeData;
-                            if (d.streakData) streakData = d.streakData;
-                            localStorage.setItem('scheduleSettings', JSON.stringify(scheduleSettings));
-                            localStorage.setItem('studyTimetable', JSON.stringify(studyTimetable));
-                            localStorage.setItem('papersProgressNew', JSON.stringify(papersProgress));
-                            localStorage.setItem('modelPapersList', JSON.stringify(modelPapers));
-                            localStorage.setItem('paperMarksData', JSON.stringify(marksData));
-                            localStorage.setItem('studyTimeData', JSON.stringify(studyTimeData));
-                            localStorage.setItem('studyStreak', JSON.stringify(streakData));
-                            location.reload();
-                        }
-                    } catch (err) { showNotification('Invalid file'); }
-                };
-                r.readAsText(f);
-            };
-            i.click();
-        }
-        
-        function resetAllData() {
-            if (confirm('⚠️ WARNING: This will delete ALL your study data! This cannot be undone. Continue?')) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
+        function exportAllData() { const allData = { scheduleSettings, studyTimetable, papersProgress, modelPapers, marksData, studyTimeData, streakData, subjectStudyTime, subjectDailyGoals }; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' })); a.download = `studymaster_backup_${new Date().toISOString().split('T')[0]}.json`; a.click(); showNotification('Data exported!'); }
+        function importDataPrompt() { const i = document.createElement('input'); i.type = 'file'; i.accept = 'application/json'; i.onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ev => { try { const d = JSON.parse(ev.target.result); if (confirm('Replace all data?')) { if (d.scheduleSettings) scheduleSettings = d.scheduleSettings; if (d.studyTimetable) studyTimetable = d.studyTimetable; if (d.papersProgress) papersProgress = d.papersProgress; if (d.modelPapers) modelPapers = d.modelPapers; if (d.marksData) marksData = d.marksData; if (d.studyTimeData) studyTimeData = d.studyTimeData; if (d.streakData) streakData = d.streakData; if (d.subjectStudyTime) subjectStudyTime = d.subjectStudyTime; if (d.subjectDailyGoals) subjectDailyGoals = d.subjectDailyGoals; localStorage.setItem('scheduleSettings', JSON.stringify(scheduleSettings)); localStorage.setItem('studyTimetable', JSON.stringify(studyTimetable)); localStorage.setItem('papersProgressNew', JSON.stringify(papersProgress)); localStorage.setItem('modelPapersList', JSON.stringify(modelPapers)); localStorage.setItem('paperMarksData', JSON.stringify(marksData)); localStorage.setItem('studyTimeData', JSON.stringify(studyTimeData)); localStorage.setItem('studyStreak', JSON.stringify(streakData)); localStorage.setItem('subjectStudyTime', JSON.stringify(subjectStudyTime)); localStorage.setItem('subjectDailyGoals', JSON.stringify(subjectDailyGoals)); location.reload(); } } catch(err) { showNotification('Invalid file'); } }; r.readAsText(f); }; i.click(); }
+        function resetAllData() { if (confirm('⚠️ WARNING: This will delete ALL your study data! This cannot be undone. Continue?')) { localStorage.clear(); location.reload(); } }
         
         // ========== INIT ==========
         function init() {
@@ -1114,20 +942,14 @@
             loadPapersProgress();
             loadModelPapers();
             loadMarksData();
-            
-            // Add click listener for graph fullscreen
-            document.getElementById('graphContainerClick').addEventListener('click', () => {
-                openFullscreen(currentMarksSubject);
-            });
-            
+            loadSubjectData();
             document.getElementById('cycleCount').addEventListener('input', function() { document.getElementById('cycleCountValue').textContent = `${this.value} Cycles`; });
-            document.getElementById('weeklyGoal').addEventListener('change', updateGoalProgress);
-            document.getElementById('studyDuration').addEventListener('change', function() {
-                currentStudyDurationSetting = parseInt(this.value) || 35;
-                if (!isBreakMode && !isExtraMode && !isRunning) { timeLeft = currentStudyDurationSetting * 60; updateTimerDisplay(); }
-            });
+            document.getElementById('weeklyGoal').addEventListener('change', function() { weeklyGoal = parseInt(this.value) || 20; localStorage.setItem('weeklyGoal', weeklyGoal); updateGoalProgress(); });
+            document.getElementById('studyDuration').addEventListener('change', function() { currentStudyDurationSetting = parseInt(this.value) || 35; if (!isBreakMode && !isExtraMode && !isRunning) { timeLeft = currentStudyDurationSetting * 60; updateTimerDisplay(); } });
             showPage('pomodoro');
             updateAnalytics();
+            updateMonthlyGraph();
+            checkWeeklyReset();
         }
         init();
     </script>
