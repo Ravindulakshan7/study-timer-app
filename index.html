@@ -442,6 +442,10 @@
         let modelPapers = [];
         let currentStudySubject = 'physics';
         
+        // Track the last minute that was added during regular study
+        let lastRegularTrackedMinute = 0;
+        let totalRegularSecondsElapsed = 0;
+        
         let subjectStudyTime = { physics: 0, chemistry: 0, maths: 0, todayDate: new Date().toDateString() };
         let subjectDailyGoals = { physics: 120, chemistry: 120, maths: 120 };
         
@@ -598,21 +602,41 @@
             }
         }
         
+        // Track study time during regular session
+        function trackRegularStudyTime() {
+            const totalSessionSeconds = currentStudyDurationSetting * 60;
+            const elapsedSeconds = totalSessionSeconds - timeLeft;
+            const currentMinuteFloor = Math.floor(elapsedSeconds / 60);
+            
+            if (currentMinuteFloor > lastRegularTrackedMinute) {
+                const newMinutes = currentMinuteFloor - lastRegularTrackedMinute;
+                addStudyMinutes(newMinutes);
+                addSubjectStudyMinutes(newMinutes);
+                lastRegularTrackedMinute = currentMinuteFloor;
+            }
+        }
+        
         function startTimer() {
             if (timerId) clearInterval(timerId);
             isRunning = true;
+            // Reset tracking for regular session
+            lastRegularTrackedMinute = Math.floor(((currentStudyDurationSetting * 60) - timeLeft) / 60);
+            
             timerId = setInterval(() => {
                 if (!isExtraMode && timeLeft <= 0) {
                     if (!isBreakMode) {
-                        if (!sessionEndFlag) { playBellSound(); sessionEndFlag = true; }
-                        addStudyMinutes(currentStudyDurationSetting);
-                        addSubjectStudyMinutes(currentStudyDurationSetting);
-                        showNotification(`🔔 STUDY COMPLETE! +${currentStudyDurationSetting} min to ${currentStudySubject.toUpperCase()}`);
+                        if (!sessionEndFlag) { 
+                            playBellSound(); 
+                            sessionEndFlag = true;
+                            // The study time has already been tracked minute-by-minute during the session
+                            // Do NOT add the full duration again here to prevent double-counting
+                            showNotification(`🔔 STUDY COMPLETE! Now in EXTRA TIME mode`);
+                        }
                         isExtraMode = true;
                         extraSeconds = 0;
                         lastAddedMinute = 0;
                         updateTimerDisplay();
-                        document.getElementById('timerStatus').textContent = 'EXTRA TIME MODE';
+                        document.getElementById('timerStatus').textContent = 'EXTRA TIME MODE - Keep studying!';
                         return;
                     } else {
                         if (!sessionEndFlag) { playBellSound(); sessionEndFlag = true; }
@@ -623,6 +647,7 @@
                         isExtraMode = false;
                         extraSeconds = 0;
                         lastAddedMinute = 0;
+                        lastRegularTrackedMinute = 0;
                         sessionEndFlag = false;
                         timeLeft = currentStudyDurationSetting * 60;
                         updateTimerDisplay();
@@ -631,6 +656,7 @@
                         return;
                     }
                 }
+                
                 if (isExtraMode) {
                     extraSeconds++;
                     const currentMinuteFloor = Math.floor(extraSeconds / 60);
@@ -644,6 +670,8 @@
                     updateTimerDisplay();
                 } else {
                     timeLeft--;
+                    // Track time during regular study session
+                    trackRegularStudyTime();
                     updateTimerDisplay();
                 }
             }, 1000);
@@ -651,10 +679,69 @@
         }
         
         function pauseTimer() { if (timerId) { clearInterval(timerId); timerId = null; isRunning = false; document.getElementById('timerStatus').textContent = 'Paused'; } }
-        function stopTimer() { pauseTimer(); if (isExtraMode && extraSeconds > 0) { let extraMins = Math.floor(extraSeconds / 60); if (extraMins > 0) { addStudyMinutes(extraMins); addSubjectStudyMinutes(extraMins); } } isExtraMode = false; isBreakMode = false; extraSeconds = 0; lastAddedMinute = 0; sessionEndFlag = false; timeLeft = currentStudyDurationSetting * 60; updateTimerDisplay(); document.getElementById('timerStatus').textContent = 'Stopped.'; }
-        function resetTimer() { pauseTimer(); isExtraMode = false; isBreakMode = false; extraSeconds = 0; lastAddedMinute = 0; sessionEndFlag = false; timeLeft = currentStudyDurationSetting * 60; updateTimerDisplay(); document.getElementById('timerStatus').textContent = 'Reset.'; }
-        function startBreakManual() { pauseTimer(); isExtraMode = false; extraSeconds = 0; lastAddedMinute = 0; sessionEndFlag = false; isBreakMode = true; const breakDuration = parseInt(document.getElementById('shortBreak').value) || 5; timeLeft = breakDuration * 60; updateTimerDisplay(); document.getElementById('timerStatus').textContent = `Break set.`; showNotification(`Break timer set to ${breakDuration} minutes.`); }
-        function startPastPaperTimer(minutes) { pauseTimer(); isExtraMode = false; isBreakMode = false; extraSeconds = 0; lastAddedMinute = 0; sessionEndFlag = false; currentStudyDurationSetting = minutes; timeLeft = minutes * 60; updateTimerDisplay(); document.getElementById('timerStatus').textContent = `Past Paper (${minutes} min).`; showNotification(`📄 Past paper timer set for ${minutes} minutes.`); }
+        
+        function stopTimer() { 
+            pauseTimer(); 
+            if (isExtraMode && extraSeconds > 0) { 
+                let extraMins = Math.floor(extraSeconds / 60); 
+                if (extraMins > 0) { 
+                    addStudyMinutes(extraMins); 
+                    addSubjectStudyMinutes(extraMins); 
+                } 
+            }
+            isExtraMode = false; 
+            isBreakMode = false; 
+            extraSeconds = 0; 
+            lastAddedMinute = 0; 
+            lastRegularTrackedMinute = 0;
+            sessionEndFlag = false; 
+            timeLeft = currentStudyDurationSetting * 60; 
+            updateTimerDisplay(); 
+            document.getElementById('timerStatus').textContent = 'Stopped.'; 
+        }
+        
+        function resetTimer() { 
+            pauseTimer(); 
+            isExtraMode = false; 
+            isBreakMode = false; 
+            extraSeconds = 0; 
+            lastAddedMinute = 0; 
+            lastRegularTrackedMinute = 0;
+            sessionEndFlag = false; 
+            timeLeft = currentStudyDurationSetting * 60; 
+            updateTimerDisplay(); 
+            document.getElementById('timerStatus').textContent = 'Reset.'; 
+        }
+        
+        function startBreakManual() { 
+            pauseTimer(); 
+            isExtraMode = false; 
+            extraSeconds = 0; 
+            lastAddedMinute = 0; 
+            lastRegularTrackedMinute = 0;
+            sessionEndFlag = false; 
+            isBreakMode = true; 
+            const breakDuration = parseInt(document.getElementById('shortBreak').value) || 5; 
+            timeLeft = breakDuration * 60; 
+            updateTimerDisplay(); 
+            document.getElementById('timerStatus').textContent = `Break set.`; 
+            showNotification(`Break timer set to ${breakDuration} minutes.`); 
+        }
+        
+        function startPastPaperTimer(minutes) { 
+            pauseTimer(); 
+            isExtraMode = false; 
+            isBreakMode = false; 
+            extraSeconds = 0; 
+            lastAddedMinute = 0; 
+            lastRegularTrackedMinute = 0;
+            sessionEndFlag = false; 
+            currentStudyDurationSetting = minutes; 
+            timeLeft = minutes * 60; 
+            updateTimerDisplay(); 
+            document.getElementById('timerStatus').textContent = `Past Paper (${minutes} min).`; 
+            showNotification(`📄 Past paper timer set for ${minutes} minutes.`); 
+        }
         
         function addStudyMinutes(minutes) {
             const todayKey = new Date().toDateString();
@@ -685,9 +772,7 @@
             const currentMonthKey = `${now.getFullYear()}-${now.getMonth()}`;
             
             if (lastMonthReset !== currentMonthKey) {
-                // Month changed, reset monthly history
                 const newHistory = {};
-                // Keep only today's data for the new month
                 const todayKey = now.toDateString();
                 if (studyTimeData.history && studyTimeData.history[todayKey]) {
                     newHistory[todayKey] = studyTimeData.history[todayKey];
@@ -901,7 +986,7 @@
         function prevCycle() { if (currentCycle > 1) { currentCycle--; updateCycleDisplay(); } }
         function updateCycleDisplay() { document.getElementById('currentCycleDisplay').textContent = currentCycle; localStorage.setItem('currentCycle', currentCycle); renderCycle(); }
         function resetAllCycles() { if(confirm('Reset all cycles?')){ studyTimetable.forEach(t=>t.done=false); currentCycle=1; updateCycleDisplay(); showNotification('All cycles reset!'); } }
-        function startCurrentCycle() { const first = studyTimetable.find(t=>t.cycle===currentCycle && t.type==='study' && !t.done); if(first) { isBreakMode = false; isExtraMode = false; extraSeconds = 0; lastAddedMinute = 0; sessionEndFlag = false; currentStudyDurationSetting = first.duration; timeLeft = first.duration * 60; updateTimerDisplay(); startTimer(); showNotification(`Started: ${first.task}`); showPage('pomodoro'); } else showNotification('No pending studies'); }
+        function startCurrentCycle() { const first = studyTimetable.find(t=>t.cycle===currentCycle && t.type==='study' && !t.done); if(first) { isBreakMode = false; isExtraMode = false; extraSeconds = 0; lastAddedMinute = 0; lastRegularTrackedMinute = 0; sessionEndFlag = false; currentStudyDurationSetting = first.duration; timeLeft = first.duration * 60; updateTimerDisplay(); startTimer(); showNotification(`Started: ${first.task}`); showPage('pomodoro'); } else showNotification('No pending studies'); }
         
         // ========== PAST PAPERS FUNCTIONS ==========
         function loadPapersProgress() {
