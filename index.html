@@ -444,7 +444,7 @@
         
         // Track study time accurately
         let totalStudySecondsThisSession = 0;
-        let lastLoggedSecond = 0;
+        let lastLoggedMinute = 0;
         
         let subjectStudyTime = { physics: 0, chemistry: 0, maths: 0, todayDate: new Date().toDateString() };
         let subjectDailyGoals = { physics: 120, chemistry: 120, maths: 120 };
@@ -577,7 +577,7 @@
             updateSubjectDisplay();
         }
 
-        // ========== TIMER FUNCTIONS (COMPLETELY FIXED) ==========
+        // ========== TIMER FUNCTIONS (FULLY FIXED) ==========
         function updateTimerDisplay() {
             const timerElem = document.getElementById('timer');
             const fullTimerElem = document.getElementById('fullscreenTimer');
@@ -603,31 +603,24 @@
             }
         }
         
-        // Add study time based on actual seconds studied
-        function addStudySeconds(seconds) {
-            if (seconds <= 0) return;
-            const minutesToAdd = Math.floor(seconds / 60);
-            if (minutesToAdd <= 0) return;
-            
-            addStudyMinutes(minutesToAdd);
-            addSubjectStudyMinutes(minutesToAdd);
-        }
-        
         function startTimer() {
             if (timerId) clearInterval(timerId);
             isRunning = true;
             
             // Reset tracking for this session
             totalStudySecondsThisSession = 0;
-            lastLoggedSecond = 0;
+            lastLoggedMinute = 0;
             
-            const startTime = Date.now();
-            let lastTickTime = startTime;
+            let lastTickTime = Date.now();
             
             timerId = setInterval(() => {
                 const now = Date.now();
-                const deltaSeconds = Math.floor((now - lastTickTime) / 1000);
+                let deltaSeconds = Math.floor((now - lastTickTime) / 1000);
                 lastTickTime = now;
+                
+                // Safety: limit deltaSeconds to prevent huge jumps
+                if (deltaSeconds > 5) deltaSeconds = 1;
+                if (deltaSeconds < 1) deltaSeconds = 1;
                 
                 if (!isExtraMode && timeLeft <= 0) {
                     if (!isBreakMode) {
@@ -652,7 +645,7 @@
                         extraSeconds = 0;
                         lastAddedMinute = 0;
                         totalStudySecondsThisSession = 0;
-                        lastLoggedSecond = 0;
+                        lastLoggedMinute = 0;
                         sessionEndFlag = false;
                         timeLeft = currentStudyDurationSetting * 60;
                         updateTimerDisplay();
@@ -682,11 +675,11 @@
                     totalStudySecondsThisSession += deltaSeconds;
                     const currentMinuteLogged = Math.floor(totalStudySecondsThisSession / 60);
                     
-                    if (currentMinuteLogged > lastLoggedSecond) {
-                        const minutesToAdd = currentMinuteLogged - lastLoggedSecond;
+                    if (currentMinuteLogged > lastLoggedMinute) {
+                        const minutesToAdd = currentMinuteLogged - lastLoggedMinute;
                         addStudyMinutes(minutesToAdd);
                         addSubjectStudyMinutes(minutesToAdd);
-                        lastLoggedSecond = currentMinuteLogged;
+                        lastLoggedMinute = currentMinuteLogged;
                     }
                     
                     updateTimerDisplay();
@@ -718,7 +711,7 @@
             extraSeconds = 0; 
             lastAddedMinute = 0; 
             totalStudySecondsThisSession = 0;
-            lastLoggedSecond = 0;
+            lastLoggedMinute = 0;
             sessionEndFlag = false; 
             timeLeft = currentStudyDurationSetting * 60; 
             updateTimerDisplay(); 
@@ -732,7 +725,7 @@
             extraSeconds = 0; 
             lastAddedMinute = 0; 
             totalStudySecondsThisSession = 0;
-            lastLoggedSecond = 0;
+            lastLoggedMinute = 0;
             sessionEndFlag = false; 
             timeLeft = currentStudyDurationSetting * 60; 
             updateTimerDisplay(); 
@@ -745,7 +738,7 @@
             extraSeconds = 0; 
             lastAddedMinute = 0; 
             totalStudySecondsThisSession = 0;
-            lastLoggedSecond = 0;
+            lastLoggedMinute = 0;
             sessionEndFlag = false; 
             isBreakMode = true; 
             const breakDuration = parseInt(document.getElementById('shortBreak').value) || 5; 
@@ -762,7 +755,7 @@
             extraSeconds = 0; 
             lastAddedMinute = 0; 
             totalStudySecondsThisSession = 0;
-            lastLoggedSecond = 0;
+            lastLoggedMinute = 0;
             sessionEndFlag = false; 
             currentStudyDurationSetting = minutes; 
             timeLeft = minutes * 60; 
@@ -1015,7 +1008,7 @@
         function prevCycle() { if (currentCycle > 1) { currentCycle--; updateCycleDisplay(); } }
         function updateCycleDisplay() { document.getElementById('currentCycleDisplay').textContent = currentCycle; localStorage.setItem('currentCycle', currentCycle); renderCycle(); }
         function resetAllCycles() { if(confirm('Reset all cycles?')){ studyTimetable.forEach(t=>t.done=false); currentCycle=1; updateCycleDisplay(); showNotification('All cycles reset!'); } }
-        function startCurrentCycle() { const first = studyTimetable.find(t=>t.cycle===currentCycle && t.type==='study' && !t.done); if(first) { isBreakMode = false; isExtraMode = false; extraSeconds = 0; lastAddedMinute = 0; totalStudySecondsThisSession = 0; lastLoggedSecond = 0; sessionEndFlag = false; currentStudyDurationSetting = first.duration; timeLeft = first.duration * 60; updateTimerDisplay(); startTimer(); showNotification(`Started: ${first.task}`); showPage('pomodoro'); } else showNotification('No pending studies'); }
+        function startCurrentCycle() { const first = studyTimetable.find(t=>t.cycle===currentCycle && t.type==='study' && !t.done); if(first) { isBreakMode = false; isExtraMode = false; extraSeconds = 0; lastAddedMinute = 0; totalStudySecondsThisSession = 0; lastLoggedMinute = 0; sessionEndFlag = false; currentStudyDurationSetting = first.duration; timeLeft = first.duration * 60; updateTimerDisplay(); startTimer(); showNotification(`Started: ${first.task}`); showPage('pomodoro'); } else showNotification('No pending studies'); }
         
         // ========== PAST PAPERS FUNCTIONS ==========
         function loadPapersProgress() {
