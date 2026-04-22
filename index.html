@@ -230,6 +230,16 @@
                 <div style="font-size: 14px; color: var(--text-muted);" id="timerStatus">Ready to start</div>
             </section>
             
+            <!-- Pomodoro Duration Selector -->
+            <div class="settings-section">
+                <div class="section-title">⏱️ Pomodoro Duration</div>
+                <div class="controls-grid">
+                    <button class="btn btn-info" onclick="setPomodoroDuration(35)">35 min</button>
+                    <button class="btn btn-info" onclick="setPomodoroDuration(40)">40 min</button>
+                    <button class="btn btn-info" onclick="setPomodoroDuration(45)">45 min</button>
+                </div>
+            </div>
+            
             <div class="settings-section">
                 <div class="section-title">📚 What are you studying?</div>
                 <div class="subject-selector">
@@ -442,9 +452,10 @@
         let modelPapers = [];
         let currentStudySubject = 'physics';
         
-        // Track study time accurately
-        let totalStudySecondsThisSession = 0;
-        let lastLoggedMinute = 0;
+        // Track if time has been added for this session
+        let timeAddedForSession = false;
+        let sessionStudyMinutes = 0;
+        let sessionExtraMinutes = 0;
         
         let subjectStudyTime = { physics: 0, chemistry: 0, maths: 0, todayDate: new Date().toDateString() };
         let subjectDailyGoals = { physics: 120, chemistry: 120, maths: 120 };
@@ -506,6 +517,18 @@
                     osc2.stop(audioCtx.currentTime + 1);
                 }, 200);
             } catch(e) {}
+        }
+
+        // ========== POMODORO DURATION SETTER ==========
+        function setPomodoroDuration(minutes) {
+            if (isRunning) {
+                showNotification('Please stop the timer first');
+                return;
+            }
+            currentStudyDurationSetting = minutes;
+            timeLeft = minutes * 60;
+            updateTimerDisplay();
+            showNotification(`Pomodoro duration set to ${minutes} minutes`);
         }
 
         // ========== SUBJECT STUDY TRACKING ==========
@@ -577,7 +600,7 @@
             updateSubjectDisplay();
         }
 
-        // ========== TIMER FUNCTIONS (FULLY FIXED) ==========
+        // ========== TIMER FUNCTIONS (ADD TIME ONLY ON STOP OR COMPLETION) ==========
         function updateTimerDisplay() {
             const timerElem = document.getElementById('timer');
             const fullTimerElem = document.getElementById('fullscreenTimer');
@@ -603,13 +626,39 @@
             }
         }
         
+        // Add study time for the session (called on stop or completion)
+        function addSessionStudyTime() {
+            if (timeAddedForSession) return;
+            
+            let totalMinutesToAdd = 0;
+            
+            // Add regular study time (the full duration)
+            totalMinutesToAdd += currentStudyDurationSetting;
+            
+            // Add extra time if any
+            if (isExtraMode && extraSeconds > 0) {
+                const extraMins = Math.floor(extraSeconds / 60);
+                if (extraMins > 0) {
+                    totalMinutesToAdd += extraMins;
+                    showNotification(`➕ Extra time: +${extraMins} min added!`);
+                }
+            }
+            
+            if (totalMinutesToAdd > 0) {
+                addStudyMinutes(totalMinutesToAdd);
+                addSubjectStudyMinutes(totalMinutesToAdd);
+                showNotification(`📚 +${totalMinutesToAdd} min added to ${currentStudySubject.toUpperCase()}!`);
+            }
+            
+            timeAddedForSession = true;
+        }
+        
         function startTimer() {
             if (timerId) clearInterval(timerId);
             isRunning = true;
-            
-            // Reset tracking for this session
-            totalStudySecondsThisSession = 0;
-            lastLoggedMinute = 0;
+            timeAddedForSession = false;
+            sessionStudyMinutes = 0;
+            sessionExtraMinutes = 0;
             
             let lastTickTime = Date.now();
             
@@ -618,16 +667,17 @@
                 let deltaSeconds = Math.floor((now - lastTickTime) / 1000);
                 lastTickTime = now;
                 
-                // Safety: limit deltaSeconds to prevent huge jumps
-                if (deltaSeconds > 5) deltaSeconds = 1;
                 if (deltaSeconds < 1) deltaSeconds = 1;
+                if (deltaSeconds > 5) deltaSeconds = 1;
                 
                 if (!isExtraMode && timeLeft <= 0) {
                     if (!isBreakMode) {
                         if (!sessionEndFlag) { 
                             playBellSound(); 
                             sessionEndFlag = true;
-                            showNotification(`🔔 STUDY COMPLETE! Now in EXTRA TIME mode`);
+                            // Add study time when timer naturally completes
+                            addSessionStudyTime();
+                            showNotification(`🔔 STUDY COMPLETE! +${currentStudyDurationSetting} min added! Now in EXTRA TIME mode`);
                         }
                         isExtraMode = true;
                         extraSeconds = 0;
@@ -644,8 +694,7 @@
                         isExtraMode = false;
                         extraSeconds = 0;
                         lastAddedMinute = 0;
-                        totalStudySecondsThisSession = 0;
-                        lastLoggedMinute = 0;
+                        timeAddedForSession = false;
                         sessionEndFlag = false;
                         timeLeft = currentStudyDurationSetting * 60;
                         updateTimerDisplay();
@@ -659,29 +708,14 @@
                     extraSeconds += deltaSeconds;
                     const currentMinuteFloor = Math.floor(extraSeconds / 60);
                     if (currentMinuteFloor > lastAddedMinute) {
-                        const newMinutes = currentMinuteFloor - lastAddedMinute;
-                        addStudyMinutes(newMinutes);
-                        addSubjectStudyMinutes(newMinutes);
                         lastAddedMinute = currentMinuteFloor;
-                        showNotification(`➕ +${newMinutes} extra min to ${currentStudySubject.toUpperCase()}!`);
+                        // Don't add time here - will be added on stop or final completion
+                        showNotification(`➕ Extra time: ${currentMinuteFloor} min and counting...`);
                     }
                     updateTimerDisplay();
                 } else {
-                    // Reduce timer by actual time passed
                     timeLeft -= deltaSeconds;
                     if (timeLeft < 0) timeLeft = 0;
-                    
-                    // Track study time based on actual elapsed time
-                    totalStudySecondsThisSession += deltaSeconds;
-                    const currentMinuteLogged = Math.floor(totalStudySecondsThisSession / 60);
-                    
-                    if (currentMinuteLogged > lastLoggedMinute) {
-                        const minutesToAdd = currentMinuteLogged - lastLoggedMinute;
-                        addStudyMinutes(minutesToAdd);
-                        addSubjectStudyMinutes(minutesToAdd);
-                        lastLoggedMinute = currentMinuteLogged;
-                    }
-                    
                     updateTimerDisplay();
                 }
             }, 1000);
@@ -698,20 +732,18 @@
         }
         
         function stopTimer() { 
-            pauseTimer(); 
-            if (isExtraMode && extraSeconds > 0) { 
-                let extraMins = Math.floor(extraSeconds / 60); 
-                if (extraMins > 0) { 
-                    addStudyMinutes(extraMins); 
-                    addSubjectStudyMinutes(extraMins); 
-                } 
+            pauseTimer();
+            
+            // Add all time (regular + extra) when stop button is pressed
+            if (!timeAddedForSession && !isBreakMode) {
+                addSessionStudyTime();
             }
+            
             isExtraMode = false; 
             isBreakMode = false; 
             extraSeconds = 0; 
             lastAddedMinute = 0; 
-            totalStudySecondsThisSession = 0;
-            lastLoggedMinute = 0;
+            timeAddedForSession = false;
             sessionEndFlag = false; 
             timeLeft = currentStudyDurationSetting * 60; 
             updateTimerDisplay(); 
@@ -724,8 +756,7 @@
             isBreakMode = false; 
             extraSeconds = 0; 
             lastAddedMinute = 0; 
-            totalStudySecondsThisSession = 0;
-            lastLoggedMinute = 0;
+            timeAddedForSession = false;
             sessionEndFlag = false; 
             timeLeft = currentStudyDurationSetting * 60; 
             updateTimerDisplay(); 
@@ -737,8 +768,7 @@
             isExtraMode = false; 
             extraSeconds = 0; 
             lastAddedMinute = 0; 
-            totalStudySecondsThisSession = 0;
-            lastLoggedMinute = 0;
+            timeAddedForSession = false;
             sessionEndFlag = false; 
             isBreakMode = true; 
             const breakDuration = parseInt(document.getElementById('shortBreak').value) || 5; 
@@ -754,8 +784,7 @@
             isBreakMode = false; 
             extraSeconds = 0; 
             lastAddedMinute = 0; 
-            totalStudySecondsThisSession = 0;
-            lastLoggedMinute = 0;
+            timeAddedForSession = false;
             sessionEndFlag = false; 
             currentStudyDurationSetting = minutes; 
             timeLeft = minutes * 60; 
@@ -1008,7 +1037,7 @@
         function prevCycle() { if (currentCycle > 1) { currentCycle--; updateCycleDisplay(); } }
         function updateCycleDisplay() { document.getElementById('currentCycleDisplay').textContent = currentCycle; localStorage.setItem('currentCycle', currentCycle); renderCycle(); }
         function resetAllCycles() { if(confirm('Reset all cycles?')){ studyTimetable.forEach(t=>t.done=false); currentCycle=1; updateCycleDisplay(); showNotification('All cycles reset!'); } }
-        function startCurrentCycle() { const first = studyTimetable.find(t=>t.cycle===currentCycle && t.type==='study' && !t.done); if(first) { isBreakMode = false; isExtraMode = false; extraSeconds = 0; lastAddedMinute = 0; totalStudySecondsThisSession = 0; lastLoggedMinute = 0; sessionEndFlag = false; currentStudyDurationSetting = first.duration; timeLeft = first.duration * 60; updateTimerDisplay(); startTimer(); showNotification(`Started: ${first.task}`); showPage('pomodoro'); } else showNotification('No pending studies'); }
+        function startCurrentCycle() { const first = studyTimetable.find(t=>t.cycle===currentCycle && t.type==='study' && !t.done); if(first) { isBreakMode = false; isExtraMode = false; extraSeconds = 0; lastAddedMinute = 0; timeAddedForSession = false; sessionEndFlag = false; currentStudyDurationSetting = first.duration; timeLeft = first.duration * 60; updateTimerDisplay(); startTimer(); showNotification(`Started: ${first.task}`); showPage('pomodoro'); } else showNotification('No pending studies'); }
         
         // ========== PAST PAPERS FUNCTIONS ==========
         function loadPapersProgress() {
