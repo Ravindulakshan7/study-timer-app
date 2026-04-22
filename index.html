@@ -230,13 +230,18 @@
                 <div style="font-size: 14px; color: var(--text-muted);" id="timerStatus">Ready to start</div>
             </section>
             
-            <!-- Pomodoro Duration Selector -->
+            <!-- Customizable Pomodoro Duration -->
             <div class="settings-section">
-                <div class="section-title">⏱️ Pomodoro Duration</div>
-                <div class="controls-grid">
-                    <button class="btn btn-info" onclick="setPomodoroDuration(35)">35 min</button>
-                    <button class="btn btn-info" onclick="setPomodoroDuration(40)">40 min</button>
-                    <button class="btn btn-info" onclick="setPomodoroDuration(45)">45 min</button>
+                <div class="section-title">⏱️ Custom Pomodoro Duration</div>
+                <div class="duration-row">
+                    <div class="duration-input" style="flex: 2;">
+                        <label>Minutes (10-180)</label>
+                        <input type="number" id="customPomodoroMinutes" value="35" min="10" max="180" step="5">
+                    </div>
+                    <div class="duration-input" style="flex: 1;">
+                        <label>&nbsp;</label>
+                        <button class="btn btn-primary" onclick="setCustomPomodoro()" style="width: 100%;">Set</button>
+                    </div>
                 </div>
             </div>
             
@@ -454,8 +459,6 @@
         
         // Track if time has been added for this session
         let timeAddedForSession = false;
-        let sessionStudyMinutes = 0;
-        let sessionExtraMinutes = 0;
         
         let subjectStudyTime = { physics: 0, chemistry: 0, maths: 0, todayDate: new Date().toDateString() };
         let subjectDailyGoals = { physics: 120, chemistry: 120, maths: 120 };
@@ -519,10 +522,19 @@
             } catch(e) {}
         }
 
-        // ========== POMODORO DURATION SETTER ==========
-        function setPomodoroDuration(minutes) {
+        // ========== CUSTOM POMODORO DURATION ==========
+        function setCustomPomodoro() {
             if (isRunning) {
                 showNotification('Please stop the timer first');
+                return;
+            }
+            const minutes = parseInt(document.getElementById('customPomodoroMinutes').value);
+            if (isNaN(minutes) || minutes < 10) {
+                showNotification('Please enter a valid duration (minimum 10 minutes)');
+                return;
+            }
+            if (minutes > 180) {
+                showNotification('Maximum duration is 180 minutes');
                 return;
             }
             currentStudyDurationSetting = minutes;
@@ -640,7 +652,6 @@
                 const extraMins = Math.floor(extraSeconds / 60);
                 if (extraMins > 0) {
                     totalMinutesToAdd += extraMins;
-                    showNotification(`➕ Extra time: +${extraMins} min added!`);
                 }
             }
             
@@ -657,8 +668,6 @@
             if (timerId) clearInterval(timerId);
             isRunning = true;
             timeAddedForSession = false;
-            sessionStudyMinutes = 0;
-            sessionExtraMinutes = 0;
             
             let lastTickTime = Date.now();
             
