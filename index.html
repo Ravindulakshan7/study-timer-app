@@ -385,7 +385,7 @@
         <!-- MCQ MARKS PAGE -->
         <div id="marksPage" class="page">
             <div class="settings-section">
-                <div class="section-title">📊 MCQ Marks Progress (Year by Year)</div>
+                <div class="section-title">📊 MCQ Marks Progress (2010-2025)</div>
                 <div class="sub-tabs" style="margin-bottom: 20px; display: flex; gap: 10px;">
                     <button class="sub-tab active" onclick="showMarksSubject('physics')">⚛️ Physics</button>
                     <button class="sub-tab" onclick="showMarksSubject('chemistry')">🧪 Chemistry</button>
@@ -911,7 +911,7 @@
             const modalTitle = document.getElementById('modalTitle');
             const subjectNames = { physics: '⚛️ Physics', chemistry: '🧪 Chemistry', combined: '🧮 Combined Maths' };
             modalTitle.textContent = `${subjectNames[subject]} - Marks Trend (0-50)`;
-            const years = []; for (let y = 2000; y <= 2025; y++) years.push(y);
+            const years = []; for (let y = 2010; y <= 2025; y++) years.push(y);
             const a1 = [], a2 = [], a3 = [];
             years.forEach(y => { const m = marksData[subject][y]; a1.push(m?.[0] !== null ? m[0] : null); a2.push(m?.[1] !== null ? m[1] : null); a3.push(m?.[2] !== null ? m[2] : null); });
             const fullCanvas = document.getElementById('fullscreenCanvas');
@@ -1168,15 +1168,27 @@
         function loadMarksData() {
             const saved = localStorage.getItem('paperMarksData');
             if (saved) { marksData = JSON.parse(saved); }
-            else { for (let y = 2000; y <= 2025; y++) { marksData.physics[y] = [null, null, null]; marksData.chemistry[y] = [null, null, null]; marksData.combined[y] = [null, null, null]; } }
+            else {
+                for (let y = 2010; y <= 2025; y++) {
+                    marksData.physics[y] = [null, null, null];
+                    marksData.chemistry[y] = [null, null, null];
+                    marksData.combined[y] = [null, null, null];
+                }
+            }
+            // Clean up old years (2000-2009) if they exist
+            for (let y = 2000; y <= 2009; y++) {
+                if (marksData.physics[y]) delete marksData.physics[y];
+                if (marksData.chemistry[y]) delete marksData.chemistry[y];
+                if (marksData.combined[y]) delete marksData.combined[y];
+            }
             renderMarksTable(); updateMarksGraph();
         }
         function saveMarksData() { localStorage.setItem('paperMarksData', JSON.stringify(marksData)); showNotification('Marks saved!'); updateMarksGraph(); }
         function showMarksSubject(subject) { currentMarksSubject = subject; document.querySelectorAll('#marksPage .sub-tab').forEach((tab, i) => { if ((subject === 'physics' && i === 0) || (subject === 'chemistry' && i === 1) || (subject === 'combined' && i === 2)) tab.classList.add('active'); else tab.classList.remove('active'); }); const labels = { physics: '⚛️ Physics', chemistry: '🧪 Chemistry', combined: '🧮 Combined Maths' }; document.getElementById('currentSubjectLabel').textContent = labels[subject]; renderMarksTable(); updateMarksGraph(); }
-        function renderMarksTable() { const tbody = document.getElementById('marksTableBody'); if (!tbody) return; tbody.innerHTML = ''; for (let y = 2000; y <= 2025; y++) { const row = tbody.insertRow(); row.insertCell(0).textContent = y; for (let a = 0; a < 3; a++) { const cell = row.insertCell(a + 1); const val = marksData[currentMarksSubject][y]?.[a] || ''; const input = document.createElement('input'); input.type = 'number'; input.min = '0'; input.max = '50'; input.value = val || ''; input.onchange = ((y, a) => (e) => { let num = parseInt(e.target.value); if (isNaN(num)) marksData[currentMarksSubject][y][a] = null; else marksData[currentMarksSubject][y][a] = Math.min(50, Math.max(0, num)); saveMarksData(); })(y, a); cell.appendChild(input); } } }
+        function renderMarksTable() { const tbody = document.getElementById('marksTableBody'); if (!tbody) return; tbody.innerHTML = ''; for (let y = 2010; y <= 2025; y++) { const row = tbody.insertRow(); row.insertCell(0).textContent = y; for (let a = 0; a < 3; a++) { const cell = row.insertCell(a + 1); const val = marksData[currentMarksSubject][y]?.[a] || ''; const input = document.createElement('input'); input.type = 'number'; input.min = '0'; input.max = '50'; input.value = val || ''; input.onchange = ((y, a) => (e) => { let num = parseInt(e.target.value); if (isNaN(num)) marksData[currentMarksSubject][y][a] = null; else marksData[currentMarksSubject][y][a] = Math.min(50, Math.max(0, num)); saveMarksData(); })(y, a); cell.appendChild(input); } } }
         function updateMarksGraph() {
             const canvas = document.getElementById('marksTrendGraph'); if (!canvas) return;
-            const years = []; for (let y = 2000; y <= 2025; y++) years.push(y);
+            const years = []; for (let y = 2010; y <= 2025; y++) years.push(y);
             const a1 = [], a2 = [], a3 = [];
             years.forEach(y => { const m = marksData[currentMarksSubject][y]; a1.push(m?.[0] !== null ? m[0] : null); a2.push(m?.[1] !== null ? m[1] : null); a3.push(m?.[2] !== null ? m[2] : null); });
             const v3 = a3.filter(v => v !== null);
@@ -1184,7 +1196,7 @@
             if (marksChart) marksChart.destroy();
             marksChart = new Chart(canvas, { type: 'line', data: { labels: years, datasets: [{ label: 'Attempt 1', data: a1, borderColor: '#3a5795', tension: 0.3, fill: false, pointRadius: 3 }, { label: 'Attempt 2', data: a2, borderColor: '#5e548e', tension: 0.3, fill: false, pointRadius: 3 }, { label: 'Attempt 3', data: a3, borderColor: '#2d6a4f', tension: 0.3, fill: false, pointRadius: 3 }] }, options: { responsive: true, maintainAspectRatio: true, scales: { y: { beginAtZero: true, max: 50, title: { display: true, text: 'Marks' } } } } });
         }
-        function resetMarksForSubject() { if (confirm(`Reset all marks?`)) { for (let y = 2000; y <= 2025; y++) marksData[currentMarksSubject][y] = [null, null, null]; saveMarksData(); renderMarksTable(); updateMarksGraph(); } }
+        function resetMarksForSubject() { if (confirm(`Reset all marks?`)) { for (let y = 2010; y <= 2025; y++) marksData[currentMarksSubject][y] = [null, null, null]; saveMarksData(); renderMarksTable(); updateMarksGraph(); } }
         
         // ========== UI FUNCTIONS ==========
         function showPage(pageId, el) {
