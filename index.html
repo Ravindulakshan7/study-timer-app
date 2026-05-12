@@ -108,7 +108,6 @@
         .marks-table th, .marks-table td { padding: 8px 4px; text-align: center; border-bottom: 1px solid var(--border); }
         .marks-table input { width: 60px; padding: 6px; background: var(--bg-input); border: 2px solid var(--border); border-radius: 8px; text-align: center; }
         .controls-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 15px; }
-        
         .fullscreen-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg-primary); z-index:2000; flex-direction:column; align-items:center; justify-content:center; padding:20px; }
         .fullscreen-modal.active { display: flex; }
         .close-btn { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: var(--danger); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; border: none; }
@@ -134,7 +133,7 @@
             <button class="nav-tab" onclick="showPage('analytics')">📈 Insights</button>
         </div>
 
-        <!-- TIMER PAGE (Pomodoro with tap fullscreen, no Break/Reset) -->
+        <!-- TIMER PAGE (Pomodoro with tap fullscreen) -->
         <div id="timerPage" class="page active">
             <div class="pomodoro-box" id="pomodoroBox">
                 <div class="timer-display" id="timer">35:00</div>
@@ -208,7 +207,7 @@
             </div>
         </div>
 
-        <!-- MARKS PAGE (exactly as original: table + chart + save/reset, no changes) -->
+        <!-- MARKS PAGE (exactly as original: table + chart + save/reset) -->
         <div id="marksPage" class="page">
             <div class="settings-section">
                 <div class="section-title">📊 MCQ Marks Progress (2010-2025)</div>
@@ -264,13 +263,13 @@
         let marks = { physics: {}, chemistry: {}, combined: {} };
         let currentMarksSubject = 'physics';
         let charts = { marks: null, daily: null, full: null };
-        let todoList = []; // { text, completed }
+        let todoList = [];
 
-        // Helper functions
+        // Helper
         function formatHM(mins) { return `${Math.floor(mins/60)}h ${mins%60}m`; }
         function showMsg(msg) { let n = document.getElementById('notify'); n.textContent = msg; n.style.display = 'block'; setTimeout(() => n.style.display = 'none', 2000); }
         
-        // Timer core (no break/reset buttons, but break can be triggered via stop+manual? We keep break functionality but removed UI button, so no break button. Actually we removed Break button, so break is inaccessible. That's fine.)
+        // Timer display + progress (fixed extra logic)
         function updateDisplay() { 
             let timerElem = document.getElementById('timer'); 
             let fullElem = document.getElementById('fullTimer'); 
@@ -287,11 +286,13 @@
                 if(timerElem) timerElem.textContent = str; 
                 if(fullElem) fullElem.textContent = str; 
                 document.getElementById('extraTimeDisplay').innerHTML = ''; 
-                let total = isBreak ? 5*60 : studyDuration * 60; 
+                let total = studyDuration * 60; 
                 let pct = total > 0 ? ((total - timeLeft) / total) * 100 : 0; 
                 document.getElementById('progress').style.width = `${Math.max(0, Math.min(100, pct))}%`; 
             } 
         }
+
+        // Add study minutes (core)
         function addStudyTime(mins) { 
             if (mins <= 0) return; 
             let today = new Date().toDateString(); 
@@ -318,45 +319,79 @@
         function addSubjectTime(mins) { let today = new Date().toDateString(); if (subjectTimes.date !== today) subjectTimes = { physics:0, chemistry:0, maths:0, date: today }; subjectTimes[currentSubject] += mins; saveSubjects(); updateSubjectsDisplay(); }
         function addManualTime() { let hrs = parseFloat(document.getElementById('manualHours').value) || 0; let mins = parseFloat(document.getElementById('manualMinutes').value) || 0; let total = (hrs * 60) + mins; if (total <= 0) { showMsg("Enter valid time"); return; } let subj = document.getElementById('manualSubject').value; let oldSubj = currentSubject; currentSubject = subj; addStudyTime(total); addSubjectTime(total); currentSubject = oldSubj; showMsg(`✅ Added ${formatHM(total)} to ${subj}`); updateSubjectsDisplay(); }
         function setCustomDuration() { if (isRunning) { showMsg("Stop timer first"); return; } let mins = parseInt(document.getElementById('customMinutes').value); if (mins >= 10 && mins <= 180) { studyDuration = mins; timeLeft = mins * 60; updateDisplay(); showMsg(`Duration set to ${mins} min`); } }
+        
+        // TIMER ENGINE FIXED: preserve sessionSeconds across pause/resume, correct minute rounding, instant transition
         function startTimer() { 
             if (timerInterval) clearInterval(timerInterval); 
             isRunning = true; sessionActive = true; timeAdded = false; 
-            if (!isBreak && !isExtra) sessionSeconds = 0; 
             let lastTick = Date.now(); 
             timerInterval = setInterval(() => { 
-                let now = Date.now(); let delta = Math.floor((now - lastTick) / 1000); if (delta < 1) delta = 1; lastTick = now; 
-                if (!isBreak && !isExtra && sessionActive) sessionSeconds += delta; 
-                if (!isExtra && timeLeft <= 0) { 
-                    if (!isBreak) { 
-                        if (!sessionActive) { playSound(); sessionActive = true; showMsg("🔔 STUDY DONE! Press STOP to save."); } 
-                        isExtra = true; extraSec = 0; updateDisplay(); return; 
-                    } else { 
-                        playSound(); clearInterval(timerInterval); timerInterval = null; isRunning = false; isBreak = false; isExtra = false; timeLeft = studyDuration * 60; sessionActive = false; updateDisplay(); document.getElementById('timerStatus').textContent = 'Break finished.'; showMsg("Break finished!"); return; 
-                    } 
-                } 
-                if (isExtra) { extraSec += delta; updateDisplay(); } 
-                else if (!isBreak) { timeLeft -= delta; if (timeLeft < 0) timeLeft = 0; updateDisplay(); } 
-                else { timeLeft -= delta; if (timeLeft < 0) timeLeft = 0; updateDisplay(); } 
+                let now = Date.now(); let delta = Math.floor((now - lastTick) / 1000); 
+                if (delta < 1) delta = 1; 
+                if (delta > 5) delta = 5;   // cap large jumps
+                lastTick = now; 
+                
+                // accumulate active study seconds (only in study mode, not extra/break)
+                if (!isExtra && !isBreak && sessionActive) sessionSeconds += delta; 
+                
+                if (!isExtra) {
+                    if (timeLeft <= 0) { 
+                        // study session finished -> activate extra mode
+                        if (!isBreak) {
+                            playSound(); 
+                            isExtra = true; 
+                            extraSec = 0; 
+                            updateDisplay(); 
+                            document.getElementById('timerStatus').textContent = "Extra time (press Stop to record)"; 
+                        }
+                        return; 
+                    }
+                    timeLeft -= delta; 
+                    if (timeLeft < 0) timeLeft = 0; 
+                    updateDisplay(); 
+                    // Immediate transition if just hit zero
+                    if (timeLeft === 0 && !isExtra && !isBreak) {
+                        playSound(); 
+                        isExtra = true; 
+                        extraSec = 0; 
+                        updateDisplay(); 
+                        document.getElementById('timerStatus').textContent = "Extra time (press Stop to record)"; 
+                    }
+                } else {
+                    extraSec += delta; 
+                    updateDisplay(); 
+                }
             }, 1000); 
-            document.getElementById('timerStatus').textContent = isBreak ? "Break..." : (isExtra ? "Extra Time" : `Studying ${currentSubject.toUpperCase()}`); 
+            document.getElementById('timerStatus').textContent = isExtra ? "Extra mode" : `Studying ${currentSubject.toUpperCase()}`; 
         }
         function pauseTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; isRunning = false; document.getElementById('timerStatus').textContent = "Paused"; } }
         function stopTimer() { 
             pauseTimer(); 
             if (!timeAdded && !isBreak && (sessionActive || isExtra)) { 
-                let totalMins = Math.floor(sessionSeconds / 60); 
-                if (isExtra && extraSec > 0) totalMins += Math.floor(extraSec / 60); 
-                if (totalMins > 0) { addStudyTime(totalMins); addSubjectTime(totalMins); showMsg(`📚 +${totalMins} min to ${currentSubject.toUpperCase()}`); } 
+                let totalSecs = sessionSeconds + (isExtra ? extraSec : 0);
+                let totalMins = Math.floor(totalSecs / 60);
+                if (totalMins > 0) { 
+                    addStudyTime(totalMins); 
+                    addSubjectTime(totalMins); 
+                    showMsg(`📚 +${totalMins} min to ${currentSubject.toUpperCase()}`); 
+                } 
                 timeAdded = true; 
             } 
-            isExtra = false; isBreak = false; extraSec = 0; sessionActive = false; sessionSeconds = 0; timeLeft = studyDuration * 60; updateDisplay(); document.getElementById('timerStatus').textContent = "Stopped."; 
+            // full reset
+            isExtra = false; isBreak = false; extraSec = 0; sessionActive = false; sessionSeconds = 0; 
+            timeLeft = studyDuration * 60; 
+            updateDisplay(); 
+            document.getElementById('timerStatus').textContent = "Stopped."; 
         }
         function playSound() { try { let ctx = new (window.AudioContext || window.webkitAudioContext)(); let o = ctx.createOscillator(); let g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.value = 880; g.gain.value = 0.3; o.start(); g.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 1); o.stop(ctx.currentTime + 1); } catch(e){} }
         function selectSubjectInline(subj, btn) { currentSubject = subj; document.querySelectorAll('.subject-pill').forEach(b => b.classList.remove('active')); if(btn) btn.classList.add('active'); }
         function editGoals() { let p = prompt('Physics daily goal (hours):', goals.physics/60); let c = prompt('Chemistry daily goal (hours):', goals.chemistry/60); let m = prompt('Maths daily goal (hours):', goals.maths/60); if(p) goals.physics = parseFloat(p)*60; if(c) goals.chemistry = parseFloat(c)*60; if(m) goals.maths = parseFloat(m)*60; updateSubjectsDisplay(); saveSubjects(); }
-        function updateSubjectsDisplay() { let today = new Date().toDateString(); if (subjectTimes.date !== today) subjectTimes = { physics:0, chemistry:0, maths:0, date: today }; document.getElementById('physicsTime').innerHTML = formatHM(subjectTimes.physics); document.getElementById('chemistryTime').innerHTML = formatHM(subjectTimes.chemistry); document.getElementById('mathsTime').innerHTML = formatHM(subjectTimes.maths); document.getElementById('physicsFill').style.width = `${Math.min(100, (subjectTimes.physics/goals.physics)*100)}%`; document.getElementById('chemistryFill').style.width = `${Math.min(100, (subjectTimes.chemistry/goals.chemistry)*100)}%`; document.getElementById('mathsFill').style.width = `${Math.min(100, (subjectTimes.maths/goals.maths)*100)}%`; document.getElementById('physicsGoal').innerText = goals.physics/60; document.getElementById('chemistryGoal').innerText = goals.chemistry/60; document.getElementById('mathsGoal').innerText = goals.maths/60; }
+        function updateSubjectsDisplay() { let today = new Date().toDateString(); if (subjectTimes.date !== today) subjectTimes = { physics:0, chemistry:0, maths:0, date: today }; 
+            document.getElementById('physicsTime').innerHTML = formatHM(subjectTimes.physics); document.getElementById('chemistryTime').innerHTML = formatHM(subjectTimes.chemistry); document.getElementById('mathsTime').innerHTML = formatHM(subjectTimes.maths); 
+            document.getElementById('physicsFill').style.width = `${Math.min(100, (subjectTimes.physics/goals.physics)*100)}%`; document.getElementById('chemistryFill').style.width = `${Math.min(100, (subjectTimes.chemistry/goals.chemistry)*100)}%`; document.getElementById('mathsFill').style.width = `${Math.min(100, (subjectTimes.maths/goals.maths)*100)}%`; 
+            document.getElementById('physicsGoal').innerText = goals.physics/60; document.getElementById('chemistryGoal').innerText = goals.chemistry/60; document.getElementById('mathsGoal').innerText = goals.maths/60; }
         
-        // MARKS (unchanged from original)
+        // MARKS (unchanged)
         function initMarks() { for (let s of ['physics','chemistry','combined']) for (let y = 2010; y <= 2025; y++) if (!marks[s][y]) marks[s][y] = [null, null, null]; renderMarksTable(); updateMarksChart(); }
         function showMarksSubject(s) { currentMarksSubject = s; document.querySelectorAll('.marks-subject-btn').forEach(btn => btn.classList.remove('active')); event.target.classList.add('active'); renderMarksTable(); updateMarksChart(); }
         function renderMarksTable() { let tbody = document.getElementById('marksTableBody'); if (!tbody) return; tbody.innerHTML = ''; for (let y = 2010; y <= 2025; y++) { let row = tbody.insertRow(); row.insertCell(0).textContent = y; for (let a = 0; a < 3; a++) { let cell = row.insertCell(a+1); let inp = document.createElement('input'); inp.type = 'number'; inp.min = 0; inp.max = 50; inp.value = marks[currentMarksSubject][y][a] || ''; inp.onchange = ((year, att) => (e) => { let v = parseInt(e.target.value); marks[currentMarksSubject][year][att] = (isNaN(v) ? null : Math.min(50, Math.max(0, v))); updateMarksChart(); })(y, a); cell.appendChild(inp); } } }
@@ -364,20 +399,18 @@
         function saveMarks() { localStorage.setItem('marksData', JSON.stringify(marks)); showMsg("Marks saved!"); }
         function resetMarks() { for (let y = 2010; y <= 2025; y++) marks[currentMarksSubject][y] = [null, null, null]; renderMarksTable(); updateMarksChart(); saveMarks(); }
         
-        // Analytics (hours chart, Monday week)
+        // Analytics, UI, Todo etc.
         function updateUI() { let today = new Date().toDateString(); if (studyData.date !== today) { studyData.today = 0; studyData.date = today; recalcWeekly(); } document.getElementById('todayTotal').innerHTML = formatHM(studyData.today); document.getElementById('weeklyTotal').innerHTML = formatHM(studyData.week); let pct = Math.min(100, Math.round((studyData.week) / (weeklyGoal * 60) * 100)); document.getElementById('goalPercent').innerHTML = pct + '%'; document.getElementById('weeklyProgress').style.width = pct + '%'; document.getElementById('weeklyProgress').textContent = pct + '%'; document.getElementById('goalProgressFill').style.width = pct + '%'; document.getElementById('goalProgressFill').textContent = pct + '%'; let rem = Math.max(0, (weeklyGoal * 60) - studyData.week); document.getElementById('goalRemaining').innerHTML = `${formatHM(rem)} left to reach ${weeklyGoal}h goal`; document.getElementById('streakNum').innerHTML = streak.current; document.getElementById('longestStreak').innerHTML = `Longest: ${streak.longest} days`; document.getElementById('totalHours').innerHTML = Math.floor(studyData.allTime / 60); let last7 = 0; for (let i = 0; i < 7; i++) { let d = new Date(Date.now() - i*86400000).toDateString(); last7 += studyData.history[d] || 0; } document.getElementById('avgDaily').innerHTML = Math.round(last7 / 7); updateTasksDoneCount(); renderWeekActivityMonday(); }
         function renderWeekActivityMonday() { let container = document.getElementById('weekActivity'); if (!container) return; let days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']; let monday = getMondayDate(new Date()); container.innerHTML = ''; for (let i = 0; i < 7; i++) { let curr = new Date(monday); curr.setDate(monday.getDate() + i); let ds = curr.toDateString(); let mins = studyData.history[ds] || 0; container.innerHTML += `<div class="week-day ${mins > 0 ? 'active' : ''}"><strong>${days[i]}</strong><br>${formatHM(mins)}</div>`; } }
         function updateDailyChart() { let canvas = document.getElementById('dailyChart'); if (!canvas) return; let now = new Date(); let year = now.getFullYear(), month = now.getMonth(); let days = new Date(year, month+1, 0).getDate(); let dataHours = new Array(days).fill(0); if (!studyData.history) studyData.history = {}; for (let [dateStr, mins] of Object.entries(studyData.history)) { let d = new Date(dateStr); if (d.getFullYear() === year && d.getMonth() === month) dataHours[d.getDate()-1] += mins / 60; } document.getElementById('monthYear').innerHTML = `${now.toLocaleString('default', { month: 'long' })} ${year}`; if (charts.daily) charts.daily.destroy(); charts.daily = new Chart(canvas, { type: 'bar', data: { labels: Array.from({length:days}, (_,i)=>i+1), datasets: [{ label: 'Hours', data: dataHours, backgroundColor: '#3a5795', borderRadius: 8 }] }, options: { responsive: true, scales: { y: { beginAtZero: true, title: { display: true, text: 'Hours' } } } } }); }
         function openDailyFullscreen() { let modal = document.getElementById('fullscreenModal'); modal.classList.add('active'); let canvas = document.getElementById('fullscreenCanvas'); let now = new Date(); let year = now.getFullYear(), month = now.getMonth(); let days = new Date(year, month+1, 0).getDate(); let dataHours = new Array(days).fill(0); for (let [dateStr, mins] of Object.entries(studyData.history)) { let d = new Date(dateStr); if (d.getFullYear() === year && d.getMonth() === month) dataHours[d.getDate()-1] += mins / 60; } if (charts.full) charts.full.destroy(); charts.full = new Chart(canvas, { type: 'bar', data: { labels: Array.from({length:days}, (_,i)=>i+1), datasets: [{ label: 'Study Hours', data: dataHours, backgroundColor: '#3a5795' }] }, options: { responsive: true, scales: { y: { title: { display: true, text: 'Hours' } } } } }); }
         function openMarksFullscreen() { let modal = document.getElementById('fullscreenModal'); modal.classList.add('active'); let canvas = document.getElementById('fullscreenCanvas'); let years = [], a1 = [], a2 = [], a3 = []; for (let y = 2010; y <= 2025; y++) { years.push(y); let m = marks[currentMarksSubject][y]; a1.push(m?.[0] ?? null); a2.push(m?.[1] ?? null); a3.push(m?.[2] ?? null); } if (charts.full) charts.full.destroy(); charts.full = new Chart(canvas, { type: 'line', data: { labels: years, datasets: [{ label: 'Attempt 1', data: a1, borderColor: '#3a5795' }, { label: 'Attempt 2', data: a2, borderColor: '#5e548e' }, { label: 'Attempt 3', data: a3, borderColor: '#2d6a4f' }] }, options: { responsive: true, scales: { y: { beginAtZero: true, max: 50 } } } }); }
         function closeFullscreen() { document.getElementById('fullscreenModal').classList.remove('active'); if (charts.full) { charts.full.destroy(); charts.full = null; } }
-        
-        // Timer fullscreen on tap
         document.getElementById('pomodoroBox').addEventListener('click', function(e) { if(e.target.closest('button')) return; openTimerFullscreen(); });
         function openTimerFullscreen() { let modal = document.getElementById('timerFullscreenModal'); modal.classList.add('active'); updateDisplay(); }
         function closeTimerFullscreen() { document.getElementById('timerFullscreenModal').classList.remove('active'); }
         
-        // To-Do List
+        // Todo
         function loadTodo() { let saved = localStorage.getItem('studyTodo'); if (saved) todoList = JSON.parse(saved); else todoList = [{ text: "Review Physics notes", completed: false }, { text: "Solve 10 MCQ", completed: false }]; renderTodo(); }
         function saveTodo() { localStorage.setItem('studyTodo', JSON.stringify(todoList)); renderTodo(); }
         function addTodoItem() { let input = document.getElementById('newTodoText'); if (!input.value.trim()) return; todoList.push({ text: input.value.trim(), completed: false }); input.value = ''; saveTodo(); }
@@ -387,7 +420,7 @@
         function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
         function updateTasksDoneCount() { let done = todoList.filter(t => t.completed).length; document.getElementById('tasksDone').innerHTML = done; }
         
-        // Data persistence
+        // Persistence
         function saveAll() { localStorage.setItem('studyData', JSON.stringify(studyData)); localStorage.setItem('streak', JSON.stringify(streak)); localStorage.setItem('weeklyGoal', weeklyGoal); }
         function saveSubjects() { localStorage.setItem('subjectTimes', JSON.stringify(subjectTimes)); localStorage.setItem('subjectGoals', JSON.stringify(goals)); }
         function loadAll() { 
@@ -403,7 +436,6 @@
         function importData() { let inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'application/json'; inp.onchange = e => { let f = e.target.files[0]; if (!f) return; let r = new FileReader(); r.onload = ev => { try { let d = JSON.parse(ev.target.result); if (confirm("Replace all data?")) { studyData = d.studyData || studyData; if (!studyData.history) studyData.history = {}; streak = d.streak || streak; subjectTimes = d.subjectTimes || subjectTimes; goals = d.subjectGoals || goals; marks = d.marks || marks; weeklyGoal = d.weeklyGoal || 20; todoList = d.todoList || []; recalcWeekly(); saveAll(); saveSubjects(); saveMarks(); saveTodo(); location.reload(); } } catch(err) { showMsg("Invalid file"); } }; r.readAsText(f); }; inp.click(); }
         function resetAllData() { if (confirm("⚠️ DELETE ALL DATA?")) { localStorage.clear(); location.reload(); } }
         
-        // Navigation & scroll hide header
         function showPage(page) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(page + 'Page').classList.add('active'); document.querySelectorAll('.nav-tab').forEach((tab,i) => { let pages = ['timer','goals','tasks','marks','analytics']; tab.classList.toggle('active', pages[i] === page); }); if (page === 'analytics') { updateUI(); updateDailyChart(); renderWeekActivityMonday(); } if (page === 'marks') updateMarksChart(); if (page === 'goals') updateSubjectsDisplay(); if (page === 'tasks') renderTodo(); }
         let lastScrollTop = 0; const header = document.getElementById('stickyHeader'); const containerDiv = document.querySelector('.container'); containerDiv.addEventListener('scroll', () => { let st = containerDiv.scrollTop; if (st > lastScrollTop && st > 60) header.classList.add('hide'); else if (st < lastScrollTop) header.classList.remove('hide'); lastScrollTop = st <= 0 ? 0 : st; });
         function toggleTheme() { let cur = document.body.getAttribute('data-theme'); let n = cur === 'light' ? 'dark' : 'light'; document.body.setAttribute('data-theme', n); document.getElementById('themeBtn').textContent = n === 'dark' ? '☀️' : '🌙'; localStorage.setItem('theme', n); setTimeout(() => { if (charts.marks) updateMarksChart(); updateDailyChart(); }, 100); }
